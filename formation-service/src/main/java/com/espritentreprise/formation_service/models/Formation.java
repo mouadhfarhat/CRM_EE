@@ -1,4 +1,4 @@
-package models;
+package com.espritentreprise.formation_service.models;
 
 
 import jakarta.persistence.Entity;

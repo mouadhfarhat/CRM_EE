@@ -1,10 +1,10 @@
-package controllers;
+package com.espritentreprise.formation_service.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import models.Formation;
-import repositories.FormationRepository;
+import com.espritentreprise.formation_service.models.Formation;
+import com.espritentreprise.formation_service.repositories.FormationRepository;
 
 import java.util.List;
 

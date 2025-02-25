@@ -1,7 +1,8 @@
-package repositories;
+package com.espritentreprise.formation_service.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import models.Formation;
+
+import com.espritentreprise.formation_service.models.Formation;
 
 public interface FormationRepository extends JpaRepository<Formation, Long> {
 	
