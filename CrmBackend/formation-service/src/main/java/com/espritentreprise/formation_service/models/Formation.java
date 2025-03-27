@@ -10,12 +10,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Entity
 public class Formation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,6 +23,7 @@ public class Formation {
     private LocalDate dateDebut;
     private LocalDate dateFin;
     private String domaine;
+
 
     // Getters and Setters
 }
