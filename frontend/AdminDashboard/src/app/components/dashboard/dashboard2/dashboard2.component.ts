@@ -10,19 +10,18 @@ import { LatestOrdersComponent } from '../latest-orders/latest-orders.component'
 
 
 @Component({
-  selector: 'app-dashboard2',
-  imports: [
-    GeoVisitorsComponent,
-    StatisticListComponent,
-    BrowserUsageComponent,
-    ProductListComponent, 
-    DirectChatComponent, 
-    LatestMembersComponent,
-    LatestOrdersComponent,
-  ],
-  templateUrl: './dashboard2.component.html',
-  styleUrl: './dashboard2.component.css',
-  standalone:true
+    selector: 'app-dashboard2',
+    imports: [
+        GeoVisitorsComponent,
+        StatisticListComponent,
+        BrowserUsageComponent,
+        ProductListComponent,
+        DirectChatComponent,
+        LatestMembersComponent,
+        LatestOrdersComponent,
+    ],
+    templateUrl: './dashboard2.component.html',
+    styleUrl: './dashboard2.component.css'
 })
 export class Dashboard2Component {
 

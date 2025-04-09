@@ -3,16 +3,13 @@ import { HeadlinesComponent } from '../headlines/headlines.component';
 import { MonthlyRecapComponent } from '../monthly-recap/monthly-recap.component';
 
 @Component({
-  selector: 'app-dashboard',
-  imports: [
-    HeadlinesComponent,
-    MonthlyRecapComponent,
-   
-
-],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css',
-  standalone:true
+    selector: 'app-dashboard',
+    imports: [
+        HeadlinesComponent,
+        MonthlyRecapComponent,
+    ],
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
 

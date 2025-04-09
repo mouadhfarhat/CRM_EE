@@ -5,18 +5,16 @@ import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 @Component({
-  selector: 'app-home',
-  imports: [
-    DashboardComponent, 
-    Dashboard2Component,
-    RouterLink , 
-    NavbarComponent, 
-    SidebarComponent
-  
-  ],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
-  standalone: true
+    selector: 'app-home',
+    imports: [
+        DashboardComponent,
+        Dashboard2Component,
+        RouterLink,
+        NavbarComponent,
+        SidebarComponent
+    ],
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.css'
 })
 export class HomeComponent {
 
