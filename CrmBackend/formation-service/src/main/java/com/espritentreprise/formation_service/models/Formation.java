@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,12 +18,12 @@ public class Formation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String titre;
+    private String title;
     private String description;
-    private LocalDate dateDebut;
-    private LocalDate dateFin;
-    private String domaine;
+    private Date startDate;
+    private Date endDate;
+    private String domain;
+    private int availableSeats;
 
 
-    // Getters and Setters
 }

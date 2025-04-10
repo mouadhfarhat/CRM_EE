@@ -1,10 +1,14 @@
 package com.espritentreprise.demande_service.models;
 
 
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,12 +18,14 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 public class Demande {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String type; 
-    private String description;
-    private String statut; 
+	 @Id
+	    @GeneratedValue(strategy = GenerationType.AUTO)
+	    private Long id;
+	    private String type;
+	    private String status;
+	    private String description;
+	    private Date creationDate;
 
-    // Getters et Setters
-}
+	    private Long clientId;
+	    private Long formationId;
+	}

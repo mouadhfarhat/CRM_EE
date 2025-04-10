@@ -22,15 +22,20 @@ public class DemandeController {
 
     @PostMapping
     public Demande createDemande(@RequestBody Demande demande) {
+        // Any additional logic (e.g., setting creationDate) can be added here
         return demandeRepository.save(demande);
     }
 
     @PutMapping("/{id}")
     public Demande updateDemande(@PathVariable Long id, @RequestBody Demande demandeDetails) {
-        Demande demande = demandeRepository.findById(id).orElseThrow(() -> new RuntimeException("Demande not found"));
+        Demande demande = demandeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Demande not found"));
         demande.setType(demandeDetails.getType());
         demande.setDescription(demandeDetails.getDescription());
-        demande.setStatut(demandeDetails.getStatut());
+        demande.setStatus(demandeDetails.getStatus());
+        // Update clientId and formationId if needed
+        demande.setClientId(demandeDetails.getClientId());
+        demande.setFormationId(demandeDetails.getFormationId());
         return demandeRepository.save(demande);
     }
 

@@ -27,12 +27,16 @@ public class FormationController {
 
     @PutMapping("/{id}")
     public Formation updateFormation(@PathVariable Long id, @RequestBody Formation formationDetails) {
-        Formation formation = formationRepository.findById(id).orElseThrow(() -> new RuntimeException("Formation not found"));
-        formation.setTitre(formationDetails.getTitre());
+        Formation formation = formationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Formation not found"));
+        
+        formation.setTitle(formationDetails.getTitle());
         formation.setDescription(formationDetails.getDescription());
-        formation.setDateDebut(formationDetails.getDateDebut());
-        formation.setDateFin(formationDetails.getDateFin());
-        formation.setDomaine(formationDetails.getDomaine());
+        formation.setStartDate(formationDetails.getStartDate());
+        formation.setEndDate(formationDetails.getEndDate());
+        formation.setDomain(formationDetails.getDomain());
+        formation.setAvailableSeats(formationDetails.getAvailableSeats());
+        
         return formationRepository.save(formation);
     }
 
