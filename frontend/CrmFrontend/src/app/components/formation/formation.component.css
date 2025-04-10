@@ -1,0 +1,35 @@
+/* Optional: You can add custom styles to modify the layout and appearance */
+@import "primeicons/primeicons.css";
+.p-dataview .p-dataview-header {
+    padding: 10px 0;
+}
+.p-dataview .p-dataview-footer {
+    padding: 10px 0;
+}
+.product-image {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
+}
+
+.p-card {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.p-dataview-grid .col-12 {
+    padding: 1rem;
+}
+
+.p-dataview-list .p-card {
+    display: flex;
+    align-items: center;
+}
+
+.p-dataview-list .product-image {
+    width: 80px;
+    height: 80px;
+    margin-right: 1rem;
+}

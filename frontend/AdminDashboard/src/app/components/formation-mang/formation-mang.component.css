@@ -1,0 +1,15 @@
+.card {
+    display: flex;
+    justify-content: center; /* Horizontally center the button */
+    align-items: center; /* Vertically center the button */
+    height: 100%; /* Ensure the card container takes up full height */
+    width: 100%; /* Adjust as needed */
+  }
+  
+  .custom-btn {
+    display: inline-block !important; /* Avoid full width */
+    width: auto !important; /* Set width to auto so it only takes space needed */
+    max-width: 200px; /* Optional: Limit the button's max width */
+    padding: 0.5rem 1rem !important; /* Adjust padding as needed */
+  }
+  

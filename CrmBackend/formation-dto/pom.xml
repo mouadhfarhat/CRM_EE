@@ -1,0 +1,27 @@
+<!-- formation-dto/pom.xml -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" ...>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.yourproject</groupId>
+  <artifactId>formation-dto</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <name>formation-dto</name>
+
+  <dependencies>
+    <!-- Optional: if you need lombok -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.30</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- JSON serialization support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.17.0</version>
+    </dependency>
+  </dependencies>
+</project>

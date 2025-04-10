@@ -1,0 +1,8 @@
+.navbar {
+    border-bottom: 3px solid #dc3545;
+  }
+  
+  .nav-link:hover {
+    color: #b71c1c !important;
+  }
+  
