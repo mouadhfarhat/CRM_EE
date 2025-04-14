@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import * as Papa from 'papaparse';  
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { Product } from '../../domains/product';  
-import { ProductService } from '../../services/product-service.service';
+import { Formation } from '../../domains/formation';  
+import { FormationService } from '../../services/formation/formation.service';
 import { Table, TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { RippleModule } from 'primeng/ripple';
@@ -36,11 +36,11 @@ interface ExportColumn {
   selector: 'app-formation-mang',
   standalone: true,
   imports: [TableModule, DialogModule, RippleModule, ButtonModule, ToastModule, ToolbarModule, ConfirmDialogModule, InputTextModule, InputTextareaModule, CommonModule, FileUploadModule, DropdownModule, TagModule, RadioButtonModule, RatingModule, InputTextModule, FormsModule, InputNumberModule],
-  providers: [MessageService, ConfirmationService, ProductService],
+  providers: [MessageService, ConfirmationService, FormationService],
   templateUrl: './formation-mang.component.html',
   styleUrls: ['./formation-mang.component.css'],
   styles: [
-    `:host ::ng-deep .p-dialog .product-image {
+    `:host ::ng-deep .p-dialog .formation-image {
         width: 150px;
         margin: 0 auto 2rem auto;
         display: block;
@@ -51,21 +51,21 @@ export class FormationMangComponent {
   @ViewChild('dt') dt!: Table;
   @ViewChild('fileInput') fileInput: any;
 
-  productDialog: boolean = false;
-  products: Product[] = []; 
-  product: Product = {} as Product;
-  selectedProducts!: Product[] | null;
+  formationDialog: boolean = false;
+  formations: Formation[] = []; 
+  formation: Formation = {} as Formation;
+  selectedFormations!: Formation[] | null;
   submitted: boolean = false;
   statuses: any[] = [];
 
   constructor(
-    private productService: ProductService,
+    private formationService: FormationService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit() {
-    this.productService.getProducts().then((data) => (this.products = data));
+    this.formationService.getFormations().then((data) => (this.formations = data));
 
     this.statuses = [
       { label: 'In Stock', value: 'INSTOCK' },
@@ -87,8 +87,8 @@ export class FormationMangComponent {
       // Use PapaParse to parse the CSV file
       Papa.parse(file, {
         complete: (result) => {
-          const products = result.data; // Extract parsed data from the CSV file
-          this.addProducts(products); // Call a function to add products to your list
+          const formations = result.data; // Extract parsed data from the CSV file
+          this.addFormations(formations); // Call a function to add formations to your list
         },
         header: true, // Set to true if your CSV has headers
         skipEmptyLines: true
@@ -96,55 +96,55 @@ export class FormationMangComponent {
     }
   }
 
-  // Function to add products to your product list
-  addProducts(products: any[]) {
-    products.forEach(product => {
-      const existingProduct = this.products.find(p => p.id === product.id);  // Check if the product already exists
+  // Function to add formations to your formation list
+  addFormations(formations: any[]) {
+    formations.forEach(formation => {
+      const existingFormation = this.formations.find(p => p.id === formation.id);  // Check if the formation already exists
 
-      if (existingProduct) {
-        // Update the existing product
-        existingProduct.name = product.name;
-        existingProduct.price = product.price;
-        existingProduct.quantity = product.quantity;
-        existingProduct.inventoryStatus = product.inventoryStatus;
+      if (existingFormation) {
+        // Update the existing formation
+        existingFormation.name = formation.name;
+        existingFormation.price = formation.price;
+        existingFormation.quantity = formation.quantity;
+        existingFormation.inventoryStatus = formation.inventoryStatus;
         // Update any other fields as necessary
       } else {
-        // Add the new product
-        this.products.push({
-          id: product.id || this.createId(),  // Ensure ID is generated if not present
-          name: product.name,
-          price: product.price,
-          quantity: product.quantity,
-          inventoryStatus: product.inventoryStatus,
+        // Add the new formation
+        this.formations.push({
+          id: formation.id || this.createId(),  // Ensure ID is generated if not present
+          name: formation.name,
+          price: formation.price,
+          quantity: formation.quantity,
+          inventoryStatus: formation.inventoryStatus,
           // Add any other fields as necessary
         });
       }
     });
   }
 
-  // Export products to CSV
+  // Export formations to CSV
   exportCSV() {
-    const csvData = this.convertToCSV(this.products); // Convert products to CSV
+    const csvData = this.convertToCSV(this.formations); // Convert formations to CSV
     const blob = new Blob([csvData], { type: 'text/csv' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'products.csv'; // File name for the downloaded CSV
+    link.download = 'formations.csv'; // File name for the downloaded CSV
     link.click(); // Trigger the download
   }
 
-  // Convert products array to CSV format
-  convertToCSV(products: any[]): string {
-    const header = ['id', 'name', 'price', 'quantity', 'inventoryStatus']; // Customize based on your product structure
-    const rows = products.map(product => {
-      return [product.id, product.name, product.price, product.quantity, product.inventoryStatus].join(',');
+  // Convert formations array to CSV format
+  convertToCSV(formations: any[]): string {
+    const header = ['id', 'name', 'price', 'quantity', 'inventoryStatus']; // Customize based on your formation structure
+    const rows = formations.map(formation => {
+      return [formation.id, formation.name, formation.price, formation.quantity, formation.inventoryStatus].join(',');
     });
     return [header.join(','), ...rows].join('\n');
   }
 
   openNew() {
-    this.product = {} as Product;  
+    this.formation = {} as Formation;  
     this.submitted = false;
-    this.productDialog = true;
+    this.formationDialog = true;
   }
 
   applyGlobalFilter(event: Event) {
@@ -152,71 +152,71 @@ export class FormationMangComponent {
     this.dt.filterGlobal(value, 'contains');
   }
 
-  deleteSelectedProducts() {
+  deleteSelectedFormations() {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the selected products?',
+      message: 'Are you sure you want to delete the selected formations?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.products = this.products.filter((val) => !this.selectedProducts?.includes(val));
-        this.selectedProducts = null;
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
+        this.formations = this.formations.filter((val) => !this.selectedFormations?.includes(val));
+        this.selectedFormations = null;
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Formations Deleted', life: 3000 });
       }
     });
   }
 
-  editProduct(product: Product) {
-    this.product = { ...product };
-    this.productDialog = true;
+  editFormation(formation: Formation) {
+    this.formation = { ...formation };
+    this.formationDialog = true;
   }
 
-  deleteProduct(product: Product) {
+  deleteFormation(formation: Formation) {
     this.confirmationService.confirm({
-      message: `Are you sure you want to delete ${product.name}?`,
+      message: `Are you sure you want to delete ${formation.name}?`,
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.products = this.products.filter((val) => val.id !== product.id);
-        this.product = {} as Product;
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+        this.formations = this.formations.filter((val) => val.id !== formation.id);
+        this.formation = {} as Formation;
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Formation Deleted', life: 3000 });
       }
     });
   }
 
   hideDialog() {
-    this.productDialog = false;
+    this.formationDialog = false;
     this.submitted = false;
   }
 
-  saveProduct() {
+  saveFormation() {
     this.submitted = true;
 
-    if (this.product.name?.trim()) {
-      if (this.product.id) {
-        // Update the existing product if it exists
-        const existingProduct = this.products.find(p => p.id === this.product.id);
-        if (existingProduct) {
-          Object.assign(existingProduct, this.product);
-          this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+    if (this.formation.name?.trim()) {
+      if (this.formation.id) {
+        // Update the existing formation if it exists
+        const existingFormation = this.formations.find(p => p.id === this.formation.id);
+        if (existingFormation) {
+          Object.assign(existingFormation, this.formation);
+          this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Formation Updated', life: 3000 });
         }
       } else {
-        // Create a new product
-        this.product.id = this.createId();
-        this.product.image = 'product-placeholder.svg';
-        this.products.push(this.product);
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
+        // Create a new formation
+        this.formation.id = this.createId();
+        this.formation.image = 'formation-placeholder.svg';
+        this.formations.push(this.formation);
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Formation Created', life: 3000 });
       }
 
-      this.products = [...this.products];
-      this.productDialog = false;
-      this.product = {} as Product;
+      this.formations = [...this.formations];
+      this.formationDialog = false;
+      this.formation = {} as Formation;
     }
   }
 
   findIndexById(id: string): number {
     let index = -1;
-    for (let i = 0; i < this.products.length; i++) {
-      if (this.products[i].id === id) {
+    for (let i = 0; i < this.formations.length; i++) {
+      if (this.formations[i].id === id) {
         index = i;
         break;
       }

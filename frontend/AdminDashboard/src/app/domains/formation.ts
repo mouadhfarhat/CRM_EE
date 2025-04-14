@@ -1,5 +1,5 @@
 
-export interface Product {
+export interface Formation {
   id?: string;
   code?: string;
   name?: string;

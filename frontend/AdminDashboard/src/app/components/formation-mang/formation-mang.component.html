@@ -41,8 +41,8 @@
         severity="danger"
         label="Delete"
         icon="pi pi-trash"
-        (onClick)="deleteSelectedProducts()"
-        [disabled]="!selectedProducts || !selectedProducts.length" />
+        (onClick)="deleteSelectedFormations()"
+        [disabled]="!selectedFormations || !selectedFormations.length" />
     </ng-template>
   
     <ng-template pTemplate="right">
@@ -74,12 +74,12 @@
   
 
 
-  <p-table #dt [value]="products"
+  <p-table #dt [value]="formations"
       [rows]="10"
       [paginator]="true"
       [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
       [tableStyle]="{ 'min-width': '75rem' }"
-      [(selection)]="selectedProducts"
+      [(selection)]="selectedFormations"
       [rowHover]="true"
       dataKey="id"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -87,7 +87,7 @@
   >
   <ng-template pTemplate="caption">
     <div class="flex align-items-center justify-content-between">
-      <h5 class="m-0">Manage Products</h5>
+      <h5 class="m-0">Manage Formations</h5>
       <span class="p-input-icon-left">
         <i class="pi pi-search"></i>
         <input 
@@ -128,37 +128,37 @@
               <th></th>
           </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-product>
+      <ng-template pTemplate="body" let-formation>
           <tr>
               <td>
-                  <p-tableCheckbox [value]="product" />
+                  <p-tableCheckbox [value]="formation" />
               </td>
               <td>
-                  {{ product.name }}
+                  {{ formation.name }}
               </td>
               <td>
               <img 
-                  [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" 
-                  [alt]="product.name" 
+                  [src]="'https://primefaces.org/cdn/primeng/images/demo/formation/' + formation.image" 
+                  [alt]="formation.name" 
                   width="50" 
                   class="shadow-4" />
               </td>
               <td>
-                  {{ product.price | currency : 'USD' }}
+                  {{ formation.price | currency : 'USD' }}
               </td>
               <td>
-                  {{ product.category }}
+                  {{ formation.category }}
               </td>
               <td>
                   <p-rating 
-                      [(ngModel)]="product.rating" 
+                      [(ngModel)]="formation.rating" 
                       [readonly]="true" 
                       [cancel]="false" />
               </td>
               <td>
                   <p-tag 
-                      [value]="product.inventoryStatus" 
-                      [severity]="getSeverity(product.inventoryStatus)" />
+                      [value]="formation.inventoryStatus" 
+                      [severity]="getSeverity(formation.inventoryStatus)" />
               </td>
               <td>
                   <p-button 
@@ -167,45 +167,45 @@
                       [rounded]="true" 
                       [outlined]="true" 
                       severity="success" 
-                      (onClick)="editProduct(product)" />
+                      (onClick)="editFormation(formation)" />
                   <p-button 
                       icon="pi pi-trash" 
                       severity="danger" 
                       [rounded]="true" 
                       [outlined]="true" 
-                      (onClick)="deleteProduct(product)" />
+                      (onClick)="deleteFormation(formation)" />
               </td>
           </tr>
       </ng-template>
       <ng-template pTemplate="summary">
           <div class="flex align-items-center justify-content-between">
-              In total there are {{ products ? products.length : 0 }} products.
+              In total there are {{ formations ? formations.length : 0 }} formations.
           </div>
       </ng-template>
   </p-table>
 
   <p-dialog 
-      [(visible)]="productDialog" 
+      [(visible)]="formationDialog" 
       [style]="{ width: '450px' }" 
-      header="Product Details" 
+      header="Formation Details" 
       [modal]="true" 
       styleClass="p-fluid">
           <ng-template pTemplate="content">
               <img 
-                  [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" 
-                  [alt]="product.image" 
+                  [src]="'https://primefaces.org/cdn/primeng/images/demo/formation/' + formation.image" 
+                  [alt]="formation.image" 
                   class="block m-auto pb-3" 
-                  *ngIf="product.image" />
+                  *ngIf="formation.image" />
               <div class="field">
                   <label for="name">Name</label>
                   <input 
                       type="text" 
                       pInputText 
                       id="name" 
-                      [(ngModel)]="product.name" 
+                      [(ngModel)]="formation.name" 
                       required 
                       autofocus />
-                  <small class="p-error" *ngIf="submitted && !product.name">
+                  <small class="p-error" *ngIf="submitted && !formation.name">
                       Name is required.
                   </small>
               </div>
@@ -214,7 +214,7 @@
                   <textarea 
                       id="description" 
                       pInputTextarea 
-                      [(ngModel)]="product.description" 
+                      [(ngModel)]="formation.description" 
                       required 
                       rows="3" 
                       cols="20">
@@ -223,15 +223,15 @@
               <div class="field">
                 <label for="inventoryStatus">Inventory Status</label>
                 <p-dropdown 
-                  [(ngModel)]="product.inventoryStatus" 
+                  [(ngModel)]="formation.inventoryStatus" 
                   inputId="inventoryStatus" 
                   [options]="statuses">
                   
                   <ng-template pTemplate="selectedItem">
                     <p-tag 
-                      *ngIf="product.inventoryStatus" 
-                      [value]="product.inventoryStatus" 
-                      [severity]="getSeverity(product.inventoryStatus)" />
+                      *ngIf="formation.inventoryStatus" 
+                      [value]="formation.inventoryStatus" 
+                      [severity]="getSeverity(formation.inventoryStatus)" />
                   </ng-template>
               
                   <ng-template let-option pTemplate="item">
@@ -253,7 +253,7 @@
                               id="category1" 
                               name="category" 
                               value="Accessories" 
-                              [(ngModel)]="product.category" />
+                              [(ngModel)]="formation.category" />
                           <label for="category1">Accessories</label>
                       </div>
                       <div class="field-radiobutton col-6">
@@ -261,7 +261,7 @@
                               id="category2" 
                               name="category" 
                               value="Clothing" 
-                              [(ngModel)]="product.category" />
+                              [(ngModel)]="formation.category" />
                           <label for="category2">Clothing</label>
                       </div>
                       <div class="field-radiobutton col-6">
@@ -269,7 +269,7 @@
                               id="category3" 
                               name="category" 
                               value="Electronics" 
-                              [(ngModel)]="product.category" />
+                              [(ngModel)]="formation.category" />
                           <label for="category3">Electronics</label>
                       </div>
                       <div class="field-radiobutton col-6">
@@ -277,7 +277,7 @@
                               id="category4" 
                               name="category" 
                               value="Fitness" 
-                              [(ngModel)]="product.category" />
+                              [(ngModel)]="formation.category" />
                           <label for="category4">Fitness</label>
                       </div>
                   </div>
@@ -288,7 +288,7 @@
                       <label for="price">Price</label>
                       <p-inputNumber 
                           id="price" 
-                          [(ngModel)]="product.price" 
+                          [(ngModel)]="formation.price" 
                           mode="currency" 
                           currency="USD" 
                           locale="en-US" />
@@ -297,7 +297,7 @@
                       <label for="quantity">Quantity</label>
                       <p-inputNumber 
                           id="quantity" 
-                          [(ngModel)]="product.quantity" />
+                          [(ngModel)]="formation.quantity" />
                   </div>
               </div>
           </ng-template>
@@ -312,7 +312,7 @@
                   label="Save" 
                   icon="pi pi-check" 
                   [text]="true" 
-                  (onClick)="saveProduct()" />
+                  (onClick)="saveFormation()" />
           </ng-template>
   </p-dialog>
 
