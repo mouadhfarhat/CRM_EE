@@ -74,15 +74,15 @@ export class FormationMangComponent {
     ];
   }
 
-   // Trigger the file input when the Import button is clicked
-   triggerFileInput() {
+// Trigger the file input when the Import button is clicked
+triggerFileInput() {
     this.fileInput.nativeElement.click();
   }
-
+  
   // Handle file import (CSV)
   importCSV(event: any) {
     const file = event.target.files[0]; // Get the uploaded file
-
+  
     if (file) {
       // Use PapaParse to parse the CSV file
       Papa.parse(file, {
@@ -95,12 +95,12 @@ export class FormationMangComponent {
       });
     }
   }
-
+  
   // Function to add formations to your formation list
   addFormations(formations: any[]) {
     formations.forEach(formation => {
       const existingFormation = this.formations.find(p => p.id === formation.id);  // Check if the formation already exists
-
+  
       if (existingFormation) {
         // Update the existing formation
         existingFormation.name = formation.name;
@@ -119,6 +119,15 @@ export class FormationMangComponent {
           // Add any other fields as necessary
         });
       }
+    });
+  
+    // Add these lines after processing all formations
+    this.formations = [...this.formations];
+    this.messageService.add({
+      severity: 'success', 
+      summary: 'Import Successful', 
+      detail: `${formations.length} formations processed`, 
+      life: 3000
     });
   }
 
