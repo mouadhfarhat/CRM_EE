@@ -5,7 +5,7 @@ import { BrowserUsageComponent } from '../browser-usage/browser-usage.component'
 import { ProductListComponent } from '../product-list/product-list.component';
 import { DirectChatComponent } from '../direct-chat/direct-chat.component';
 import { LatestMembersComponent } from '../latest-members/latest-members.component';
-import { LatestOrdersComponent } from '../latest-orders/latest-orders.component';
+import { TodolistComponent } from '../toDoList/Todolist.component';
 
 
 
@@ -18,7 +18,7 @@ import { LatestOrdersComponent } from '../latest-orders/latest-orders.component'
     ProductListComponent, 
     DirectChatComponent, 
     LatestMembersComponent,
-    LatestOrdersComponent,
+    TodolistComponent,
   ],
   templateUrl: './dashboard2.component.html',
   styleUrl: './dashboard2.component.css',
