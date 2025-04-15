@@ -1,67 +1,62 @@
 
-<div class="hold-transition login-page">
-<div class="login-box">
-    <!-- /.login-logo -->
-    <div class="card card-outline card-primary">
-      <div class="card-header text-center">
-        <a href="../../index2.html" class="h1"><b>Admin</b>LTE</a>
+<p-button (onClick)="showDialog()" icon="pi pi-user" label="Login"></p-button>
+      
+<p-dialog [(visible)]="visible" [modal]="true" [closable]="false" [style]="{ width: '25rem' }">
+  <ng-template pTemplate="headless">
+    <div
+      class="flex flex-column px-8 py-5 gap-4"
+      style="border-radius: 12px; background-image: radial-gradient(circle at left top, var(--primary-400), var(--primary-700))"
+    >
+      <!-- Logo SVG -->
+      <svg
+        width="33"
+        height="35"
+        viewBox="0 0 33 35"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="block mx-auto"
+      >
+        <!-- SVG paths here -->
+      </svg>
+
+      <!-- Username Input -->
+      <div class="inline-flex flex-column gap-2">
+        <label for="username" class="text-primary-50 font-semibold">Username</label>
+        <input
+          pInputText
+          id="username"
+          class="bg-white-alpha-20 border-none p-3 text-primary-50"
+          [(ngModel)]="username"
+        />
       </div>
-      <div class="card-body">
-        <p class="login-box-msg">Sign in to start your session</p>
-  
-        <form action="../../index3.html" method="post">
-          <div class="input-group mb-3">
-            <input type="email" class="form-control" placeholder="Email">
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-envelope"></span>
-              </div>
-            </div>
-          </div>
-          <div class="input-group mb-3">
-            <input type="password" class="form-control" placeholder="Password">
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-lock"></span>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-8">
-              <div class="icheck-primary">
-                <input type="checkbox" id="remember">
-                <label for="remember">
-                  Remember Me
-                </label>
-              </div>
-            </div>
-            <!-- /.col -->
-            <div class="col-4">
-              <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-            </div>
-            <!-- /.col -->
-          </div>
-        </form>
-  
-        <div class="social-auth-links text-center mt-2 mb-3">
-          <a href="#" class="btn btn-block btn-primary">
-            <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
-          </a>
-          <a href="#" class="btn btn-block btn-danger">
-            <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
-          </a>
-        </div>
-        <!-- /.social-auth-links -->
-  
-        <p class="mb-1">
-          <a href="forgot-password.html">I forgot my password</a>
-        </p>
-        <p class="mb-0">
-          <a href="register.html" class="text-center">Register a new membership</a>
-        </p>
+
+      <!-- Password Input -->
+      <div class="inline-flex flex-column gap-2">
+        <label for="password" class="text-primary-50 font-semibold">Password</label>
+        <input
+          pInputText
+          id="password"
+          class="bg-white-alpha-20 border-none p-3 text-primary-50"
+          [(ngModel)]="password"
+          type="password"
+        />
       </div>
-      <!-- /.card-body -->
+
+      <!-- Buttons -->
+      <div class="flex align-items-center gap-2">
+        <p-button
+          label="Sign-In"
+          (onClick)="login()"
+          [text]="true"
+          styleClass="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"
+        ></p-button>
+        <p-button
+          label="Cancel"
+          (onClick)="closeDialog()"
+          [text]="true"
+          styleClass="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"
+        ></p-button>
+      </div>
     </div>
-    <!-- /.card -->
-  </div>
-</div>
+  </ng-template>
+</p-dialog>

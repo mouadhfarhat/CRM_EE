@@ -49,13 +49,13 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a routerLink="/clients/top-nav" routerLinkActive="active" class="nav-link">
+              <a routerLink="/formations/management" routerLinkActive="active" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Management</p>
               </a>
             </li>
             <li class="nav-item">
-              <a routerLink="/clients/top-nav-sidebar" routerLinkActive="active" class="nav-link">
+              <a routerLink="/formations/statistics" routerLinkActive="active" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Statistics</p>
               </a>
@@ -76,13 +76,13 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a routerLink="/clients/top-nav" routerLinkActive="active" class="nav-link">
+              <a routerLink="/clients/management" routerLinkActive="active" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Management</p>
               </a>
             </li>
             <li class="nav-item">
-              <a routerLink="/clients/top-nav-sidebar" routerLinkActive="active" class="nav-link">
+              <a routerLink="/clients/statistics" routerLinkActive="active" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Statistics</p>
               </a>
@@ -96,38 +96,52 @@
           <a routerLink="/demandes" routerLinkActive="active" class="nav-link">
             <i class="nav-icon fas fa-chart-pie"></i>
             <p>
-              management Demandes
-              <i class="right fas fa-angle-left"></i>
+              Demandes
+              <i class="fas fa-angle-left right"></i>
+              <span class="badge badge-info right">2</span>
             </p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a routerLink="/demandes/chartjs" routerLinkActive="active" class="nav-link">
+              <a routerLink="/demandes/management" routerLinkActive="active" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>ChartJS</p>
+                <p>Management</p>
               </a>
             </li>
-            <!-- Other demandes sub-items -->
+            <li class="nav-item">
+              <a routerLink="/demandes/statistics" routerLinkActive="active" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Statistics</p>
+              </a>
+            </li>
+            <!-- Other client sub-items -->
           </ul>
         </li>
         
         <!-- Gestionnaire Management -->
         <li class="nav-item">
-          <a routerLink="/gestionnaire" routerLinkActive="active" class="nav-link">
+          <a routerLink="/gestionnaires" routerLinkActive="active" class="nav-link">
             <i class="nav-icon fas fa-tree"></i>
             <p>
-              management gestionnaire
+              Gestionnaire
               <i class="fas fa-angle-left right"></i>
+              <span class="badge badge-info right">2</span>
             </p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a routerLink="/gestionnaire/general" routerLinkActive="active" class="nav-link">
+              <a routerLink="/gestionnaires/management" routerLinkActive="active" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>General</p>
+                <p>Management</p>
               </a>
             </li>
-            <!-- Other gestionnaire sub-items -->
+            <li class="nav-item">
+              <a routerLink="/gestionnaires/statistics" routerLinkActive="active" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Statistics</p>
+              </a>
+            </li>
+            <!-- Other client sub-items -->
           </ul>
         </li>
         
