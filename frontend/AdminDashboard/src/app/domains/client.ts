@@ -8,8 +8,8 @@ export interface Client {
     password?: string;
     role?: string;
     domaine?: string;
-    history?: Formation[];  // List of Formation objects
-    favorites?: Formation[];  // List of Formation objects
+    history?: Formation[];  
+    favorites?: Formation[];  
     certifications?: string;  
   }
   
