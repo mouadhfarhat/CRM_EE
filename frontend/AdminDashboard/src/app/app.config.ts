@@ -3,8 +3,8 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
+import { FullCalendarModule } from '@fullcalendar/angular';
 
-import { FormsModule } from '@angular/forms';
 
 
 import { routes } from './app.routes';
@@ -16,6 +16,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch()),
-    DragDropModule // 👈 This enables fetch()
+    FullCalendarModule
   ]
 };

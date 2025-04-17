@@ -1,0 +1,10 @@
+.calendar-container {
+    min-height: 600px;
+    padding: 20px;
+    background: white;
+  }
+  
+  /* Ensure FullCalendar fills its container */
+  .fc {
+    height: 100% !important;
+  }

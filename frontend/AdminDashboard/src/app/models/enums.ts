@@ -17,3 +17,23 @@ export enum DemandeType {
     ADMINISTRATIVE = 'ADMINISTRATIVE',
     RECLAMATION = 'RECLAMATION'
   }
+
+  export enum EventType {
+    MEETING = 'MEETING',
+    TRAINING = 'TRAINING',
+    PRESENTATION = 'PRESENTATION',
+    OTHER = 'OTHER'
+  }
+  
+  export enum RecurrenceType {
+    NONE = 'NONE',
+    DAILY = 'DAILY',
+    WEEKLY = 'WEEKLY',
+    MONTHLY = 'MONTHLY'
+  }
+  
+  export enum EventStatus {
+    SCHEDULED = 'SCHEDULED',
+    CANCELLED = 'CANCELLED',
+    POSTPONED = 'POSTPONED'
+  }

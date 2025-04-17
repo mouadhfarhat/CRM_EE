@@ -157,10 +157,10 @@
             
                     <!-- Details section -->
                     <div *ngIf="demande.showDetails" class="mt-2">
-                      <p><strong>Formation:</strong> {{ demande.formation?.title || 'N/A' }}</p>
-                      <p><strong>Client:</strong> {{ demande.client?.username || 'N/A' }}</p>
+                      <p><strong>Formation:</strong> {{ demande.formation.title || 'N/A' }}</p>
+                      <p><strong>Client:</strong> {{ demande.client.username || 'N/A' }}</p>
                       <p><strong>Créée le:</strong> {{ demande.createdAt | date: 'medium' }}</p>
-                      <p *ngIf="demande.sharedWith"><strong>Partagée avec:</strong> {{ demande.sharedWith?.username || 'N/A' }}</p>
+                      <p *ngIf="demande.sharedWith"><strong>Partagée avec:</strong> {{ demande.sharedWith.username || 'N/A' }}</p>
                       <p><strong>Type:</strong> {{ demande.type || 'N/A' }}</p>
                     </div>
                   </div>
@@ -244,10 +244,10 @@
             
                     <!-- Details -->
                     <div *ngIf="demande.showDetails" class="mt-2">
-                      <p><strong>Formation:</strong> {{ demande.formation?.title || 'N/A' }}</p>
-                      <p><strong>Client:</strong> {{ demande.client?.username || 'N/A' }}</p>
+                      <p><strong>Formation:</strong> {{ demande.formation.title || 'N/A' }}</p>
+                      <p><strong>Client:</strong> {{ demande.client.username || 'N/A' }}</p>
                       <p><strong>Créée le:</strong> {{ demande.createdAt | date: 'medium' }}</p>
-                      <p *ngIf="demande.sharedWith"><strong>Partagée avec:</strong> {{ demande.sharedWith?.username || 'N/A' }}</p>
+                      <p *ngIf="demande.sharedWith"><strong>Partagée avec:</strong> {{ demande.sharedWith.username || 'N/A' }}</p>
                       <p><strong>Type:</strong> {{ demande.type || 'N/A' }}</p>
                     </div>
                   </div>
@@ -328,10 +328,10 @@
             
                     <!-- Details section -->
                     <div *ngIf="demande.showDetails" class="mt-2">
-                      <p><strong>Formation:</strong> {{ demande.formation?.title || 'N/A' }}</p>
-                      <p><strong>Client:</strong> {{ demande.client?.username || 'N/A' }}</p>
+                      <p><strong>Formation:</strong> {{ demande.formation.title || 'N/A' }}</p>
+                      <p><strong>Client:</strong> {{ demande.client.username || 'N/A' }}</p>
                       <p><strong>Créée le:</strong> {{ demande.createdAt | date: 'medium' }}</p>
-                      <p *ngIf="demande.sharedWith"><strong>Partagée avec:</strong> {{ demande.sharedWith?.username || 'N/A' }}</p>
+                      <p *ngIf="demande.sharedWith"><strong>Partagée avec:</strong> {{ demande.sharedWith.username || 'N/A' }}</p>
                       <p><strong>Type:</strong> {{ demande.type || 'N/A' }}</p>
                     </div>
                   </div>
@@ -412,10 +412,10 @@
             
                     <!-- Details section -->
                     <div *ngIf="demande.showDetails" class="mt-2">
-                      <p><strong>Formation:</strong> {{ demande.formation?.title || 'N/A' }}</p>
-                      <p><strong>Client:</strong> {{ demande.client?.username || 'N/A' }}</p>
+                      <p><strong>Formation:</strong> {{ demande.formation.title || 'N/A' }}</p>
+                      <p><strong>Client:</strong> {{ demande.client.username || 'N/A' }}</p>
                       <p><strong>Créée le:</strong> {{ demande.createdAt | date: 'medium' }}</p>
-                      <p *ngIf="demande.sharedWith"><strong>Partagée avec:</strong> {{ demande.sharedWith?.username || 'N/A' }}</p>
+                      <p *ngIf="demande.sharedWith"><strong>Partagée avec:</strong> {{ demande.sharedWith.username || 'N/A' }}</p>
                       <p><strong>Type:</strong> {{ demande.type || 'N/A' }}</p>
                     </div>
                   </div>
