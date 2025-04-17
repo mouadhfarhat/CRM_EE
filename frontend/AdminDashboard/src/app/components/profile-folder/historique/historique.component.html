@@ -1,0 +1,112 @@
+<div class="card-body p-0 bg-gray-900 text-white">
+    <div class="card bg-gray-800 border-none text-white">
+  
+      <!-- DataView Section -->
+      <p-dataView
+        [value]="formations"
+        [paginator]="true"
+        [rows]="5"
+        paginatorPosition="bottom"
+        [rowsPerPageOptions]="[5, 10, 20]">
+  
+        <ng-template pTemplate="list" let-products>
+          <div class="flex flex-column gap-3">
+            <div *ngFor="let product of products" class="p-3 border-bottom-1 surface-border shadow-sm border-round">
+              <div class="flex flex-column md:flex-row justify-between md:align-items-center gap-4">
+  
+                <!-- Image & Tag -->
+                <div class="md:w-10rem relative">
+                  <img class="w-full border-round" [src]="getImageUrl(product.image)" [alt]="product.name">
+                  <p-tag [value]="product.inventoryStatus"
+                         [severity]="getSeverity(product)"
+                         [style]="{ 'position': 'absolute', 'left.px': 4, 'top.px': 4 }">
+                  </p-tag>
+                </div>
+  
+                <!-- Product Info -->
+                <div class="flex flex-column gap-2 flex-1">
+                  <span class="font-medium text-secondary text-sm">{{ product.category }}</span>
+  
+                  <!-- Fixed anchor tag with preventDefault -->
+                  <a href="#" class="text-lg font-semibold text-blue-400 hover:underline"
+                     (click)="openDialog(product); $event.preventDefault()">
+                    {{ product.name }}
+                  </a>
+  
+                  <!-- OR use this instead of <a> to avoid href issues
+                  <span class="text-lg font-semibold text-blue-400 hover:underline cursor-pointer"
+                        (click)="openDialog(product)">
+                    {{ product.name }}
+                  </span>
+                  -->
+  
+                  <div class="flex items-center gap-1">
+                    <span class="text-900 font-medium text-sm">{{ product.rating }}</span>
+                    <i class="pi pi-star-fill text-yellow-500 text-sm"></i>
+                  </div>
+                </div>
+  
+                <!-- Right Section -->
+                <div class="flex flex-column gap-3 text-right min-w-[10rem]">
+                  <p-tag 
+                    [value]="product.status"
+                    [severity]="getStatusSeverity(product.status)">
+                  </p-tag>
+  
+                  <!-- Add My Review -->
+                  <div>
+                    <div class="text-sm mb-1 font-medium text-900">Add My Review</div>
+                    <p-rating [(ngModel)]="product.reviewValue" [stars]="3" [cancel]="false"></p-rating>
+                  </div>
+                </div>
+  
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-dataView>
+  
+      <!-- Optional Test Button to confirm dialog -->
+      <!-- <button pButton type="button" label="Open Dialog" (click)="openDialog(formations[0])"></button> -->
+  
+      <!-- Dialog Popup for Product Details -->
+      <p-dialog
+        header="Formation Details"
+        [(visible)]="dialogVisible"
+        [modal]="true"
+        [style]="{ width: '500px' }"
+        [dismissableMask]="true"
+        (onHide)="closeDialog()"
+        [baseZIndex]="10000">
+  
+        <div *ngIf="selectedFormation" class="text-black dark:text-white">
+          <img
+            [src]="getImageUrl(selectedFormation.image)"
+            [alt]="selectedFormation.name"
+            class="w-full border-round mb-3" />
+  
+          <h3 class="text-xl font-bold mb-2">{{ selectedFormation.name }}</h3>
+          <p class="mb-1"><strong>Description:</strong> {{ selectedFormation.description }}</p>
+          <p class="mb-1"><strong>Category:</strong> {{ selectedFormation.category }}</p>
+          <p class="mb-1"><strong>Price:</strong> {{ selectedFormation.price | currency }}</p>
+          <p class="mb-1"><strong>Quantity:</strong> {{ selectedFormation.quantity }}</p>
+          <p class="mb-1"><strong>Status:</strong>
+            <p-tag
+              [value]="selectedFormation.inventoryStatus"
+              [severity]="getSeverity(selectedFormation)">
+            </p-tag>
+          </p>
+          <p><strong>Rating:</strong>
+            <p-rating
+              [readonly]="true"
+              [cancel]="false"
+              [ngModel]="selectedFormation.rating">
+            </p-rating>
+          </p>
+        </div>
+  
+      </p-dialog>
+  
+    </div>
+  </div>
+  

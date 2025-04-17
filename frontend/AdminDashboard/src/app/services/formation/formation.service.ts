@@ -16,7 +16,8 @@ export class FormationService {
                 category: 'Accessories',
                 quantity: 24,
                 inventoryStatus: 'INSTOCK',
-                rating: 5
+                rating: 5,
+                status: 'completed'
             },
             {
                 id: '1001',
@@ -28,7 +29,9 @@ export class FormationService {
                 category: 'Accessories',
                 quantity: 61,
                 inventoryStatus: 'OUTOFSTOCK',
-                rating: 4
+                rating: 4,
+                status: 'completed'
+
             },
             {
                 id: '1002',
@@ -40,8 +43,9 @@ export class FormationService {
                 category: 'Fitness',
                 quantity: 2,
                 inventoryStatus: 'LOWSTOCK',
-                rating: 3
-            },
+                rating: 3,
+                status: 'in progress'
+},
             {
                 id: '1003',
                 code: '244wgerg2',
@@ -53,7 +57,8 @@ export class FormationService {
                 quantity: 25,
                 inventoryStatus: 'INSTOCK',
                 rating: 5
-            },
+            ,status: 'in progress'
+},
             {
                 id: '1004',
                 code: 'h456wer53',
@@ -65,7 +70,8 @@ export class FormationService {
                 quantity: 73,
                 inventoryStatus: 'INSTOCK',
                 rating: 4
-            },
+            ,status: 'in progress'
+},
             {
                 id: '1005',
                 code: 'av2231fwg',
@@ -77,7 +83,8 @@ export class FormationService {
                 quantity: 0,
                 inventoryStatus: 'OUTOFSTOCK',
                 rating: 4
-            },
+            ,status: 'in progress'
+},
             {
                 id: '1006',
                 code: 'bib36pfvm',
@@ -89,7 +96,8 @@ export class FormationService {
                 quantity: 5,
                 inventoryStatus: 'LOWSTOCK',
                 rating: 3
-            },
+            ,status: 'in progress'
+},
             {
                 id: '1007',
                 code: 'mbvjkgip5',
@@ -101,7 +109,8 @@ export class FormationService {
                 quantity: 23,
                 inventoryStatus: 'INSTOCK',
                 rating: 5
-            },
+            ,status: 'in progress'
+},
             {
                 id: '1008',
                 code: 'vbb124btr',
@@ -113,7 +122,8 @@ export class FormationService {
                 quantity: 2,
                 inventoryStatus: 'LOWSTOCK',
                 rating: 4
-            },
+            ,status: 'in progress'
+},
             {
                 id: '1009',
                 code: 'cm230f032',
@@ -125,7 +135,8 @@ export class FormationService {
                 quantity: 63,
                 inventoryStatus: 'INSTOCK',
                 rating: 3
-            },
+            ,status: 'in progress'
+},
             {
                 id: '1010',
                 code: 'plb34234v',
@@ -137,7 +148,8 @@ export class FormationService {
                 quantity: 0,
                 inventoryStatus: 'OUTOFSTOCK',
                 rating: 4
-            },
+            ,status: 'in progress'
+},
             {
                 id: '1011',
                 code: '4920nnc2d',
@@ -149,7 +161,8 @@ export class FormationService {
                 quantity: 23,
                 inventoryStatus: 'INSTOCK',
                 rating: 4
-            },
+            ,status: 'pending'
+},
             {
                 id: '1012',
                 code: '250vm23cc',
@@ -161,7 +174,8 @@ export class FormationService {
                 quantity: 74,
                 inventoryStatus: 'INSTOCK',
                 rating: 5
-            },
+            ,status: 'pending'
+},
             {
                 id: '1013',
                 code: 'fldsmn31b',
@@ -173,7 +187,8 @@ export class FormationService {
                 quantity: 0,
                 inventoryStatus: 'OUTOFSTOCK',
                 rating: 3
-            },
+            ,status: 'pending'
+},
             {
                 id: '1014',
                 code: 'waas1x2as',
@@ -185,7 +200,8 @@ export class FormationService {
                 quantity: 8,
                 inventoryStatus: 'LOWSTOCK',
                 rating: 5
-            },
+            ,status: 'pending'
+},
             {
                 id: '1015',
                 code: 'vb34btbg5',
@@ -197,7 +213,8 @@ export class FormationService {
                 quantity: 34,
                 inventoryStatus: 'INSTOCK',
                 rating: 4
-            },
+            ,status: 'pending'
+},
             {
                 id: '1016',
                 code: 'k8l6j58jl',
@@ -209,7 +226,8 @@ export class FormationService {
                 quantity: 12,
                 inventoryStatus: 'INSTOCK',
                 rating: 3
-            },
+            ,status: 'cancelled'
+},
             {
                 id: '1017',
                 code: 'v435nn85n',
@@ -221,7 +239,8 @@ export class FormationService {
                 quantity: 42,
                 inventoryStatus: 'INSTOCK',
                 rating: 4
-            },
+            ,status: 'cancelled'
+},
             {
                 id: '1018',
                 code: '09zx9c0zc',
@@ -233,7 +252,8 @@ export class FormationService {
                 quantity: 41,
                 inventoryStatus: 'INSTOCK',
                 rating: 5
-            },
+            ,status: 'cancelled'
+},
             {
                 id: '1019',
                 code: 'mnb5mb2m5',
@@ -245,7 +265,8 @@ export class FormationService {
                 quantity: 63,
                 inventoryStatus: 'INSTOCK',
                 rating: 4
-            },
+            ,status: 'cancelled'
+},
             {
                 id: '1020',
                 code: 'r23fwf2w3',
@@ -257,7 +278,8 @@ export class FormationService {
                 quantity: 0,
                 inventoryStatus: 'OUTOFSTOCK',
                 rating: 4
-            },
+            ,status: 'cancelled'
+},
             {
                 id: '1021',
                 code: 'pxpzczo23',
@@ -269,7 +291,8 @@ export class FormationService {
                 quantity: 6,
                 inventoryStatus: 'LOWSTOCK',
                 rating: 3
-            },
+            ,status: 'cancelled'
+},
             {
                 id: '1022',
                 code: '2c42cb5cb',
@@ -281,7 +304,8 @@ export class FormationService {
                 quantity: 62,
                 inventoryStatus: 'INSTOCK',
                 rating: 4
-            },
+            ,status: 'cancelled'
+},
             {
                 id: '1023',
                 code: '5k43kkk23',
@@ -293,7 +317,8 @@ export class FormationService {
                 quantity: 2,
                 inventoryStatus: 'LOWSTOCK',
                 rating: 5
-            },
+            ,status: 'cancelled'
+},
             {
                 id: '1024',
                 code: 'lm2tny2k4',
@@ -305,7 +330,8 @@ export class FormationService {
                 quantity: 0,
                 inventoryStatus: 'INSTOCK',
                 rating: 4
-            },
+            ,status: 'cancelled'
+},
             {
                 id: '1025',
                 code: 'nbm5mv45n',
@@ -317,7 +343,8 @@ export class FormationService {
                 quantity: 52,
                 inventoryStatus: 'INSTOCK',
                 rating: 4
-            },
+            ,status: 'cancelled'
+},
             {
                 id: '1026',
                 code: 'zx23zc42c',
@@ -329,7 +356,8 @@ export class FormationService {
                 quantity: 3,
                 inventoryStatus: 'LOWSTOCK',
                 rating: 3
-            },
+            ,status: 'cancelled'
+},
             {
                 id: '1027',
                 code: 'acvx872gc',
@@ -341,7 +369,8 @@ export class FormationService {
                 quantity: 35,
                 inventoryStatus: 'INSTOCK',
                 rating: 3
-            },
+            ,status: 'pending'
+},
             {
                 id: '1028',
                 code: 'tx125ck42',
@@ -353,7 +382,8 @@ export class FormationService {
                 quantity: 15,
                 inventoryStatus: 'INSTOCK',
                 rating: 5
-            },
+            ,status: 'pending'
+},
             {
                 id: '1029',
                 code: 'gwuby345v',
@@ -497,7 +527,8 @@ export class FormationService {
                 inventoryStatus: 'INSTOCK',
                 rating: 5,
                 orders: []
-            },
+            ,status: 'pending'
+},
             {
                 id: '1004',
                 code: 'h456wer53',

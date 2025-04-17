@@ -5,6 +5,7 @@ import { FormationMangComponent } from './components/formation-mang/formation-ma
 import { ClientMangComponent } from './components/client-mang/client-mang.component';
 import { GestionnaireMangComponent } from './components/gestionnaire-mang/gestionnaire-mang.component';
 import { DemandeMangComponent } from './components/demande-mang/demande-mang.component';
+import { ProfileComponent } from './components/profile-folder/profile/profile.component';
 
 export const routes: Routes = [
          { path: 'login', component: LoginComponent },
@@ -13,6 +14,8 @@ export const routes: Routes = [
          { path: 'clients', component: ClientMangComponent  },
          { path: 'demandes', component: DemandeMangComponent  },
          { path: 'gestionnaires', component: GestionnaireMangComponent  },
+         { path: 'profile', component: ProfileComponent  },
+
 
 
 ];
