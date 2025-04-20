@@ -34,66 +34,130 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
+
           <div class="col-md-3">
             <div class="sticky-top mb-3">
-              <div class="card">
-                <div class="card-header">
-                  <h4 class="card-title">Draggable Events</h4>
-                </div>
-                <div class="card-body">
-                  <!-- the events -->
-                  <div id="external-events">
-                    <div class="external-event bg-success">Lunch</div>
-                    <div class="external-event bg-warning">Go holee</div>
-                    <div class="external-event bg-info">Do homework</div>
-                    <div class="external-event bg-primary">Work on UI design</div>
-                    <div class="external-event bg-danger">Sleep tight</div>
-                    <div class="checkbox">
-                      <label for="drop-remove">
-                        <input type="checkbox" id="drop-remove">
-                        remove after drop
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <!-- /.card-body -->
-              </div>
-              <!-- /.card -->
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Create Event</h3>
-                </div>
-                <div class="card-body">
-                  <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-                    <ul class="fc-color-picker" id="color-chooser">
-                      <li><a class="text-primary" href="#"><i class="fas fa-square"></i></a></li>
-                      <li><a class="text-warning" href="#"><i class="fas fa-square"></i></a></li>
-                      <li><a class="text-success" href="#"><i class="fas fa-square"></i></a></li>
-                      <li><a class="text-danger" href="#"><i class="fas fa-square"></i></a></li>
-                      <li><a class="text-muted" href="#"><i class="fas fa-square"></i></a></li>
-                    </ul>
-                  </div>
-                  <!-- /btn-group -->
-                  <div class="input-group">
-                    <input id="new-event" type="text" class="form-control" placeholder="Event Title">
 
-                    <div class="input-group-append">
-                      <button id="add-new-event" type="button" class="btn btn-primary">Add</button>
-                    </div>
-                    <!-- /btn-group -->
-                  </div>
-                  <!-- /input-group -->
-                </div>  
-              </div>
+              <!-- /.card -->
+<!-- card.component.html or wherever this markup is -->
+<div class="card event-form-card">
+  <div class="card-header">
+    <h3 class="card-title">Create Event</h3>
+  </div>
+  <div class="card-body">
+
+    <!-- Color Picker -->
+    <div class="form-group">
+      <label>Event Color</label>
+      <div class="color-options">
+        <div *ngFor="let color of colorOptions" 
+             class="color-option"
+             [style.backgroundColor]="color.value"
+             [class.active]="selectedColor === color.value"
+             (click)="selectColor($event, color.value)">
+          <i *ngIf="selectedColor === color.value" class="fas fa-check"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Title -->
+    <div class="form-group">
+      <label>Event Title</label>
+      <input #newEventTitle type="text" class="form-control" placeholder="Enter event title">
+    </div>
+
+    <!-- Date Time -->
+    <div class="form-group">
+      <label>Start Time</label>
+      <input type="datetime-local" class="form-control" [(ngModel)]="newEvent.startTime">
+    </div>
+
+    <div class="form-group">
+      <label>End Time</label>
+      <input type="datetime-local" class="form-control" [(ngModel)]="newEvent.endTime">
+    </div>
+
+    <!-- Formation Selection -->
+    <div class="form-group">
+      <label>Formation</label>
+      <input class="form-control mb-2" 
+             type="text" 
+             [(ngModel)]="formationSearchTerm" 
+             (input)="onFormationSearch()" 
+             placeholder="Search formations...">
+      <select class="form-control" [(ngModel)]="selectedFormationId">
+        <option [value]="undefined">No Formation</option>
+        <option *ngFor="let formation of filteredFormations" [value]="formation.id">{{ formation.name }}</option>
+      </select>
+    </div>
+
+<!-- Client Selection -->
+<div class="form-group">
+  <label>Clients</label>
+  <input class="form-control mb-2" 
+         type="text" 
+         [(ngModel)]="clientSearchTerm" 
+         (input)="onClientSearch()" 
+         placeholder="Search clients...">
+  <div class="client-list" [class.scrollable]="filteredClients.length > 2">
+    <div *ngFor="let client of filteredClients" 
+         class="client-item"
+         (click)="toggleClientSelection(client.id)"
+         [class.selected]="isClientSelected(client.id)">
+      <span>{{ client.username }}</span>
+      <i class="fas fa-check"></i>
+    </div>
+  </div>
+  <div *ngIf="filteredClients.length > 2" class="scroll-indicator">
+    Scroll to see more clients
+  </div>
+</div>
+
+    <!-- Event Type -->
+    <div class="form-group">
+      <label>Event Type</label>
+      <select class="form-control" [(ngModel)]="newEvent.type">
+        <option *ngFor="let type of eventTypes" [value]="type">{{ type }}</option>
+      </select>
+    </div>
+
+    <!-- Reminder -->
+    <div class="form-group">
+      <label>Reminder (minutes before)</label>
+      <input type="number" class="form-control" [(ngModel)]="newEvent.reminderMinutesBefore">
+    </div>
+
+    <!-- Add Button -->
+    <div class="form-group text-right">
+      <button (click)="createEvent(newEventTitle.value)" 
+              type="button" 
+              class="btn btn-primary"
+              [style.backgroundColor]="selectedColor"
+              [style.borderColor]="selectedColor">
+        Add Event
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
             </div> 
           </div>
+          
           <!-- /.col -->
           <div class="col-md-9">
             <div class="card card-primary">
               <div class="card-body p-0">
                 <!-- THE CALENDAR -->
                 <div class="calendar-wrapper">
-                  <div #calendar></div>
+                  <div #calendar ></div>
                 </div>
               </div>
               <!-- /.card-body -->
@@ -112,6 +176,114 @@
 
 
 <app-footer></app-footer>
+
+
+
+<!--pop up -->
+<!-- Event Edit Modal -->
+
+<!-- Edit Event Modal -->
+<div *ngIf="isEditModalOpen" class="modal-backdrop-custom">
+  <div class="modal-dialog-centered">
+    <div class="modal-content">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Event</h5>
+        <button type="button" class="close" (click)="isEditModalOpen = false">&times;</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        
+        <!-- Event Title (single row) -->
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" class="form-control" [(ngModel)]="editableEvent.title">
+        </div>
+
+        <!-- Start Time & End Time (same row) -->
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Start Time</label>
+            <input type="datetime-local" class="form-control" [(ngModel)]="editableEvent.startTime">
+          </div>
+          <div class="form-group col-md-6">
+            <label>End Time</label>
+            <input type="datetime-local" class="form-control" [(ngModel)]="editableEvent.endTime">
+          </div>
+        </div>
+
+        <!-- Formation & Clients (same row) -->
+        <!-- Formation & Clients (same row with search) -->
+<div class="form-row">
+  <div class="form-group col-md-6">
+    <label>Formation</label>
+    <input
+      type="text"
+      class="form-control mb-2"
+      [(ngModel)]="formationSearchTerm"
+      (input)="onFormationSearch()"
+      placeholder="Search formation..."
+    />
+    <select class="form-control" [(ngModel)]="editableEvent.formation.id">
+      <option [ngValue]="undefined">No Formation</option>
+      <option *ngFor="let formation of filteredFormations" [ngValue]="formation.id">
+        {{ formation.name }}
+      </option>
+    </select>
+  </div>
+
+  <div class="form-group col-md-6">
+    <label>Clients</label>
+    <input
+    type="text"
+    class="form-control search-input"
+    [(ngModel)]="clientSearchTerm"
+    (input)="onClientSearch()"
+    placeholder="Search client..."
+  />
+  <select class="form-control search-results" [(ngModel)]="editableClientIds" multiple>
+    <option *ngFor="let client of filteredClients" [value]="client.id">
+      {{ client.username }}
+    </option>
+  </select>
+  </div>
+</div>
+
+        <!-- Type & Color (same row) -->
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Type</label>
+            <select class="form-control" [(ngModel)]="editableEvent.type">
+              <option *ngFor="let type of eventTypes" [value]="type">{{ type }}</option>
+            </select>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Color</label>
+            <input type="color" class="form-control" [(ngModel)]="editableEvent.backgroundColor">
+          </div>
+        </div>
+
+        <!-- Reminder (single row) -->
+        <div class="form-group">
+          <label>Reminder (minutes before)</label>
+          <input type="number" class="form-control" [(ngModel)]="editableEvent.reminderMinutesBefore">
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="isEditModalOpen = false">Cancel</button>
+        <button class="btn btn-danger" (click)="deleteEvent()">Delete</button>
+
+        <button class="btn btn-primary" (click)="updateEvent()">Update</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 
 </div>
 

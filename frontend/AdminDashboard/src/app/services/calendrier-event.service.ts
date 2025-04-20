@@ -7,7 +7,7 @@ import { CalendrierEvent } from '../models/CalendrierEvent .model';
   providedIn: 'root'
 })
 export class CalendrierEventService {
-  private baseUrl = '/api/events';
+  private baseUrl = 'http://localhost:8080/api/events';
 
   constructor(private http: HttpClient) {}
 

@@ -20,4 +20,5 @@ export interface CalendrierEvent {
   attachments?: Attachment[];
   backgroundColor?: string;
   borderColor?: string;
+  
 }
