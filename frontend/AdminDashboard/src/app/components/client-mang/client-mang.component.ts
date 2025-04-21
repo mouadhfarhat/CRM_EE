@@ -105,7 +105,7 @@ addClients(clients: any[]) {
       existingClient.email = csvClient.email || existingClient.email;
       existingClient.password = csvClient.password || existingClient.password;
       existingClient.role = this.validateRole(csvClient.role) || existingClient.role;
-      existingClient.domaine = csvClient.domaine || existingClient.domaine;
+      existingClient.skills = csvClient.skills || existingClient.skills;
       existingClient.certifications = csvClient.certifications || existingClient.certifications;
       existingClient.image = csvClient.image || existingClient.image;
       
@@ -120,7 +120,7 @@ addClients(clients: any[]) {
         email: csvClient.email || '',
         password: csvClient.password || '',
         role: this.validateRole(csvClient.role) || 'user',
-        domaine: csvClient.domaine || '',
+        skills: csvClient.skills || '',
         certifications: csvClient.certifications || '',
         image: csvClient.image || 'client-placeholder.svg',
         history: this.parseFormations(csvClient.history) || [],
@@ -156,7 +156,7 @@ private parseFormations(data: any): Formation[] {
       { title: 'Username', dataKey: 'username' },
       { title: 'Email', dataKey: 'email' },
       { title: 'Role', dataKey: 'role' },
-      { title: 'Domaine', dataKey: 'domaine' },
+      { title: 'Domaine', dataKey: 'skills' },
       { title: 'Certifications', dataKey: 'certifications' }
     ];
 

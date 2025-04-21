@@ -7,7 +7,10 @@ export interface Client {
     email?: string;
     password?: string;
     role?: string;
-    domaine?: string;
+    address?: string;
+    zip?: string;
+    skills?: string;
+    note?: string;
     history?: Formation[];  
     favorites?: Formation[];  
     certifications?: string;  
