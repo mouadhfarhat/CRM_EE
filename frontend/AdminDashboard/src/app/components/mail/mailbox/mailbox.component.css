@@ -1,0 +1,29 @@
+.position-fixed {
+  top: 100px;
+  z-index: 1000;
+  height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+/* Add smooth scrolling for the fixed sidebar */
+.position-fixed::-webkit-scrollbar {
+  width: 5px;
+}
+
+.position-fixed::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.position-fixed::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+.star-animation {
+  transform: scale(1.2);
+  transition: transform 0.3s ease;
+}
+
+.fas.fa-star {
+  transition: all 0.3s ease;
+}

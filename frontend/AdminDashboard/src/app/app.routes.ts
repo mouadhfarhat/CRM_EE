@@ -8,7 +8,9 @@ import { DemandeMangComponent } from './components/demande-mang/demande-mang.com
 import { ProfileComponent } from './components/profile-folder/profile/profile.component';
 import { ClientInterfaceComponent } from './components/client-interface/client-interface.component';
 import { AdminInterfaceComponent } from './components/admin-interface/admin-interface.component';
-
+import { MailboxComponent } from './components/mail/mailbox/mailbox.component';
+import { ComposeMailComponent } from './components/mail/compose-mail/compose-mail.component';
+import { ReadMailComponent } from './components/mail/read-mail/read-mail.component';
 export const routes: Routes = [
          { path: 'login', component: LoginComponent },
          { path: 'admin', component: AdminInterfaceComponent },
@@ -18,6 +20,17 @@ export const routes: Routes = [
          { path: 'gestionnaires', component: GestionnaireMangComponent  },
          { path: 'profile', component: ProfileComponent  },
          { path: '', component: ClientInterfaceComponent  },
+         { path: 'mail',
+           children: [
+             { path: '', component: MailboxComponent },
+             { path: 'compose', component: ComposeMailComponent },
+             { path: 'read/:id', component: ReadMailComponent },
+           ]
+         },
+         { path: 'composeMail', component: ComposeMailComponent  },
+         { path: 'readMail', component: ReadMailComponent  },
+
+
 
 
 
