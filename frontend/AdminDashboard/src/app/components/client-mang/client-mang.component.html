@@ -1,146 +1,139 @@
 <div class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-    <div class="wrapper">
-      <!-- Content Wrapper. Contains page content -->
-      <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <div class="content-header">
-          <div class="container-fluid">
-            <div class="row mb-2">
-              <div class="col-sm-6">
-                <h1 class="m-0">Clients Table</h1>
-              </div>
-              <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                  <li class="breadcrumb-item"><a href="#">Home</a></li>
-                  <li class="breadcrumb-item active">Clients</li>
-                </ol>
-              </div>
+  <div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0">Clients Table</h1>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">Clients</li>
+              </ol>
             </div>
           </div>
         </div>
-  
-        <!-- Main content -->
-        <section class="content">
-          <div class="container-fluid">
-            <div class="card p-2">
-              <p-toast></p-toast>
-  
-              <p-toolbar styleClass="mb-2 gap-1 p-2">
-                <ng-template pTemplate="left">
-                  <p-button severity="success" label="New" icon="pi pi-plus" class="mr-2" size="small" (onClick)="openNew()"></p-button>
-                  <p-button severity="danger" label="Delete" icon="pi pi-trash" size="small"
-                    (onClick)="deleteSelectedClients()" [disabled]="!selectedClients || !selectedClients.length"></p-button>
-                </ng-template>
-  
-                <ng-template pTemplate="right">
-                  <p-button mode="basic" label="Import CSV" icon="pi pi-upload" class="mr-2" size="small" (click)="triggerFileInput()"></p-button>
-                  <input #fileInput type="file" accept=".csv" style="display: none" (change)="importCSV($event)" />
-                  <p-button severity="help" label="Export" icon="pi pi-download" size="small" (click)="exportCSV()"></p-button>
-                </ng-template>
-              </p-toolbar>
-  
-              <p-table #dt [value]="clients" [rows]="10" [paginator]="true"
-                [globalFilterFields]="['username', 'email', 'role', 'domaine']"
-                [tableStyle]="{ 'min-width': '65rem' }"
-                [(selection)]="selectedClients" [rowHover]="true" dataKey="id"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [showCurrentPageReport]="true">
-                <ng-template pTemplate="caption">
-                  <div class="flex align-items-center justify-content-between">
-                    <h5 class="m-0">Manage Clients</h5>
-                    <span class="p-input-icon-left">
-                      <i class="pi pi-search"></i>
-                      <input pInputText type="text" (input)="applyGlobalFilter($event)" placeholder="Search clients..." />
-                    </span>
-                  </div>
-                </ng-template>
-  
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th style="width: 3rem"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
-                    <th pSortableColumn="username" style="min-width:10rem">Username <p-sortIcon field="username" /></th>
-                    <th pSortableColumn="email" style="min-width:12rem">Email <p-sortIcon field="email" /></th>
-                    <th pSortableColumn="role" style="min-width:8rem">Role <p-sortIcon field="role" /></th>
-                    <th pSortableColumn="domaine" style="min-width:10rem">Domaine <p-sortIcon field="domaine" /></th>
-                    <th style="min-width:12rem">Certifications</th>
-                    <th style="width: 6rem"></th>
-                  </tr>
-                </ng-template>
-  
-                <ng-template pTemplate="body" let-client>
-                  <tr>
-                    <td><p-tableCheckbox [value]="client"></p-tableCheckbox></td>
-                    <td>{{ client.username }}</td>
-                    <td>{{ client.email }}</td>
-                    <td>
-                      <p-tag [value]="getRoleLabel(client.role)" [severity]="getRoleSeverity(client.role)"
-                        [style]="{'min-width': '5rem', 'text-align': 'center'}"></p-tag>
-                    </td>
-                    <td>{{ client.domaine }}</td>
-                    <td>{{ client.certifications }}</td>
-                    <td>
-                        <div class="flex gap-1">
-                          <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" severity="success" size="small" (onClick)="editClient(client)"></p-button>
-                          <p-button icon="pi pi-trash" [rounded]="true" [outlined]="true" severity="danger" size="small" (onClick)="deleteClient(client)"></p-button>
-                        </div>
-                      </td>
-                      
-                  </tr>
-                </ng-template>
-  
-                <ng-template pTemplate="summary">
-                  <div class="flex align-items-center justify-content-between">
-                    In total there are {{ clients ? clients.length : 0 }} clients.
-                  </div>
-                </ng-template>
-              </p-table>
-  
-              <p-dialog [(visible)]="clientDialog" [style]="{ width: '500px' }" header="Client Details"
-                [modal]="true" styleClass="p-fluid">
-                <ng-template pTemplate="content">
-                  <div class="field">
-                    <label for="username">Username</label>
-                    <input type="text" pInputText id="username" [(ngModel)]="client.username" required autofocus />
-                    <small class="p-error" *ngIf="submitted && !client.username">Username is required.</small>
-                  </div>
-                  <div class="field">
-                    <label for="email">Email</label>
-                    <input type="email" pInputText id="email" [(ngModel)]="client.email" required />
-                    <small class="p-error" *ngIf="submitted && !client.email">Email is required.</small>
-                  </div>
-                  <div class="field">
-                    <label for="password">Password</label>
-                    <input type="password" pInputText id="password" [(ngModel)]="client.password" />
-                  </div>
-                  <div class="field">
-                    <label for="role">Role</label>
-                    <p-dropdown [options]="roles" [(ngModel)]="client.role" optionLabel="label" optionValue="value"
-                      placeholder="Select a Role" [style]="{ width: '100%' }"></p-dropdown>
-                  </div>
-                  <div class="field">
-                    <label for="domaine">Domaine</label>
-                    <input type="text" pInputText id="domaine" [(ngModel)]="client.skills" />
-                  </div>
-                  <div class="field">
-                    <label for="certifications">Certifications</label>
-                    <textarea id="certifications" pInputTextarea [(ngModel)]="client.certifications" rows="3"></textarea>
-                  </div>
-                </ng-template>
-  
-                <ng-template pTemplate="footer">
-                  <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" size="small"></p-button>
-                  <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveClient()" size="small"></p-button>
-                </ng-template>
-              </p-dialog>
-  
-              <p-confirmDialog [style]="{ width: '400px' }"></p-confirmDialog>
-            </div>
-          </div>
-        </section>
       </div>
-  
-      <!-- Control Sidebar -->
-      <aside class="control-sidebar control-sidebar-dark"></aside>
+
+      <!-- Main content -->
+      <section class="content">
+        <div class="container-fluid">
+          <div class="card p-2">
+            <p-toast></p-toast>
+
+            <p-toolbar styleClass="mb-2 gap-1 p-2">
+              <ng-template pTemplate="left">
+                <p-button severity="success" label="New" icon="pi pi-plus" class="mr-2" size="small" (click)="openNew()"></p-button>
+                <p-button severity="danger" label="Delete" icon="pi pi-trash" size="small"
+                  (click)="deleteSelectedClients()" [disabled]="!selectedClients || !selectedClients.length"></p-button>
+              </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="clients" [rows]="10" [paginator]="true"
+              [globalFilterFields]="['username', 'email', 'role', 'skills']"
+              [tableStyle]="{ 'min-width': '65rem' }"
+              [(selection)]="selectedClients" [rowHover]="true" dataKey="id"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              [showCurrentPageReport]="true"
+              [loading]="loading">
+              <ng-template pTemplate="caption">
+                <div class="flex align-items-center justify-content-between">
+                  <h5 class="m-0">Manage Clients</h5>
+                  <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="applyGlobalFilter($event)" placeholder="Search clients..." />
+                  </span>
+                </div>
+              </ng-template>
+
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 3rem"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                  <th pSortableColumn="username">Username <p-sortIcon field="username" /></th>
+                  <th pSortableColumn="email">Email <p-sortIcon field="email" /></th>
+                  <th pSortableColumn="role">Role <p-sortIcon field="role" /></th>
+                  <th pSortableColumn="skills">Skills <p-sortIcon field="skills" /></th>
+                  <th>Certifications</th>
+                  <th></th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-client>
+                <tr>
+                  <td><p-tableCheckbox [value]="client"></p-tableCheckbox></td>
+                  <td>{{ client.username }}</td>
+                  <td>{{ client.email }}</td>
+                  <td>
+                    <p-tag [value]="client.role" [severity]="getRoleSeverity(client.role)"
+                      [style]="{'min-width': '5rem', 'text-align': 'center'}"></p-tag>
+                  </td>
+                  <td>{{ client.skills }}</td>
+                  <td>{{ client.certifications }}</td>
+                  <td>
+                    <div class="flex gap-1">
+                      <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" severity="success" size="small" (click)="editClient(client)"></p-button>
+                      <p-button icon="pi pi-trash" [rounded]="true" [outlined]="true" severity="danger" size="small" (click)="deleteClient(client)"></p-button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-between">
+                  In total there are {{ clients ? clients.length : 0 }} clients.
+                </div>
+              </ng-template>
+            </p-table>
+
+            <p-dialog [(visible)]="clientDialog" [style]="{ width: '500px' }" header="Client Details"
+              [modal]="true" styleClass="p-fluid">
+              <ng-template pTemplate="content">
+                <div class="field">
+                  <label for="username">Username</label>
+                  <input type="text" pInputText id="username" [(ngModel)]="client.username" required autofocus />
+                  <small class="p-error" *ngIf="submitted && !client.username">Username is required.</small>
+                </div>
+                <div class="field">
+                  <label for="email">Email</label>
+                  <input type="email" pInputText id="email" [(ngModel)]="client.email" required />
+                  <small class="p-error" *ngIf="submitted && !client.email">Email is required.</small>
+                </div>
+                <div class="field">
+                  <label for="password">Password</label>
+                  <input type="password" pInputText id="password" [(ngModel)]="client.password" />
+                </div>
+                <div class="field">
+                  <label for="role">Role</label>
+                  <p-dropdown [options]="roles" [(ngModel)]="client.role" optionLabel="label" optionValue="value"
+                    placeholder="Select a Role" [style]="{ width: '100%' }"></p-dropdown>
+                </div>
+                <div class="field">
+                  <label for="domaine">Domaine</label>
+                  <input type="text" pInputText id="domaine" [(ngModel)]="client.skills" />
+                </div>
+                <div class="field">
+                  <label for="certifications">Certifications</label>
+                  <textarea id="certifications" pInputTextarea [(ngModel)]="client.certifications" rows="3"></textarea>
+                </div>
+              </ng-template>
+
+              <ng-template pTemplate="footer">
+                <p-button label="Cancel" icon="pi pi-times" (click)="hideDialog()" class="p-button-text"></p-button>
+                <p-button label="Save" icon="pi pi-check" (click)="saveClient()" [loading]="saving"></p-button>
+              </ng-template>
+            </p-dialog>
+
+            <p-confirmDialog [style]="{ width: '400px' }"></p-confirmDialog>
+          </div>
+        </div>
+      </section>
     </div>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark"></aside>
   </div>
-  
+</div>
