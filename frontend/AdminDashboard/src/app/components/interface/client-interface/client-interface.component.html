@@ -1,0 +1,114 @@
+<div class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+    <div class="wrapper">
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+            <!-- Page Header -->
+                <app-carousel></app-carousel>
+                <div class="content-header">
+                    <div class="container-fluid">
+                      <div class="row mb-2">
+                        <div class="col-sm-6">
+                          <h1 class="m-0">Formations</h1>
+                        </div><!-- /.col -->
+                      </div><!-- /.row -->
+                    </div><!-- /.container-fluid -->
+                  </div>
+            <!-- Main Content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="flex justify-content-center">
+                        <div class="card p-1 text-sm" style="max-width: 1000px; margin: auto;">
+                            <p-dataView #dv [value]="formations" [layout]="layout">
+                                <!-- Header -->
+                                <ng-template pTemplate="header">
+                                    <div class="flex justify-content-end mb-1">
+                                        <p-dataViewLayoutOptions [layout]="layout" [options]="['list', 'grid']" />
+                                    </div>
+                                </ng-template>
+
+                                <!-- List Layout -->
+                                <ng-template pTemplate="list" let-products>
+                                    <div class="grid grid-nogutter">
+                                        <div class="col-12" *ngFor="let item of products; let first = first">
+                                            <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-2">
+                                                <!-- Smaller image -->
+                                                <div class="md:w-6rem relative">
+                                                    <img class="block xl:block mx-auto border-round w-full" [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + item.image" [alt]="item.name" />
+                                                    <p-tag [value]="item.inventoryStatus" [severity]="getSeverity(item)" class="absolute" [style.left.px]="2" [style.top.px]="2" />
+                                                </div>
+
+                                                <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-2">
+                                                    <!-- Reduced text sizes and spacing -->
+                                                    <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-1">
+                                                        <div>
+                                                            <span class="font-medium text-secondary text-xs">{{ item.category }}</span>
+                                                            <div class="text-base font-medium text-900 mt-1">{{ item.name }}</div>
+                                                        </div>
+                                                        <div class="surface-100 p-1 border-round-2xl">
+                                                            <div class="surface-0 flex align-items-center gap-1 justify-content-center py-1 px-2 border-round-2xl shadow-1">
+                                                                <span class="text-900 font-medium text-xs">{{ item.rating }}</span>
+                                                                <i class="pi pi-star-fill text-yellow-500 text-xs"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="flex flex-column md:align-items-end gap-2">
+                                                        <span class="text-lg font-semibold text-900">{{ '$' + item.price }}</span>
+                                                        <div class="flex gap-1">
+                                                            <p-button size="small" icon="pi pi-shopping-cart" label="Buy Now" [disabled]="item.inventoryStatus === 'OUTOFSTOCK'" />
+                                                            <p-button size="small" icon="pi pi-heart" [outlined]="true" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+
+                                <!-- Grid Layout -->
+                                <ng-template let-product pTemplate="grid" let-products>
+                                    <div class="grid grid-nogutter">
+                                        <div class="col-12 sm:col-6 lg:col-4 p-1" *ngFor="let product of products">
+                                            <div class="p-2 border-1 surface-border surface-card border-round">
+                                                <div class="surface-50 flex justify-content-center border-round p-1">
+                                                    <div class="relative">
+                                                        <img class="border-round w-full" [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" [alt]="product.name" style="max-width: 180px" />
+                                                        <p-tag [value]="product.inventoryStatus" [severity]="getSeverity(product)" class="absolute" [style.left.px]="2" [style.top.px]="2" />
+                                                    </div>
+                                                </div>
+
+                                                <!-- Reduced content spacing -->
+                                                <div class="pt-2">
+                                                    <div class="flex justify-content-between align-items-start">
+                                                        <div>
+                                                            <span class="font-medium text-secondary text-sm">{{ product.category }}</span>
+                                                            <div class="text-lg font-medium text-900 mt-1">{{ product.name }}</div>
+                                                        </div>
+                                                        <div class="surface-100 p-1 border-round-2xl">
+                                                            <div class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2 border-round-2xl shadow-1">
+                                                                <span class="text-900 font-medium text-sm">{{ product.rating }}</span>
+                                                                <i class="pi pi-star-fill text-yellow-500"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="flex flex-column gap-3 mt-3">
+                                                        <span class="text-xl font-semibold text-900">{{ '$' + product.price }}</span>
+                                                        <div class="flex gap-2">
+                                                            <p-button icon="pi pi-shopping-cart" label="Buy Now" [disabled]="product.inventoryStatus === 'OUTOFSTOCK'" />
+                                                            <p-button icon="pi pi-heart" [outlined]="true" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </p-dataView>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

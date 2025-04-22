@@ -10,4 +10,5 @@ export interface Formation {
   category?: string;
   image?: string;
   rating?: number;
+
 }

@@ -1,0 +1,55 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0">Categories</h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+        </ol>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
+
+
+<section class="content">
+  <div class="container-fluid">
+    <p-carousel
+      [value]="formations"
+      [numVisible]="3"
+      [numScroll]="1"
+      [responsiveOptions]="responsiveOptions"
+      styleClass="custom-carousel">
+
+      <ng-template let-formation pTemplate="item">
+        <div class="border-1 surface-border border-round m-1 p-2 text-xs" style="max-width: 280px;">
+          <div class="mb-2">
+            <div class="relative mx-auto" style="max-height: 150px; overflow: hidden;">
+              <img
+                [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + formation.image"
+                [alt]="formation.name"
+                class="w-full border-round"
+                style="max-height: 140px; object-fit: contain;" />
+              <p-tag
+                [value]="formation.inventoryStatus"
+                [severity]="getSeverity(formation.inventoryStatus)"
+                class="absolute text-xs"
+                [ngStyle]="{ top: '5px', left: '5px' }" />
+            </div>
+          </div>
+          <div class="mb-2 font-medium text-sm text-center">{{ formation.name }}</div>
+          <div class="flex justify-content-between align-items-center">
+            <div class="font-semibold text-sm">{{ '$' + formation.price }}</div>
+            <span class="flex gap-1">
+              <p-button icon="pi pi-heart" severity="secondary" [outlined]="true" styleClass="p-button-sm" />
+              <p-button icon="pi pi-shopping-cart" styleClass="p-button-sm p-button-secondary" />
+            </span>
+          </div>
+        </div>
+      </ng-template>
+    </p-carousel>
+    </div>
+    </section>
+
