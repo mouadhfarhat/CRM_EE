@@ -9,6 +9,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { FormationService } from '../../../services/formation/formation.service';
 import { Formation } from '../../../domains/formation';
 import { CarouselComponent } from '../carousel/carousel.component';
+
 @Component({
   selector: 'app-client-interface',
   standalone: true,
@@ -20,33 +21,37 @@ import { CarouselComponent } from '../carousel/carousel.component';
     DialogModule,
     RouterModule,
     PaginatorModule,
-    CarouselComponent
+    CarouselComponent,
   ],
   providers: [FormationService],
   templateUrl: './client-interface.component.html',
-  styleUrl: './client-interface.component.css'
+  styleUrls: ['./client-interface.component.css'] // Corrected the styleUrl to styleUrls
 })
 export class ClientInterfaceComponent {
   displayDialog = false;
-  selectedFormation: Formation | null = null;
+  selectedFormation: Formation | null = null;  // Renamed this to match the template
   formations: Formation[] = [];
   first = 0;
   rows = 6;
+  detailsVisible = false; // Add this property to toggle visibility of the dialog
 
   constructor(private formationService: FormationService) {}
 
-  layout: 'list' | 'grid' = 'list';
+  layout: 'list' | 'grid' = 'grid';
 
-  
-  
+  onLayoutChange(layout: any) {
+    if (layout === 'list' || layout === 'grid') {
+      this.layout = layout;
+    }
+  }
+
   ngOnInit(): void {
     this.loadFormations();
   }
 
   loadFormations() {
-    this.formationService.getFormations().then(data => {
-      this.formations = data;
-    });
+    // Calling the service method to get the data
+    this.formations = this.formationService.getFormationsData();
   }
 
   onPageChange(event: any) {
@@ -64,12 +69,12 @@ export class ClientInterfaceComponent {
   }
 
   showDetails(formation: Formation) {
-    this.selectedFormation = formation;
-    this.displayDialog = true;
+    this.selectedFormation = formation; // Assign the formation to selectedFormation
+    this.detailsVisible = true; // This will trigger the modal to open
   }
 
   makeDemande(formation: Formation) {
     console.log('Making demande for:', formation);
-    this.displayDialog = false;
+    this.detailsVisible = false;  // Close the details dialog after the action
   }
 }
