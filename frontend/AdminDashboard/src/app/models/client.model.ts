@@ -6,4 +6,6 @@ import { Demande } from './demande.model';
 export interface Client extends User {
   interested?: Formation[];  // Formations the client is interested in
   demandes?: Demande[];     // Demandes created by this client
+  selected?: boolean; // <-- Add this
+
 }

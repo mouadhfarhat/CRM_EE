@@ -37,6 +37,18 @@ export class ClientService {
       params: { username }
     });
   }
+
+  getInterests(client: Client): string {
+    if (!client.interested || client.interested.length === 0) {
+      return 'No interests listed';
+    }
+    return client.interested.map(f => f.title).join(', ');
+  }
+  
+  searchClientsByFormationAndType(formationId: number, type: string): Observable<Client[]> {
+    return this.http.get<Client[]>(`http://localhost:8080/demandes/search2?formationId=${formationId}&type=${type}`);
+  }
+  
   
   
 }
