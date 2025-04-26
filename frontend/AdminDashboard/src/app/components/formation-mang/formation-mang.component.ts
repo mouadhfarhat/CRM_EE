@@ -1,5 +1,4 @@
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import * as Papa from 'papaparse';  
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Formation } from '../../domains/formation';  
 import { FormationService } from '../../services/formation/formation.service';
@@ -20,43 +19,28 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { RatingModule } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { HttpClientModule } from '@angular/common/http';
 
-interface Column {
-  field: string;
-  header: string;
-  customExportHeader?: string;
-}
 
-interface ExportColumn {
-  title: string;
-  dataKey: string;
-}
 
 @Component({
   selector: 'app-formation-mang',
   standalone: true,
-  imports: [TableModule, DialogModule, RippleModule, ButtonModule, ToastModule, ToolbarModule, ConfirmDialogModule, InputTextModule, InputTextareaModule, CommonModule, FileUploadModule, DropdownModule, TagModule, RadioButtonModule, RatingModule, InputTextModule, FormsModule, InputNumberModule],
+  imports: [HttpClientModule,TableModule, DialogModule, RippleModule, ButtonModule, ToastModule, ToolbarModule, ConfirmDialogModule, InputTextModule, InputTextareaModule, CommonModule, FileUploadModule, DropdownModule, TagModule, RadioButtonModule, RatingModule, InputTextModule, FormsModule, InputNumberModule],
   providers: [MessageService, ConfirmationService, FormationService],
   templateUrl: './formation-mang.component.html',
   styleUrls: ['./formation-mang.component.css'],
-  styles: [
-    `:host ::ng-deep .p-dialog .formation-image {
-        width: 150px;
-        margin: 0 auto 2rem auto;
-        display: block;
-    }`
-  ]
+ 
 })
-export class FormationMangComponent {
-  @ViewChild('dt') dt!: Table;
-  @ViewChild('fileInput') fileInput: any;
+export class FormationMangComponent implements OnInit {
+  @ViewChild('dt') dt: Table | undefined;
+  @ViewChild('fileInput') fileInput: ElementRef | undefined;
 
   formationDialog: boolean = false;
-  formations: Formation[] = []; 
-  formation: Formation = {} as Formation;
-  selectedFormations!: Formation[] | null;
+  formations: Formation[] = [];
+  formation: Formation = this.initializeFormation();
+  selectedFormations: Formation[] = [];
   submitted: boolean = false;
-  statuses: any[] = [];
 
   constructor(
     private formationService: FormationService,
@@ -65,100 +49,25 @@ export class FormationMangComponent {
   ) {}
 
   ngOnInit() {
-    this.formationService.getFormations().then((data) => (this.formations = data));
-
-    this.statuses = [
-      { label: 'In Stock', value: 'INSTOCK' },
-      { label: 'Out of Stock', value: 'OUTOFSTOCK' },
-      { label: 'Low Stock', value: 'LOWSTOCK' }
-    ];
+    this.loadFormations();
   }
 
-// Trigger the file input when the Import button is clicked
-triggerFileInput() {
-    this.fileInput.nativeElement.click();
-  }
-  
-  // Handle file import (CSV)
-  importCSV(event: any) {
-    const file = event.target.files[0]; // Get the uploaded file
-  
-    if (file) {
-      // Use PapaParse to parse the CSV file
-      Papa.parse(file, {
-        complete: (result) => {
-          const formations = result.data; // Extract parsed data from the CSV file
-          this.addFormations(formations); // Call a function to add formations to your list
-        },
-        header: true, // Set to true if your CSV has headers
-        skipEmptyLines: true
-      });
-    }
-  }
-  
-  // Function to add formations to your formation list
-  addFormations(formations: any[]) {
-    formations.forEach(formation => {
-      const existingFormation = this.formations.find(p => p.id === formation.id);  // Check if the formation already exists
-  
-      if (existingFormation) {
-        // Update the existing formation
-        existingFormation.name = formation.name;
-        existingFormation.price = formation.price;
-        existingFormation.quantity = formation.quantity;
-        existingFormation.inventoryStatus = formation.inventoryStatus;
-        // Update any other fields as necessary
-      } else {
-        // Add the new formation
-        this.formations.push({
-          id: formation.id || this.createId(),  // Ensure ID is generated if not present
-          name: formation.name,
-          price: formation.price,
-          quantity: formation.quantity,
-          inventoryStatus: formation.inventoryStatus,
-          // Add any other fields as necessary
-        });
+  loadFormations() {
+    this.formationService.getFormations().subscribe({
+      next: (data) => {
+        this.formations = data;
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load formations', life: 3000 });
+        console.error('Error loading formations:', err);
       }
     });
-  
-    // Add these lines after processing all formations
-    this.formations = [...this.formations];
-    this.messageService.add({
-      severity: 'success', 
-      summary: 'Import Successful', 
-      detail: `${formations.length} formations processed`, 
-      life: 3000
-    });
-  }
-
-  // Export formations to CSV
-  exportCSV() {
-    const csvData = this.convertToCSV(this.formations); // Convert formations to CSV
-    const blob = new Blob([csvData], { type: 'text/csv' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'formations.csv'; // File name for the downloaded CSV
-    link.click(); // Trigger the download
-  }
-
-  // Convert formations array to CSV format
-  convertToCSV(formations: any[]): string {
-    const header = ['id', 'name', 'price', 'quantity', 'inventoryStatus']; // Customize based on your formation structure
-    const rows = formations.map(formation => {
-      return [formation.id, formation.name, formation.price, formation.quantity, formation.inventoryStatus].join(',');
-    });
-    return [header.join(','), ...rows].join('\n');
   }
 
   openNew() {
-    this.formation = {} as Formation;  
+    this.formation = this.initializeFormation();
     this.submitted = false;
     this.formationDialog = true;
-  }
-
-  applyGlobalFilter(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    this.dt.filterGlobal(value, 'contains');
   }
 
   deleteSelectedFormations() {
@@ -167,26 +76,31 @@ triggerFileInput() {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.formations = this.formations.filter((val) => !this.selectedFormations?.includes(val));
-        this.selectedFormations = null;
+        // Here you would call your service to delete multiple formations
+        // For now, we'll just filter them out locally
+        this.formations = this.formations.filter(val => !this.selectedFormations.includes(val));
+        this.selectedFormations = [];
         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Formations Deleted', life: 3000 });
       }
     });
   }
 
   editFormation(formation: Formation) {
+    // Create a copy to avoid direct modification
     this.formation = { ...formation };
     this.formationDialog = true;
   }
 
   deleteFormation(formation: Formation) {
     this.confirmationService.confirm({
-      message: `Are you sure you want to delete ${formation.name}?`,
+      message: 'Are you sure you want to delete ' + formation.name + '?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.formations = this.formations.filter((val) => val.id !== formation.id);
-        this.formation = {} as Formation;
+        // Here you would call your service to delete the formation
+        // For now, we'll just filter it out locally
+        this.formations = this.formations.filter(val => val.id !== formation.id);
+        this.formation = this.initializeFormation();
         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Formation Deleted', life: 3000 });
       }
     });
@@ -202,57 +116,72 @@ triggerFileInput() {
 
     if (this.formation.name?.trim()) {
       if (this.formation.id) {
-        // Update the existing formation if it exists
-        const existingFormation = this.formations.find(p => p.id === this.formation.id);
-        if (existingFormation) {
-          Object.assign(existingFormation, this.formation);
+        // Update existing formation
+        const index = this.findIndexById(this.formation.id);
+        if (index !== -1) {
+          this.formations[index] = this.formation;
           this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Formation Updated', life: 3000 });
         }
       } else {
-        // Create a new formation
+        // Create new formation
         this.formation.id = this.createId();
-        this.formation.image = 'formation-placeholder.svg';
+        this.formation.image = 'formation-placeholder.jpg'; // Default image
         this.formations.push(this.formation);
         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Formation Created', life: 3000 });
       }
 
       this.formations = [...this.formations];
       this.formationDialog = false;
-      this.formation = {} as Formation;
+      this.formation = this.initializeFormation();
     }
   }
 
-  findIndexById(id: string): number {
-    let index = -1;
-    for (let i = 0; i < this.formations.length; i++) {
-      if (this.formations[i].id === id) {
-        index = i;
-        break;
-      }
-    }
-    return index;
+  applyGlobalFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dt?.filterGlobal(filterValue, 'contains');
   }
 
-  createId(): string {
-    let id = '';
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return id;
+  triggerFileInput() {
+    this.fileInput?.nativeElement.click();
   }
 
-  getSeverity(status: string | undefined): "success" | "info" | "warning" | "danger" | "secondary" | "contrast" | undefined {
-    if (!status) return undefined;
-    switch (status.toUpperCase()) {
-      case 'INSTOCK':
-        return 'success';
-      case 'OUTOFSTOCK':
-        return 'danger';
-      case 'LOWSTOCK':
-        return 'warning';
-      default:
-        return 'secondary';
+  importCSV(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      // Here you would implement CSV parsing and importing
+      this.messageService.add({ severity: 'info', summary: 'CSV Import', detail: 'Import functionality to be implemented', life: 3000 });
+      event.target.value = '';
     }
+  }
+
+  exportCSV() {
+    // Here you would implement CSV export
+    this.messageService.add({ severity: 'info', summary: 'CSV Export', detail: 'Export functionality to be implemented', life: 3000 });
+  }
+
+  findIndexById(id: number): number {
+    return this.formations.findIndex(formation => formation.id === id);
+  }
+
+  createId(): number {
+    // Simple method to generate IDs for demo purposes
+    // In a real app, the backend would handle this
+    return Math.floor(Math.random() * 1000) + 1;
+  }
+
+  private initializeFormation(): Formation {
+    return {
+      id: 0,
+      name: '',
+      description: '',
+      price: 0,
+      category: '',
+      quantity: 0,
+      image: '',
+      rating: 0,
+      title: '',
+      dateDebut: new Date(),
+      dateFin: new Date()
+    };
   }
 }

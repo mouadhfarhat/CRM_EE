@@ -8,24 +8,19 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormationService } from '../../../services/formation/formation.service';
 import { RatingModule } from 'primeng/rating';
 import { Formation } from '../../../domains/formation';
-import { Table } from 'primeng/table';
+import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
+import { RouterLink } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
-interface Column {
-  field: string;
-  header: string;
-  customExportHeader?: string;
-}
 
-interface ExportColumn {
-  title: string;
-  dataKey: string;
-}
+
 @Component({
   selector: 'app-historique',
   standalone: true,
   imports: [
+    HttpClientModule,
     CommonModule,
     DialogModule,
     DataViewModule,
@@ -33,100 +28,83 @@ interface ExportColumn {
     FormsModule,
     SelectButtonModule,
     ButtonModule,
-    TagModule
+    TagModule,
+    RouterLink
   ],
   templateUrl: './historique.component.html',
   styleUrls: ['./historique.component.css'],
-    providers: [MessageService, ConfirmationService, FormationService],
-  
+  providers: [MessageService, ConfirmationService, FormationService],
 })
-export class HistoriqueComponent implements OnInit {@ViewChild('dt') dt!: Table;
-  @ViewChild('fileInput') fileInput: any;
-
-  formationDialog: boolean = false;
-  formations: Formation[] = []; 
-  formation: Formation = {} as Formation;
-  selectedFormations!: Formation[] | null;
-  submitted: boolean = false;
-  statuses: any[] = [];
-
+export class HistoriqueComponent implements OnInit {
+  formations: Formation[] = [];
+  displayDialog: boolean = false;
+  selectedFormation: Formation | null = null;
+  
   constructor(
     private formationService: FormationService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private router: Router
   ) {}
 
-  ngOnInit() {
-    this.formationService.getFormations().then((data) => (this.formations = data));
-
-    this.statuses = [
-      { label: 'In Stock', value: 'INSTOCK' },
-      { label: 'Out of Stock', value: 'OUTOFSTOCK' },
-      { label: 'Low Stock', value: 'LOWSTOCK' }
-    ];
+  ngOnInit(): void {
+    this.loadFormations();
   }
 
-  dialogVisible: boolean = false;
-  selectedFormation: any;
-  
-  openDialog(product: any) {
-    this.selectedFormation = product;
-    this.dialogVisible = true;
+  loadFormations(): void {
+    this.formationService.getFormations().subscribe(
+      (data) => {
+        this.formations = data;
+      },
+      (error) => {
+        console.error('Error loading formations:', error);
+        // Fallback to static data if API fails
+      }
+    );
   }
-  
-  closeDialog() {
-    this.dialogVisible = false;
+
+  getImageUrl(imageName: string | undefined): string {
+    if (!imageName) return 'assets/images/placeholder.jpg';
+    return `assets/images/formations/${imageName}`;
+  }
+
+  getStatusSeverity(status: string | undefined): "success" | "secondary" | "info" | "warning" | "danger" | "contrast" | undefined {
+    if (!status) return 'info';
+    
+    switch (status.toLowerCase()) {
+      case 'completed': return 'success';
+      case 'in progress': return 'info';
+      case 'pending': return 'warning';
+      case 'cancelled': return 'danger';
+      default: return 'info';
+    }
+  }
+
+
+  openDialog(formation: Formation): void {
+    this.selectedFormation = formation;
+    this.displayDialog = true;
+  }
+
+  closeDialog(): void {
+    this.displayDialog = false;
     this.selectedFormation = null;
   }
 
-  applyGlobalFilter(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    this.dt.filterGlobal(value, 'contains');
-  }
-
-
-
-
-  findIndexById(id: string): number {
-    let index = -1;
-    for (let i = 0; i < this.formations.length; i++) {
-      if (this.formations[i].id === id) {
-        index = i;
-        break;
+  navigateToComposeMail(formation: Formation): void {
+    // You could also use queryParams to pass formation info
+    this.router.navigate(['/composeMail'], { 
+      state: { 
+        formationInfo: formation 
       }
-    }
-    return index;
-  }
-  getStatusSeverity(status: string): 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' | undefined {
-    switch (status?.toLowerCase()) {
-      case 'completed':
-        return 'success';
-      case 'in progress':
-        return 'warning';
-      case 'pending':
-        return 'info';
-      case 'canceled':
-      case 'cancelled':
-        return 'danger';
-      default:
-        return 'secondary';
-    }
+    });
   }
 
-  getSeverity(product: any): 'success' | 'warning' | 'danger' | 'info' | 'secondary' | undefined {
-    switch (product.inventoryStatus) {
-      case 'INSTOCK':
-        return 'success';
-      case 'LOWSTOCK':
-        return 'warning';
-      case 'OUTOFSTOCK':
-        return 'danger';
-      default:
-        return 'info';
-    }
+  // For handling rating changes
+  onRatingChange(formation: Formation, value: number): void {
+    formation.rating = value;
+    // Here you would typically save the review to backend
+    console.log(`Submitting rating ${value} for formation ${formation.name}`);
+    // You could implement a service method to submit the review
   }
 
-  getImageUrl(image: string): string {
-    return image ? `https://primefaces.org/cdn/primeng/images/demo/product/${image}` : 'path/to/default-image.jpg';
+ 
   }
-}

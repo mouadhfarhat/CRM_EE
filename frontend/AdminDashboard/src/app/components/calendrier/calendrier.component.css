@@ -1,0 +1,259 @@
+.calendar-container {
+    min-height: 600px;
+    padding: 20px;
+    background: white;
+  }
+  
+  .fc {
+    height: 100% !important;
+  }
+
+  /* Main Card Styling */
+.event-form-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.event-form-card .card-header {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.event-form-card .card-title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Color Picker */
+.color-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.color-option {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.color-option.active {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px #007bff;
+}
+
+.color-option i {
+  color: white;
+  font-size: 12px;
+  display: none;
+}
+
+.color-option.active i {
+  display: block;
+}
+
+/* Client Selection */
+/* Client List Scroll Modifications */
+.client-list {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  max-height: 126px; /* Height for 2 items (approx 42px each) */
+  overflow: hidden;
+}
+
+.client-list.scrollable {
+  max-height: 130px; /* Shows about 4-5 clients with scroll */
+  overflow-y: auto;
+}
+
+.scroll-indicator {
+  font-size: 0.8rem;
+  color: #6c757d;
+  text-align: center;
+  padding: 4px 0;
+}
+.client-item {
+  padding: 8px 12px;
+  min-height: auto;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.client-item:hover {
+  background-color: #f8f9fa;
+  color:black
+}
+
+.client-item.selected {
+  background-color: #20c997;
+}
+
+.client-item i {
+  color: #007bff;
+  display: none;
+}
+
+.client-item.selected i {
+  display: block;
+}
+
+/* Button */
+.btn-primary {
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+
+
+/*pop up*/
+
+.modal-body {
+  max-height: 400px; /* or whatever suits your design */
+  overflow-y: auto;
+}
+
+
+/* Modal backdrop */
+.modal-backdrop-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1050;
+  background: rgba(0, 0, 0, 0.3); /* Darkened background but not too intense */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal dialog */
+.modal-dialog-centered {
+  background-color: #fff;
+  border-radius: 0.5rem;
+  max-width: 700px;
+  width: 100%;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+
+/* Modal header styling */
+.modal-header {
+  border-bottom: none;
+  padding-bottom: 1rem;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.form-row .form-group {
+  flex-basis: 48%;
+  flex-grow: 1;
+}
+
+
+/* For each field in a row */
+.form-group {
+  margin-bottom: 0.75rem;
+ /*flex-basis: 48%; /* Set each form group to take up half of the row */
+}
+
+/* Ensure that buttons at the bottom stay as they are */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+}
+
+.modal-footer button {
+  width: auto;
+  min-width: 100px;
+  margin: 0 5px;
+}
+
+/* For input fields like datetime-local, color, number, etc. */
+input[type="datetime-local"], input[type="color"], input[type="number"], select {
+  padding: 0.75rem;
+}
+
+input[type="text"], input[type="number"], select {
+  font-size: 1rem;
+}
+
+
+/**/
+
+/* 🔍 Search Field Styling */
+.search-input {
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* 🔽 Dropdown List of Results (if you want to custom-style them more) */
+.search-results {
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.search-results option {
+  padding: 8px 10px;
+}
+
+/* Optional hover effect if you're using custom rendered dropdowns */
+.search-results option:hover {
+  background-color: #f1f1f1;
+}
+
+/* 🟩 Highlight selected options (optional visual feedback in multi-selects) */
+.search-results option:checked {
+  background-color: #20c997;
+  color: white;
+}
+

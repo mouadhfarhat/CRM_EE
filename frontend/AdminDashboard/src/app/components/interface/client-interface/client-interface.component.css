@@ -26,4 +26,7 @@
   .relative {
     position: relative;
   }
+  .p-button {
+    margin-right: 10px; /* Space the button slightly from the edge */
+  }
   

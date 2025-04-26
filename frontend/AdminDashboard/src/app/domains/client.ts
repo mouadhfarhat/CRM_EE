@@ -1,12 +1,10 @@
+import { Demande } from "./demande.model";
 import { Formation } from "./formation";
+import { User } from "./user.model";
 
-export interface Client {
-    id?: string;  
-    username?: string;
-    image?: string;
-    email?: string;
-    password?: string;
-    role?: string;
+export interface Client extends User {
+
+
     address?: string;
     zip?: string;
     skills?: string;
@@ -14,5 +12,8 @@ export interface Client {
     history?: Formation[];  
     favorites?: Formation[];  
     certifications?: string;  
+    interested?: Formation[]; 
+    demandes?: Demande[];  
+    selected?: boolean; 
   }
   

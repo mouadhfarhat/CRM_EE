@@ -10,6 +10,9 @@ import { AdminInterfaceComponent } from './components/admin-interface/admin-inte
 import { MailboxComponent } from './components/mail/mailbox/mailbox.component';
 import { ComposeMailComponent } from './components/mail/compose-mail/compose-mail.component';
 import { ReadMailComponent } from './components/mail/read-mail/read-mail.component';
+import { GereDemandeComponent } from './components/gere-demande/gere-demande.component';
+import { ClientGestionnaireComponent } from './components/client-gestionnaire/client-gestionnaire.component';
+import { CalendrierComponent } from './components/calendrier/calendrier.component';
 export const routes: Routes = [
          { path: 'login', component: LoginComponent },
          { path: 'admin', component: AdminInterfaceComponent },
@@ -22,12 +25,16 @@ export const routes: Routes = [
          { path: 'mail',
            children: [
              { path: '', component: MailboxComponent },
-             { path: 'compose', component: ComposeMailComponent },
+             { path: 'compose/:email', component: ComposeMailComponent },
              { path: 'read/:id', component: ReadMailComponent },
            ]
          },
          { path: 'composeMail', component: ComposeMailComponent  },
          { path: 'readMail', component: ReadMailComponent  },
+         { path: 'calendrier', component: CalendrierComponent  },
+         { path: 'clientgest', component: ClientGestionnaireComponent  },
+         { path: 'gere', component: GereDemandeComponent  },
+
 
 
 

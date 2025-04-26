@@ -3,3 +3,23 @@
     border-radius: 12px; 
   }
   
+  .img-sm {
+    max-width: 50px;
+    max-height: 50px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .d-flex {
+    display: flex;
+  }
+  
+  .gap-2 {
+    gap: 0.5rem;
+  }
+  

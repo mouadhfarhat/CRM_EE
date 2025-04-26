@@ -1,0 +1,289 @@
+/* Modal styling */
+#demandeDetailsModal .modal-body h6 {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+#demandeDetailsModal .modal-body p {
+  margin-bottom: 1rem;
+}
+
+/* Card title hover effect */
+.card-title[style*="cursor: pointer"]:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+/* Status badges */
+.badge {
+  padding: 0.5em 0.75em;
+  font-size: 0.875em;
+  font-weight: 600;
+}
+
+/**/
+
+.card-body {
+  position: relative;
+}
+
+.card-body a.small {
+  text-decoration: none;
+  color: #007bff;
+  font-size: 0.875rem;
+  margin-left: 5px;
+}
+
+.card-body a.small:hover {
+  text-decoration: underline;
+}
+
+.mt-2 {
+  margin-top: 1rem;
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+}
+
+
+
+
+
+
+/**/
+
+/* Add to your component's CSS */
+.search-form .form-control {
+  width: 100%;
+}
+
+.search-form .btn {
+  margin-right: 5px;
+}
+
+.search-form .row {
+  margin-bottom: 10px;
+}
+
+/* Search Card Styling */
+.search-card .card-header {
+  padding: 0.75rem 1.25rem;
+}
+
+.search-card .form-label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.search-card .form-control, 
+.search-card .form-select {
+  border-radius: 0.25rem;
+  box-shadow: none;
+}
+
+.search-card .form-control:focus, 
+.search-card .form-select:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Button Styling */
+.btn-outline-secondary {
+  border-color: #dee2e6;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f8f9fa;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+
+/* css for the pop up share */
+.custom-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  z-index: 1040;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.custom-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1050;
+  animation: popIn 0.3s ease-out;
+}
+
+
+.custom-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.custom-modal-body {
+  font-size: 0.95rem;
+}
+
+
+.custom-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.custom-modal-dialog {
+  background: #fff; /* Confirm white background */
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  color: #000; /* Make sure all text is visible */
+}
+
+/* Make sure labels are visible */
+label.form-label {
+  color: #000;
+}
+
+/* Custom select tweaks */
+.custom-select {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #000;
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* When the select is focused (clicked), show green background */
+.custom-select:focus {
+  background-color: #e6f9e6; /* Light green */
+  border-color: #28a745; /* Bootstrap green border */
+  outline: none;
+}
+
+/* Optional: Hover effect for options inside select dropdown (browser-specific support) */
+.custom-select option:hover {
+  background-color: #d4f4d4; /* Slight green on hover in some browsers */
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f1f1f1;
+}
+
+/*search*/
+/* ENHANCED SEARCH FORM DESIGN */
+/* Enhanced Search Form Styling */
+.enhanced-search-form {
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.enhanced-search-form .form-label {
+  font-weight: 600;
+  color: #000000;
+  font-size: 0.95rem;
+  margin-left: 50px;
+  
+}
+
+.enhanced-search-form .form-control,
+.enhanced-search-form .form-select {
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  border: 1px solid #ced4da;
+  background-color: #daedf1;
+  color: #212529;
+  transition: all 0.2s ease;
+}
+
+.enhanced-search-form .form-control:focus,
+.enhanced-search-form .form-select:focus {
+  border-color: #0dcaf0;
+  box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.2);
+  background-color: #e6f9fc;
+  outline: none;
+}
+
+/* Custom Select Tweak */
+.enhanced-search-form .custom-select option {
+  background-color: #fff;
+  color: #212529;
+}
+
+/* Improved Search Button */
+.enhanced-search-form .search-btn {
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.6rem 1rem;
+  background-color: #0dcaf0;
+  border-color: #0dcaf0;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+.enhanced-search-form .search-btn:hover {
+  background-color: #0bbce8;
+  border-color: #0bbce8;
+}
+
+
+
+
+
+/**/
+
+
+
+

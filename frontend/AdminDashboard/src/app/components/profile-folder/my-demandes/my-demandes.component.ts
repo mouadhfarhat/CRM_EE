@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RatingModule } from 'primeng/rating';
-
 @Component({
   selector: 'app-my-demandes',
   standalone: true,
-  imports: [FormsModule, RatingModule,CommonModule],
+  imports: [HttpClientModule
+,    FormsModule, RatingModule,CommonModule],
   templateUrl: './my-demandes.component.html',
   styleUrl: './my-demandes.component.css'
 })

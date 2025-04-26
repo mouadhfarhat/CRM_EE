@@ -1,337 +1,161 @@
-<div class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed" >
+<div class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
     <div class="wrapper">
-  
-    
-      <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
-              <!-- Content Header (Page header) -->
-      <div class="content-header">
-        <div class="container-fluid">
-          <div class="row mb-2">
-            <div class="col-sm-6">
-              <h1 class="m-0">Foramations Table</h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Foramations</li>
-              </ol>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-      </div>
-      <!-- /.content-header -->
-      <section class="content">
-        <div class="container-fluid">
-  
-
-
-
-<div class="card">
-  <p-toast />
-  <p-toolbar styleClass="mb-4 gap-2">
-    <ng-template pTemplate="left">
-      <p-button
-        severity="success"
-        label="New"
-        icon="pi pi-plus"
-        class="mr-2"
-        (onClick)="openNew()" />
-      <p-button
-        severity="danger"
-        label="Delete"
-        icon="pi pi-trash"
-        (onClick)="deleteSelectedFormations()"
-        [disabled]="!selectedFormations || !selectedFormations.length" />
-    </ng-template>
-  
-    <ng-template pTemplate="right">
-      <!-- Import Button -->
-      <p-button
-        mode="basic"
-        label="Import CSV"
-        icon="pi pi-upload"
-        class="mr-2 inline-block"
-        (click)="triggerFileInput()" />
-  
-      <!-- Hidden File Input -->
-      <input
-        #fileInput
-        type="file"
-        accept=".csv"
-        style="display: none"
-        (change)="importCSV($event)" />
-  
-      <!-- Export Button -->
-      <p-button
-        severity="help"
-        label="Export"
-        icon="pi pi-download"
-        (click)="exportCSV()" />
-    </ng-template>
-  </p-toolbar>
-  
-  
-
-
-  <p-table #dt [value]="formations"
-      [rows]="10"
-      [paginator]="true"
-      [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
-      [tableStyle]="{ 'min-width': '75rem' }"
-      [(selection)]="selectedFormations"
-      [rowHover]="true"
-      dataKey="id"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      [showCurrentPageReport]="true"
-  >
-  <ng-template pTemplate="caption">
-    <div class="flex align-items-center justify-content-between">
-      <h5 class="m-0">Manage Formations</h5>
-      <span class="p-input-icon-left">
-        <i class="pi pi-search"></i>
-        <input 
-        pInputText 
-        type="text" 
-        (input)="applyGlobalFilter($event)" 
-        placeholder="Search..." />
-      
-      
-
-      </span>
-    </div>
-  </ng-template>
-  
-      <ng-template pTemplate="header">
-          <tr>
-              <th style="width: 4rem">
-                  <p-tableHeaderCheckbox />
-              </th>
-              <th pSortableColumn="name" style="min-width:15rem">
-                  Name <p-sortIcon field="name" />
-              </th>
-              <th>
-                  Image
-              </th>
-              <th pSortableColumn="price">
-                  Price <p-sortIcon field="price" />
-              </th>
-              <th pSortableColumn="category" style="min-width:10rem">
-                  Category <p-sortIcon field="category" />
-              </th>
-              <th pSortableColumn="rating">
-                  Reviews <p-sortIcon field="rating" />
-              </th>
-              <th pSortableColumn="inventoryStatus" style="min-width:10rem">
-                  Status <p-sortIcon field="inventoryStatus" />
-              </th>
-              <th></th>
-          </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-formation>
-          <tr>
-              <td>
-                  <p-tableCheckbox [value]="formation" />
-              </td>
-              <td>
-                  {{ formation.name }}
-              </td>
-              <td>
-              <img 
-                  [src]="'https://primefaces.org/cdn/primeng/images/demo/formation/' + formation.image" 
-                  [alt]="formation.name" 
-                  width="50" 
-                  class="shadow-4" />
-              </td>
-              <td>
-                  {{ formation.price | currency : 'USD' }}
-              </td>
-              <td>
-                  {{ formation.category }}
-              </td>
-              <td>
-                  <p-rating 
-                      [(ngModel)]="formation.rating" 
-                      [readonly]="true" 
-                      [cancel]="false" />
-              </td>
-              <td>
-                  <p-tag 
-                      [value]="formation.inventoryStatus" 
-                      [severity]="getSeverity(formation.inventoryStatus)" />
-              </td>
-              <td>
-                  <p-button 
-                      icon="pi pi-pencil" 
-                      class="mr-2" 
-                      [rounded]="true" 
-                      [outlined]="true" 
-                      severity="success" 
-                      (onClick)="editFormation(formation)" />
-                  <p-button 
-                      icon="pi pi-trash" 
-                      severity="danger" 
-                      [rounded]="true" 
-                      [outlined]="true" 
-                      (onClick)="deleteFormation(formation)" />
-              </td>
-          </tr>
-      </ng-template>
-      <ng-template pTemplate="summary">
-          <div class="flex align-items-center justify-content-between">
-              In total there are {{ formations ? formations.length : 0 }} formations.
+        <!-- Header -->
+        <div class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1 class="m-0">Formations Table</h1>
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                  <li class="breadcrumb-item"><a href="#">Home</a></li>
+                  <li class="breadcrumb-item active">Formations</li>
+                </ol>
+              </div>
+            </div>
           </div>
-      </ng-template>
-  </p-table>
-
-  <p-dialog 
-      [(visible)]="formationDialog" 
-      [style]="{ width: '450px' }" 
-      header="Formation Details" 
-      [modal]="true" 
-      styleClass="p-fluid">
-          <ng-template pTemplate="content">
-              <img 
-                  [src]="'https://primefaces.org/cdn/primeng/images/demo/formation/' + formation.image" 
-                  [alt]="formation.image" 
-                  class="block m-auto pb-3" 
-                  *ngIf="formation.image" />
-              <div class="field">
-                  <label for="name">Name</label>
-                  <input 
-                      type="text" 
-                      pInputText 
-                      id="name" 
-                      [(ngModel)]="formation.name" 
-                      required 
-                      autofocus />
-                  <small class="p-error" *ngIf="submitted && !formation.name">
-                      Name is required.
-                  </small>
-              </div>
-              <div class="field">
-                  <label for="description">Description</label>
-                  <textarea 
-                      id="description" 
-                      pInputTextarea 
-                      [(ngModel)]="formation.description" 
-                      required 
-                      rows="3" 
-                      cols="20">
-                  </textarea>
-              </div>
-              <div class="field">
-                <label for="inventoryStatus">Inventory Status</label>
-                <p-dropdown 
-                  [(ngModel)]="formation.inventoryStatus" 
-                  inputId="inventoryStatus" 
-                  [options]="statuses">
+        </div>
+  
+        <!-- Main Content -->
+        <section class="content">
+          <div class="container-fluid">
+            <div class="card">
+              <p-toast />
+              <p-toolbar styleClass="mb-2 gap-2">
+                <ng-template pTemplate="left">
+                  <p-button severity="success" label="New" icon="pi pi-plus" class="mr-2" (onClick)="openNew()" />
+                  <p-button severity="danger" label="Delete" icon="pi pi-trash"
+                    (onClick)="deleteSelectedFormations()"
+                    [disabled]="!selectedFormations || !selectedFormations.length" />
+                </ng-template>
+  
+                <ng-template pTemplate="right">
+                  <p-button mode="basic" label="Import CSV" icon="pi pi-upload" class="mr-2 inline-block"
+                    (click)="triggerFileInput()" />
+                  <input #fileInput type="file" accept=".csv" style="display: none" (change)="importCSV($event)" />
+                  <p-button severity="help" label="Export" icon="pi pi-download" (click)="exportCSV()" />
+                </ng-template>
+              </p-toolbar>
+  
+              <p-table #dt [value]="formations" [rows]="10" [paginator]="true"
+                [globalFilterFields]="['name', 'category']" [tableStyle]="{ 'min-width': '75rem' }"
+                [(selection)]="selectedFormations" [rowHover]="true" dataKey="id"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [showCurrentPageReport]="true">
+  
+                <ng-template pTemplate="caption">
+                  <div class="flex align-items-center justify-content-between">
+                    <h5 class="m-0">Manage Formations</h5>
+                      <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="applyGlobalFilter($event)" placeholder="Search..." />
+                      </span>
+                  </div>
+                </ng-template>
+  
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th style="width: 3rem"><p-tableHeaderCheckbox /></th>
+                    <th pSortableColumn="name">Name <p-sortIcon field="name" /></th>
+                    <th>Image</th>
+                    <th pSortableColumn="price">Price <p-sortIcon field="price" /></th>
+                    <th pSortableColumn="category">Category <p-sortIcon field="category" /></th>
+                    <th pSortableColumn="rating">Reviews <p-sortIcon field="rating" /></th>
+                    <th pSortableColumn="Status" style="width: 100px;">
+                        Places
+                        <p-sortIcon field="Status" />
+                      </th>
+                                          <th>Actions</th>
+                  </tr>
+                </ng-template>
+  
+                <ng-template pTemplate="body" let-formation>
+                  <tr>
+                    <td><p-tableCheckbox [value]="formation" /></td>
+                    <td>{{ formation.name }}</td>
+                    <td>
+                      <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + formation.image" [alt]="formation.name" class="img-sm" />
+                    </td>
+                    <td>{{ formation.price | currency: 'TND' }}</td>
+                    <td>{{ formation.category }}</td>
+                    <td>
+                      <p-rating [(ngModel)]="formation.rating" [readonly]="true" [cancel]="false" />
+                    </td>
+                    <!-- MISSING <td> FOR inventoryStatus -->
+                    <td>{{ formation.status }}</td>   <!-- <== ADD THIS -->
+                    <td>
+                      <div class="d-flex gap-2">
+                        <p-button icon="pi pi-pencil" severity="success" [rounded]="true" [outlined]="true" (onClick)="editFormation(formation)" />
+                        <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (onClick)="deleteFormation(formation)" />
+                      </div>
+                    </td>
+                  </tr>
                   
-                  <ng-template pTemplate="selectedItem">
-                    <p-tag 
-                      *ngIf="formation.inventoryStatus" 
-                      [value]="formation.inventoryStatus" 
-                      [severity]="getSeverity(formation.inventoryStatus)" />
-                  </ng-template>
-              
-                  <ng-template let-option pTemplate="item">
-                    <p-tag 
-                      [value]="option.label" 
-                      [severity]="getSeverity(option.value)" />
-                  </ng-template>
-                </p-dropdown>
-              </div>
-              
-              
-
-
-              <div class="field">
-                  <label class="mb-3">Category</label>
+                </ng-template>
+  
+                <ng-template pTemplate="summary">
+                  <div class="flex justify-content-between">
+                    In total there are {{ formations ? formations.length : 0 }} formations.
+                  </div>
+                </ng-template>
+              </p-table>
+  
+              <p-dialog [(visible)]="formationDialog" [style]="{ width: '450px' }" header="Formation Details" [modal]="true"
+                styleClass="p-fluid">
+                <ng-template pTemplate="content">
+                  <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + formation.image"
+                    [alt]="formation.name" class="img-sm mb-3" />
+  
+                  <div class="field">
+                    <label for="name">Name</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="formation.name" required autofocus />
+                    <small class="p-error" *ngIf="submitted && !formation.name">Name is required.</small>
+                  </div>
+  
+                  <div class="field">
+                    <label for="description">Description</label>
+                    <textarea id="description" pInputTextarea [(ngModel)]="formation.description" required rows="3"
+                      cols="20"></textarea>
+                  </div>
+  
+  
+                  <div class="field">
+                    <label class="mb-3">Category</label>
+                    <div class="formgrid grid">
+                      <div class="field-radiobutton col-6" *ngFor="let category of ['Accessories', 'Clothing', 'Electronics', 'Fitness']; let i = index">
+                        <p-radioButton [inputId]="'category' + i" name="category" [value]="category"
+                          [(ngModel)]="formation.category" />
+                        <label [for]="'category' + i">{{ category }}</label>
+                      </div>
+                    </div>
+                  </div>
+  
                   <div class="formgrid grid">
-                      <div class="field-radiobutton col-6">
-                          <p-radioButton 
-                              id="category1" 
-                              name="category" 
-                              value="Accessories" 
-                              [(ngModel)]="formation.category" />
-                          <label for="category1">Accessories</label>
-                      </div>
-                      <div class="field-radiobutton col-6">
-                          <p-radioButton 
-                              id="category2" 
-                              name="category" 
-                              value="Clothing" 
-                              [(ngModel)]="formation.category" />
-                          <label for="category2">Clothing</label>
-                      </div>
-                      <div class="field-radiobutton col-6">
-                          <p-radioButton 
-                              id="category3" 
-                              name="category" 
-                              value="Electronics" 
-                              [(ngModel)]="formation.category" />
-                          <label for="category3">Electronics</label>
-                      </div>
-                      <div class="field-radiobutton col-6">
-                          <p-radioButton 
-                              id="category4" 
-                              name="category" 
-                              value="Fitness" 
-                              [(ngModel)]="formation.category" />
-                          <label for="category4">Fitness</label>
-                      </div>
-                  </div>
-              </div>
-
-              <div class="formgrid grid">
-                  <div class="field col">
+                    <div class="field col">
                       <label for="price">Price</label>
-                      <p-inputNumber 
-                          id="price" 
-                          [(ngModel)]="formation.price" 
-                          mode="currency" 
-                          currency="USD" 
-                          locale="en-US" />
-                  </div>
-                  <div class="field col">
+                      <p-inputNumber id="price" [(ngModel)]="formation.price" mode="currency" currency="USD"
+                        locale="en-US" />
+                    </div>
+                    <div class="field col">
                       <label for="quantity">Quantity</label>
-                      <p-inputNumber 
-                          id="quantity" 
-                          [(ngModel)]="formation.quantity" />
+                      <p-inputNumber id="quantity" [(ngModel)]="formation.quantity" />
+                    </div>
                   </div>
-              </div>
-          </ng-template>
-
-          <ng-template pTemplate="footer">
-              <p-button 
-                  label="Cancel" 
-                  icon="pi pi-times" 
-                  [text]="true" 
-                  (onClick)="hideDialog()" />
-              <p-button
-                  label="Save" 
-                  icon="pi pi-check" 
-                  [text]="true" 
-                  (onClick)="saveFormation()" />
-          </ng-template>
-  </p-dialog>
-
-  <p-confirmDialog [style]="{ width: '450px' }" />
-</div>
-
-   
-          <!-- /.row -->
-        </div><!--/. container-fluid -->
-    </section>
-    <!-- /.content -->
+                </ng-template>
+  
+                <ng-template pTemplate="footer">
+                  <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
+                  <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveFormation()" />
+                </ng-template>
+              </p-dialog>
+  
+              <p-confirmDialog [style]="{ width: '450px' }" />
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
   </div>
-  <!-- /.content-wrapper -->
-
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
-
-</div>
-</div>  
+  

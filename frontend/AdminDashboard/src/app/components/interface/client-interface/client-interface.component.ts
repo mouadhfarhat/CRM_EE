@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -9,11 +9,13 @@ import { PaginatorModule } from 'primeng/paginator';
 import { FormationService } from '../../../services/formation/formation.service';
 import { Formation } from '../../../domains/formation';
 import { CarouselComponent } from '../carousel/carousel.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-client-interface',
   standalone: true,
   imports: [
+    HttpClientModule,
     CommonModule,
     DataViewModule,
     ButtonModule,
@@ -21,60 +23,63 @@ import { CarouselComponent } from '../carousel/carousel.component';
     DialogModule,
     RouterModule,
     PaginatorModule,
-    CarouselComponent,
+    CarouselComponent
   ],
   providers: [FormationService],
   templateUrl: './client-interface.component.html',
-  styleUrls: ['./client-interface.component.css'] // Corrected the styleUrl to styleUrls
+  styleUrls: ['./client-interface.component.css']
 })
-export class ClientInterfaceComponent {
-  displayDialog = false;
-  selectedFormation: Formation | null = null;  // Renamed this to match the template
+export class ClientInterfaceComponent implements OnInit {
   formations: Formation[] = [];
-  first = 0;
-  rows = 6;
-  detailsVisible = false; // Add this property to toggle visibility of the dialog
-
-  constructor(private formationService: FormationService) {}
-
   layout: 'list' | 'grid' = 'grid';
-
-  onLayoutChange(layout: any) {
-    if (layout === 'list' || layout === 'grid') {
-      this.layout = layout;
-    }
-  }
+  
+  constructor(private formationService: FormationService) {}
 
   ngOnInit(): void {
     this.loadFormations();
   }
 
-  loadFormations() {
-    // Calling the service method to get the data
-    this.formations = this.formationService.getFormationsData();
+  loadFormations(): void {
+    this.formationService.getFormations().subscribe({
+      next: (data: Formation[]) => {
+        this.formations = data;
+      },
+      error: (error) => {
+        console.error('Error fetching formations:', error);
+      }
+    });
   }
 
-  onPageChange(event: any) {
-    this.first = event.first;
-    this.rows = event.rows;
-    this.loadFormations();
-  }
-
-  getSeverity(formation: Formation): "success" | "secondary" | "info" | "warning" | "danger" | "contrast" {
-    switch (formation.inventoryStatus) {
-      case 'INSTOCK': return 'success';
-      case 'OUTOFSTOCK': return 'danger';
-      default: return 'warning';
+  getAvailableSeats(formation: Formation): string {
+    if (formation.quantity === undefined) {
+      return 'Unknown';
+    }
+    
+    // You can add more sophisticated logic here based on demandes or interestedClients
+    const takenSeats = formation.demandes?.length || 0;
+    const availableSeats = formation.quantity - takenSeats;
+    
+    if (availableSeats <= 0) {
+      return 'Full';
+    } else if (availableSeats < 5) {
+      return `${availableSeats} left`;
+    } else {
+      return 'Available';
     }
   }
 
-  showDetails(formation: Formation) {
-    this.selectedFormation = formation; // Assign the formation to selectedFormation
-    this.detailsVisible = true; // This will trigger the modal to open
-  }
-
-  makeDemande(formation: Formation) {
-    console.log('Making demande for:', formation);
-    this.detailsVisible = false;  // Close the details dialog after the action
+  searchFormations(searchTerm: string): void {
+    if (searchTerm.trim()) {
+      this.formationService.searchFormations(searchTerm).subscribe({
+        next: (data: Formation[]) => {
+          this.formations = data;
+        },
+        error: (error) => {
+          console.error('Error searching formations:', error);
+        }
+      });
+    } else {
+      this.loadFormations(); // Load all formations if search term is empty
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import * as Papa from 'papaparse';  
 import { forkJoin } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -25,19 +25,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { HttpClientModule } from '@angular/common/http';
 
 
-
-
-interface Column {
-  field: string;
-  header: string;
-  customExportHeader?: string;
-}
-
-interface ExportColumn {
-  title: string;
-  dataKey: string;
-}
-
 @Component({
   selector: 'app-client-mang',
   standalone: true,
@@ -53,21 +40,21 @@ interface ExportColumn {
     }`
   ]
 })
-export class ClientMangComponent {
-  loading: boolean = false;
-  saving: boolean = false;
-  @ViewChild('dt') dt!: Table;
-  @ViewChild('fileInput') fileInput: any;
-  
-  clientDialog: boolean = false;
-  clients: Client[] = []; 
+export class ClientMangComponent implements OnInit {
+  @ViewChild('dt') dt: Table | undefined;
+
+  clients: Client[] = [];
   client: Client = {} as Client;
-  selectedClients!: Client[] | null;
+  selectedClients: Client[] = [];
+  clientDialog: boolean = false;
   submitted: boolean = false;
+  loading: boolean = true;
+  saving: boolean = false;
+
   roles: any[] = [
-    { label: 'User', value: 'user' },
-    { label: 'Admin', value: 'admin' },
-    { label: 'Gestionnaire', value: 'gestionnaire' }
+    { label: 'Admin', value: 'ADMIN' },
+    { label: 'Client', value: 'CLIENT' },
+    { label: 'Instructor', value: 'INSTRUCTOR' }
   ];
 
   constructor(
@@ -76,167 +63,72 @@ export class ClientMangComponent {
     private confirmationService: ConfirmationService
   ) {}
 
-  ngOnInit() {
-    this.clientService.getClients().subscribe((data: Client[]) => {
-      this.clients = data;
-    });
+  ngOnInit(): void {
+    this.loadClients();
   }
-  
-  
 
-// Trigger the file input when the Import button is clicked
-triggerFileInput() {
-  this.fileInput.nativeElement.click();
-}
-
-// Handle file import (CSV)
-importCSV(event: any) {
-  const file = event.target.files[0];
-
-  if (file) {
-    Papa.parse(file, {
-      complete: (result) => {
-        const clients = result.data;
-        this.addClients(clients);
+  loadClients(): void {
+    this.loading = true;
+    this.clientService.getAll().subscribe({
+      next: (data) => {
+        this.clients = data;
+        this.loading = false;
       },
-      header: true,
-      skipEmptyLines: true
-    });
-  }
-}
-
-// Function to add clients to your client list
-addClients(clients: any[]) {
-  clients.forEach(csvClient => {
-    const existingClient = this.clients.find(c => c.id === csvClient.id);
-
-    if (existingClient) {
-      // Update existing client
-      existingClient.username = csvClient.username || existingClient.username;
-      existingClient.email = csvClient.email || existingClient.email;
-      existingClient.password = csvClient.password || existingClient.password;
-      existingClient.role = this.validateRole(csvClient.role) || existingClient.role;
-      existingClient.skills = csvClient.skills || existingClient.skills;
-      existingClient.certifications = csvClient.certifications || existingClient.certifications;
-      existingClient.image = csvClient.image || existingClient.image;
-      
-      // Handle formation arrays
-      existingClient.history = this.parseFormations(csvClient.history) || existingClient.history;
-      existingClient.favorites = this.parseFormations(csvClient.favorites) || existingClient.favorites;
-    } else {
-      // Add new client
-      this.clients.push({
-        id: csvClient.id || this.createId(),
-        username: csvClient.username || '',
-        email: csvClient.email || '',
-        password: csvClient.password || '',
-        role: this.validateRole(csvClient.role) || 'user',
-        skills: csvClient.skills || '',
-        certifications: csvClient.certifications || '',
-        image: csvClient.image || 'client-placeholder.svg',
-        history: this.parseFormations(csvClient.history) || [],
-        favorites: this.parseFormations(csvClient.favorites) || []
-      });
-    }
-  });
-
-  this.clients = [...this.clients];
-  this.messageService.add({
-    severity: 'success', 
-    summary: 'Import Successful', 
-    detail: `${clients.length} clients processed`, 
-    life: 3000
-  });
-}
-
-private validateRole(role: string): string {
-  const validRoles = ['user', 'admin', 'gestionnaire'];
-  return validRoles.includes(role?.toLowerCase()) ? role.toLowerCase() : 'user';
-}
-
-private parseFormations(data: any): Formation[] {
-  if (typeof data === 'string') {
-    return data.split(';').map((id: string) => ({ id: id.trim() } as Formation));
-  }
-  return Array.isArray(data) ? data : [];
-}
-  // Export clients to CSV
-  exportCSV() {
-    const exportColumns: ExportColumn[] = [
-      { title: 'ID', dataKey: 'id' },
-      { title: 'Username', dataKey: 'username' },
-      { title: 'Email', dataKey: 'email' },
-      { title: 'Role', dataKey: 'role' },
-      { title: 'Domaine', dataKey: 'skills' },
-      { title: 'Certifications', dataKey: 'certifications' }
-    ];
-
-    const header = exportColumns.map(col => col.title);
-    const rows = this.clients.map(client => {
-      return exportColumns.map(col => client[col.dataKey as keyof Client]).join(',');
-    });
-    
-    const csvData = [header.join(','), ...rows].join('\n');
-    const blob = new Blob([csvData], { type: 'text/csv' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'clients_export.csv';
-    link.click();
-  }
-
-  openNew() {
-    this.client = {} as Client;
-    this.submitted = false;
-    this.clientDialog = true;
-  }
-
-  applyGlobalFilter(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    this.dt.filterGlobal(value, 'contains');
-  }
-
-  // Update the deleteSelectedClients method
-  deleteSelectedClients() {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the selected clients?',
-      header: 'Confirm',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        if (this.selectedClients) {
-          const deleteObservables = this.selectedClients.map(client =>
-            this.clientService.deleteClient(Number(client.id))
-          );
-  
-          forkJoin(deleteObservables).subscribe({
-            next: () => {
-              this.clients = this.clients.filter(val => !this.selectedClients?.includes(val));
-              this.selectedClients = null;
-              this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Clients Deleted', life: 3000 });
-            },
-            error: (error) => {
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error deleting clients', life: 3000 });
-              console.error('Error deleting clients:', error);
-            }
-          });
-        }
+      error: (error) => {
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: 'Could not load clients', 
+          life: 3000 
+        });
+        this.loading = false;
+        console.error('Error loading clients:', error);
       }
     });
   }
 
-  // Update the deleteClient method
-  deleteClient(client: Client) {
+  openNew(): void {
+    this.client = {
+      id: 0,
+      username: '',
+      email: '',
+      firstname: '',
+      lastname: '',
+      phoneNumber: '',
+      role: 'CLIENT'
+    } as Client;
+    this.submitted = false;
+    this.clientDialog = true;
+  }
+
+  editClient(client: Client): void {
+    this.client = { ...client };
+    this.clientDialog = true;
+  }
+
+  deleteClient(client: Client): void {
     this.confirmationService.confirm({
-      message: `Are you sure you want to delete ${client.username}?`,
+      message: 'Are you sure you want to delete ' + client.username + '?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.clientService.deleteClient(Number(client.id)).subscribe({
+        this.clientService.delete(client.id).subscribe({
           next: () => {
             this.clients = this.clients.filter(val => val.id !== client.id);
-            this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Client Deleted', life: 3000 });
+            this.messageService.add({ 
+              severity: 'success', 
+              summary: 'Successful', 
+              detail: 'Client Deleted', 
+              life: 3000 
+            });
           },
           error: (error) => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error deleting client', life: 3000 });
+            this.messageService.add({ 
+              severity: 'error', 
+              summary: 'Error', 
+              detail: 'Could not delete client', 
+              life: 3000 
+            });
             console.error('Error deleting client:', error);
           }
         });
@@ -244,113 +136,133 @@ private parseFormations(data: any): Formation[] {
     });
   }
 
-  // Update the editClient method
-  editClient(client: Client) {
-    this.client = {
-      id: client.id,
-      username: client.username,
-      email: client.email,
-      password: client.password,
-      role: client.role,
-      skills: client.skills,
-      certifications: client.certifications
-    };
-    this.clientDialog = true;
-  }
-
-  hideDialog() {
-    this.clientDialog = false;
-    this.submitted = false;
-    this.client = {} as Client;
-  }
-
-  // Update the saveClient method to match backend expectations
-  saveClient() {
-    this.submitted = true;
-    this.saving = true;
-
-    if (this.client.username?.trim() && this.client.email?.trim()) {
-      if (this.client.id) {
-        // UPDATE
-        this.clientService.updateClient(Number(this.client.id), {
-          username: this.client.username,
-          email: this.client.email
-        } as Client).subscribe({
-          next: (updated) => {
-            const index = this.findIndexById(this.client.id!);
-            this.clients[index] = { ...this.clients[index], ...updated };
-            this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Client Updated', life: 3000 });
-            this.refreshClientList();
-          },
-          error: (error) => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error updating client', life: 3000 });
-            console.error('Error updating client:', error);
-          },
-          complete: () => {
-            this.saving = false;
-            this.clientDialog = false;
-            this.client = {} as Client;
-          }
-        });
-      } else {
-        // CREATE
-        this.clientService.createClient(this.client).subscribe({
-          next: (created) => {
-            this.clients.push(created);
-            this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Client Created', life: 3000 });
-            this.refreshClientList();
-          },
-          error: (error) => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error creating client', life: 3000 });
-            console.error('Error creating client:', error);
-          }
-        });
-      }
-
-      this.clientDialog = false;
-      this.client = {} as Client;
-    }
-  }
-
-  // Update the refreshClientList method
-  refreshClientList() {
-    this.clientService.getClients().subscribe({
-      next: (data: Client[]) => {
-        this.clients = data;
-      },
-      error: (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error loading clients', life: 3000 });
-        console.error('Error loading clients:', error);
+  deleteSelectedClients(): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete the selected clients?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        const deleteObservables = this.selectedClients.map(client => 
+          this.clientService.delete(client.id)
+        );
+        
+        // Using Promise.all for simplicity, though there are better approaches for multiple HTTP requests
+        Promise.all(deleteObservables.map(obs => obs.toPromise()))
+          .then(() => {
+            this.clients = this.clients.filter(val => !this.selectedClients.includes(val));
+            this.selectedClients = [];
+            this.messageService.add({ 
+              severity: 'success', 
+              summary: 'Successful', 
+              detail: 'Clients Deleted', 
+              life: 3000 
+            });
+          })
+          .catch(error => {
+            this.messageService.add({ 
+              severity: 'error', 
+              summary: 'Error', 
+              detail: 'Could not delete selected clients', 
+              life: 3000 
+            });
+            console.error('Error deleting selected clients:', error);
+          });
       }
     });
   }
-  
-  
-  getRoleSeverity(role: string | undefined): 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' {
-    if (!role) return 'info';
-    switch (role.toLowerCase()) {
-      case 'admin':
-        return 'danger';
-      case 'gestionnaire':
-        return 'warning';
-      case 'user':
-        return 'success';
-      default:
-        return 'info';
+
+  hideDialog(): void {
+    this.clientDialog = false;
+    this.submitted = false;
+  }
+
+  saveClient(): void {
+    this.submitted = true;
+
+    if (!this.client.username || !this.client.email) {
+      return;
+    }
+
+    this.saving = true;
+
+    if (this.client.id) {
+      // Update existing client
+      this.clientService.update(this.client.id, this.client).subscribe({
+        next: (result) => {
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Successful', 
+            detail: 'Client Updated', 
+            life: 3000 
+          });
+          this.updateClientInList(result);
+          this.saving = false;
+          this.clientDialog = false;
+        },
+        error: (error) => {
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error', 
+            detail: 'Could not update client', 
+            life: 3000 
+          });
+          this.saving = false;
+          console.error('Error updating client:', error);
+        }
+      });
+    } else {
+      // Create new client
+      this.clientService.create(this.client).subscribe({
+        next: (result) => {
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Successful', 
+            detail: 'Client Created', 
+            life: 3000 
+          });
+          this.clients.push(result);
+          this.saving = false;
+          this.clientDialog = false;
+        },
+        error: (error) => {
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error', 
+            detail: 'Could not create client', 
+            life: 3000 
+          });
+          this.saving = false;
+          console.error('Error creating client:', error);
+        }
+      });
     }
   }
 
-  findIndexById(id: string): number {
-    return this.clients.findIndex(client => client.id === id);
+  updateClientInList(updatedClient: Client): void {
+    const index = this.clients.findIndex(c => c.id === updatedClient.id);
+    if (index !== -1) {
+      this.clients[index] = updatedClient;
+      // Create a new array reference to trigger change detection
+      this.clients = [...this.clients];
+    }
   }
 
-  createId(): string {
-    return Math.random().toString(36).substring(2, 9);
+  applyGlobalFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dt?.filterGlobal(filterValue, 'contains');
   }
 
-  getRoleLabel(role: string | undefined): string {
-    if (!role) return '';
-    const roleObj = this.roles.find(r => r.value === role);
-    return roleObj ? roleObj.label : role;
+  getRoleSeverity(role: string): 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' | undefined {
+    switch (role) {
+      case 'ADMIN':
+        return 'danger';
+      case 'INSTRUCTOR':
+        return 'warning';
+      case 'CLIENT':
+        return 'success';
+      default:
+        return 'info'; // or maybe 'secondary' if you prefer
+    }
   }
+  
 }

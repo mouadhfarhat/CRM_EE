@@ -1,0 +1,456 @@
+<div class=" dark-mode layout-fixed layout-navbar-fixed layout-footer-fixed">
+    <div class="wrapper" style="padding-bottom: 70px;">
+        <main>
+            <div class=" content-wrapper kanban" style="min-height: 616.4px;">
+                <section class="content-header">
+                <div class="container-fluid">
+                
+                    <!-- Header Row -->
+                    <div class="row align-items-center mb-2">
+                    <div class="col-sm-6">
+                        <h5 class="mb-0">Kanban Board</h5>
+                    </div>
+                    <div class="col-sm-6 d-none d-sm-block">
+                        <ol class="breadcrumb float-sm-right mb-0 small">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Kanban Board</li>
+                        </ol>
+                    </div>
+                    </div>
+                
+                    <!-- Compact Search Box -->
+                    <div class="bg-light border rounded px-3 py-3 enhanced-search-form">
+        <form (submit)="searchDemandes()" class="row gx-3 gy-3">
+            
+            <!-- Title -->
+            <div class="col-md-2">
+            <label class="form-label small mb-1">Title</label>
+            <input type="text" class="form-control" placeholder="Title"
+                    [(ngModel)]="searchParams.title" name="title" />
+            </div>
+
+            <!-- Description -->
+            <div class="col-md-2">
+            <label class="form-label small mb-1">Description</label>
+            <input type="text" class="form-control" placeholder="Description"
+                    [(ngModel)]="searchParams.description" name="description" />
+            </div>
+
+            <!-- Client -->
+            <div class="col-md-2">
+            <label class="form-label small mb-1">Client</label>
+            <input type="text" class="form-control" placeholder="Client"
+                    [(ngModel)]="searchParams.clientName" name="clientName" />
+            </div>
+
+            <!-- Status -->
+            <div class="col-md-2">
+            <label class="form-label small mb-1">Status</label>
+            <select class="form-select custom-select" [(ngModel)]="searchParams.statut" name="statut">
+                <option [ngValue]="null">All</option>
+                <option *ngFor="let statut of statutOptions" [value]="statut">{{ statut }}</option>
+            </select>
+            </div>
+
+            <!-- Type -->
+            <div class="col-md-2">
+            <label class="form-label small mb-1">Type</label>
+            <select class="form-select custom-select" [(ngModel)]="searchParams.type" name="type">
+                <option [ngValue]="null">All</option>
+                <option *ngFor="let type of typeOptions" [value]="type">{{ type }}</option>
+            </select>
+            </div>
+
+            <!-- Search Button Row (Full Width) -->
+            <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-info search-btn w-100">
+                <i class="fas fa-search me-1"></i> Search
+            </button>
+            </div>
+        </form>
+        </div>
+
+                </div>
+                </section>
+                
+                
+                
+            
+                <section class="content pb-3">
+                <div class="container-fluid h-100">
+                    <!-- Demandes Column (EN_ATTENTE) -->
+                    <div class="card card-row card-primary">
+                    <!-- Column Header -->
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h3 class="card-title mb-0 d-flex align-items-center">
+                        <i class="fas fa-inbox me-2"></i>
+                        Demandes en attente
+                        </h3>
+                        <span class="badge bg-white text-success fw-semibold px-3 py-1 rounded-pill d-flex align-items-center">
+                            {{ demandesEnAttente.length }} <i class="fas fa-list-ul ms-2"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div *ngFor="let demande of demandesEnAttente" class="card card-primary card-outline">
+                        <!-- Demande Header -->
+                        <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+                            <h4 class="card-title mb-0 d-flex align-items-center" 
+                                (click)="demande.showDetails = !demande.showDetails" 
+                                style="cursor: pointer;">
+                            <i class="far fa-file-alt me-2"></i>{{ demande.title }}
+                            </h4>
+                    
+                            <!-- Card Tools at far right -->
+                            <div class="card-tools">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-tool text-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right shadow-sm" role="menu">
+                                <button class="dropdown-item" (click)="changeStatus(demande.id, 'EN_COURS')">
+                                    <i class="fas fa-play text-info me-2"></i> En Cours
+                                </button>
+                                <button class="dropdown-item" (click)="changeStatus(demande.id, 'TERMINE')">
+                                    <i class="fas fa-check text-success me-2"></i> Terminé
+                                </button>
+                                <button class="dropdown-item" (click)="changeStatus(demande.id, 'REFUSE')">
+                                    <i class="fas fa-times text-danger me-2"></i> Refusé
+                                </button>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" (click)="openShareModal(demande)">
+                                    <i class="fas fa-share-alt text-primary me-2"></i> Partager
+                                </button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <!-- Description with See More/Less functionality -->
+                            <div *ngIf="demande.description.length > maxDescriptionLength && !isExpanded(demande.id)">
+                            {{ demande.description | slice:0:maxDescriptionLength }}...
+                            <a href="javascript:void(0)" 
+                                (click)="toggleDescription(demande.id)"
+                                class="text-white-50 small">
+                                <i class="fas fa-chevron-down me-1"></i> Voir plus
+                            </a>
+                            </div>
+                    
+                            <div *ngIf="isExpanded(demande.id) || demande.description.length <= maxDescriptionLength">
+                            {{ demande.description }}
+                            <a *ngIf="isExpanded(demande.id) && demande.description.length > maxDescriptionLength"
+                                href="javascript:void(0)" 
+                                (click)="toggleDescription(demande.id)"
+                                class="text-white-50 small">
+                                <i class="fas fa-chevron-up me-1"></i> Voir moins
+                            </a>
+                            </div>
+                    
+                            <!-- Details section -->
+                            <div *ngIf="demande.showDetails" class="mt-2">
+                            <p><strong>Formation:</strong> {{ demande.formation.title || 'N/A' }}</p>
+                            <p><strong>Client:</strong> {{ demande.client.username || 'N/A' }}</p>
+                            <p><strong>Créée le:</strong> {{ demande.createdAt | date: 'medium' }}</p>
+                            <p *ngIf="demande.sharedWith"><strong>Partagée avec:</strong> {{ demande.sharedWith.username || 'N/A' }}</p>
+                            <p><strong>Type:</strong> {{ demande.type || 'N/A' }}</p>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                    
+                    
+                    
+                
+                    <!-- En Cours Column (EN_COURS) -->
+                    <div class="card card-row card-info">
+                    <!-- Column Header -->
+                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                        <h3 class="card-title mb-0 d-flex align-items-center">
+                        <i class="fas fa-spinner me-2"></i>
+                        En Cours
+                        </h3>
+                        <span class="badge bg-white text-info fw-semibold px-3 py-1 rounded-pill d-flex align-items-center">
+                        {{ demandesEnCours.length }}
+                        <i class="fas fa-tasks ms-2"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div *ngFor="let demande of demandesEnCours" class="card card-info card-outline">
+                        <!-- Demande Header -->
+                        <div class="card-header bg-info text-white d-flex align-items-center">
+                            <h4 class="card-title mb-0 d-flex align-items-center" 
+                                (click)="demande.showDetails = !demande.showDetails"
+                                style="cursor: pointer;">
+                            <i class="far fa-file-alt me-2"></i>{{ demande.title }}
+                            </h4>
+                    
+                            <!-- Tools aligned fully to the right -->
+                            <div class="card-tools ms-auto d-flex align-items-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-tool text-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right shadow-sm" role="menu">
+                                <button class="dropdown-item" (click)="changeStatus(demande.id, 'EN_ATTENTE')">
+                                    <i class="fas fa-hourglass-start text-warning me-2"></i> En Attente
+                                </button>
+                                <button class="dropdown-item" (click)="changeStatus(demande.id, 'TERMINE')">
+                                    <i class="fas fa-check text-success me-2"></i> Terminé
+                                </button>
+                                <button class="dropdown-item" (click)="changeStatus(demande.id, 'REFUSE')">
+                                    <i class="fas fa-times-circle text-danger me-2"></i> Refusé
+                                </button>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" (click)="openShareModal(demande)">
+                                    <i class="fas fa-share-alt text-primary me-2"></i> Partager
+                                </button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <!-- Description with See More/Less -->
+                            <div *ngIf="demande.description.length > maxDescriptionLength && !isExpanded(demande.id)">
+                            {{ demande.description | slice:0:maxDescriptionLength }}...
+                            <a href="javascript:void(0)" 
+                                (click)="toggleDescription(demande.id)"
+                                class="text-info small">
+                                <i class="fas fa-chevron-down me-1"></i> Voir plus
+                            </a>
+                            </div>
+                    
+                            <div *ngIf="isExpanded(demande.id) || demande.description.length <= maxDescriptionLength">
+                            {{ demande.description }}
+                            <a *ngIf="isExpanded(demande.id) && demande.description.length > maxDescriptionLength"
+                                href="javascript:void(0)" 
+                                (click)="toggleDescription(demande.id)"
+                                class="text-info small">
+                                <i class="fas fa-chevron-up me-1"></i> Voir moins
+                            </a>
+                            </div>
+                    
+                            <!-- Details -->
+                            <div *ngIf="demande.showDetails" class="mt-2">
+                            <p><strong>Formation:</strong> {{ demande.formation.title || 'N/A' }}</p>
+                            <p><strong>Client:</strong> {{ demande.client.username || 'N/A' }}</p>
+                            <p><strong>Créée le:</strong> {{ demande.createdAt | date: 'medium' }}</p>
+                            <p *ngIf="demande.sharedWith"><strong>Partagée avec:</strong> {{ demande.sharedWith.username || 'N/A' }}</p>
+                            <p><strong>Type:</strong> {{ demande.type || 'N/A' }}</p>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                    
+                
+                    <!-- In Progress Column (TERMINE) -->
+                    <div class="card card-row card-success">
+                    <!-- Column Header -->
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h3 class="card-title mb-0 d-flex align-items-center">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Terminé
+                        </h3>
+                        <span class="badge bg-white text-success fw-semibold px-3 py-1 rounded-pill d-flex align-items-center">
+                        {{ demandesTermine.length }} <i class="fas fa-list-ul ms-2"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div *ngFor="let demande of demandesTermine" class="card card-success card-outline">
+                        <!-- Demande Header -->
+                        <div class="card-header bg-success text-white d-flex align-items-center justify-content-between">
+                            <h4 class="card-title mb-0 d-flex align-items-center"
+                                (click)="demande.showDetails = !demande.showDetails"
+                                style="cursor: pointer;">
+                            <i class="far fa-file-alt me-2"></i>{{ demande.title }}
+                            </h4>
+                    
+                            <!-- Tools aligned to the far right -->
+                            <div class="card-tools">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-tool text-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right shadow-sm" role="menu">
+                                <button class="dropdown-item" (click)="changeStatus(demande.id, 'EN_ATTENTE')">
+                                    <i class="fas fa-hourglass-start text-warning me-2"></i> En Attente
+                                </button>
+                                <button class="dropdown-item" (click)="changeStatus(demande.id, 'EN_COURS')">
+                                    <i class="fas fa-play text-info me-2"></i> En Cours
+                                </button>
+                                <button class="dropdown-item" (click)="changeStatus(demande.id, 'REFUSE')">
+                                    <i class="fas fa-times text-danger me-2"></i> Refusé
+                                </button>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" (click)="openShareModal(demande)">
+                                    <i class="fas fa-share-alt text-primary me-2"></i> Partager
+                                </button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <!-- Description with See More/Less functionality -->
+                            <div *ngIf="demande.description.length > maxDescriptionLength && !isExpanded(demande.id)">
+                            {{ demande.description | slice:0:maxDescriptionLength }}...
+                            <a href="javascript:void(0)" 
+                                (click)="toggleDescription(demande.id)"
+                                class="text-success small">
+                                <i class="fas fa-chevron-down me-1"></i> Voir plus
+                            </a>
+                            </div>
+                    
+                            <div *ngIf="isExpanded(demande.id) || demande.description.length <= maxDescriptionLength">
+                            {{ demande.description }}
+                            <a *ngIf="isExpanded(demande.id) && demande.description.length > maxDescriptionLength"
+                                href="javascript:void(0)" 
+                                (click)="toggleDescription(demande.id)"
+                                class="text-success small">
+                                <i class="fas fa-chevron-up me-1"></i> Voir moins
+                            </a>
+                            </div>
+                    
+                            <!-- Details section -->
+                            <div *ngIf="demande.showDetails" class="mt-2">
+                            <p><strong>Formation:</strong> {{ demande.formation.title || 'N/A' }}</p>
+                            <p><strong>Client:</strong> {{ demande.client.username || 'N/A' }}</p>
+                            <p><strong>Créée le:</strong> {{ demande.createdAt | date: 'medium' }}</p>
+                            <p *ngIf="demande.sharedWith"><strong>Partagée avec:</strong> {{ demande.sharedWith.username || 'N/A' }}</p>
+                            <p><strong>Type:</strong> {{ demande.type || 'N/A' }}</p>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                    
+                
+                    <!-- Refuse Column (REFUSE) -->
+                    <div class="card card-row card-danger">
+                    <!-- Column Header -->
+                    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                        <h3 class="card-title mb-0 d-flex align-items-center">
+                        <i class="fas fa-times-circle me-2"></i>
+                        Refusé
+                        </h3>
+                        <span class="badge bg-white text-danger fw-semibold px-3 py-1 rounded-pill d-flex align-items-center">
+                        {{ demandesRefuse.length }} <i class="fas fa-list-ul ms-2"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div *ngFor="let demande of demandesRefuse" class="card card-danger card-outline">
+                        <!-- Demande Header -->
+                        <div class="card-header bg-danger text-white d-flex align-items-center justify-content-between">
+                            <h4 class="card-title mb-0 d-flex align-items-center"
+                                (click)="demande.showDetails = !demande.showDetails"
+                                style="cursor: pointer;">
+                            <i class="far fa-file-alt me-2"></i>{{ demande.title }}
+                            </h4>
+                    
+                            <!-- Tools aligned to the far right -->
+                            <div class="card-tools">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-tool text-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right shadow-sm" role="menu">
+                                <button class="dropdown-item" (click)="changeStatus(demande.id, 'EN_ATTENTE')">
+                                    <i class="fas fa-hourglass-start text-warning me-2"></i> En Attente
+                                </button>
+                                <button class="dropdown-item" (click)="changeStatus(demande.id, 'EN_COURS')">
+                                    <i class="fas fa-play text-info me-2"></i> En Cours
+                                </button>
+                                <button class="dropdown-item" (click)="changeStatus(demande.id, 'TERMINE')">
+                                    <i class="fas fa-check text-success me-2"></i> Terminé
+                                </button>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" (click)="openShareModal(demande)">
+                                    <i class="fas fa-share-alt text-primary me-2"></i> Partager
+                                </button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <!-- Description with See More/Less functionality -->
+                            <div *ngIf="demande.description.length > maxDescriptionLength && !isExpanded(demande.id)">
+                            {{ demande.description | slice:0:maxDescriptionLength }}...
+                            <a href="javascript:void(0)" 
+                                (click)="toggleDescription(demande.id)"
+                                class="text-danger small">
+                                <i class="fas fa-chevron-down me-1"></i> Voir plus
+                            </a>
+                            </div>
+                    
+                            <div *ngIf="isExpanded(demande.id) || demande.description.length <= maxDescriptionLength">
+                            {{ demande.description }}
+                            <a *ngIf="isExpanded(demande.id) && demande.description.length > maxDescriptionLength"
+                                href="javascript:void(0)" 
+                                (click)="toggleDescription(demande.id)"
+                                class="text-danger small">
+                                <i class="fas fa-chevron-up me-1"></i> Voir moins
+                            </a>
+                            </div>
+                    
+                            <!-- Details section -->
+                            <div *ngIf="demande.showDetails" class="mt-2">
+                            <p><strong>Formation:</strong> {{ demande.formation.title || 'N/A' }}</p>
+                            <p><strong>Client:</strong> {{ demande.client.username || 'N/A' }}</p>
+                            <p><strong>Créée le:</strong> {{ demande.createdAt | date: 'medium' }}</p>
+                            <p *ngIf="demande.sharedWith"><strong>Partagée avec:</strong> {{ demande.sharedWith.username || 'N/A' }}</p>
+                            <p><strong>Type:</strong> {{ demande.type || 'N/A' }}</p>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                            </div>
+                
+
+                </section> 
+                
+
+            </div>
+
+            <!-- Share Modal -->
+            <!-- Modal Backdrop -->
+            <div class="custom-backdrop" *ngIf="showModal"></div>
+
+            <!-- Modal Window -->
+            <div class="custom-modal" *ngIf="showModal">
+                <div class="custom-modal-dialog">
+                    <div class="custom-modal-header">
+                    <h5>📤 Share Demande</h5>
+                    <button class="close-btn" (click)="closeModal()">×</button>
+                    </div>
+
+                    <div class="custom-modal-body">
+                    <p class="mb-3">Select a gestionnaire to share this demande with:</p>
+
+                    <label for="gestionnaireSelect" class="form-label">👤 Gestionnaire</label>
+                    <select class="form-select custom-select" id="gestionnaireSelect" [(ngModel)]="selectedGestionnaireId">
+                        <option [ngValue]="null">-- Select Gestionnaire --</option>
+                        <option *ngFor="let g of allGestionnaires" [value]="g.id">{{ g.username }}</option>
+                    </select>
+                    </div>
+
+                    <div class="custom-modal-footer">
+                    <button class="btn btn-outline-secondary" (click)="closeModal()">Cancel</button>
+                    <button class="btn btn-success" [disabled]="!selectedGestionnaireId" (click)="shareDemande()">✅ Share</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

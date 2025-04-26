@@ -17,10 +17,6 @@
                 <!-- Image & Tag -->
                 <div class="md:w-10rem relative">
                   <img class="w-full border-round" [src]="getImageUrl(product.image)" [alt]="product.name">
-                  <p-tag [value]="product.inventoryStatus"
-                         [severity]="getSeverity(product)"
-                         [style]="{ 'position': 'absolute', 'left.px': 4, 'top.px': 4 }">
-                  </p-tag>
                 </div>
   
                 <!-- Product Info -->
@@ -45,6 +41,15 @@
                     <i class="pi pi-star-fill text-yellow-500 text-sm"></i>
                   </div>
                 </div>
+                <div class="mt-2">
+                  <button pButton 
+                          type="button" 
+                          icon="pi pi-envelope" 
+                          label="Send Message" 
+                          [routerLink]="'/composeMail'" 
+                          class="p-button-sm p-button-rounded p-button-outlined p-button-info w-max">
+                  </button>
+                </div>
   
                 <!-- Right Section -->
                 <div class="flex flex-column gap-3 text-right min-w-[10rem]">
@@ -65,47 +70,8 @@
           </div>
         </ng-template>
       </p-dataView>
-  
-      <!-- Optional Test Button to confirm dialog -->
-      <!-- <button pButton type="button" label="Open Dialog" (click)="openDialog(formations[0])"></button> -->
-  
-      <!-- Dialog Popup for Product Details -->
-      <p-dialog
-        header="Formation Details"
-        [(visible)]="dialogVisible"
-        [modal]="true"
-        [style]="{ width: '500px' }"
-        [dismissableMask]="true"
-        (onHide)="closeDialog()"
-        [baseZIndex]="10000">
-  
-        <div *ngIf="selectedFormation" class="text-black dark:text-white">
-          <img
-            [src]="getImageUrl(selectedFormation.image)"
-            [alt]="selectedFormation.name"
-            class="w-full border-round mb-3" />
-  
-          <h3 class="text-xl font-bold mb-2">{{ selectedFormation.name }}</h3>
-          <p class="mb-1"><strong>Description:</strong> {{ selectedFormation.description }}</p>
-          <p class="mb-1"><strong>Category:</strong> {{ selectedFormation.category }}</p>
-          <p class="mb-1"><strong>Price:</strong> {{ selectedFormation.price | currency }}</p>
-          <p class="mb-1"><strong>Quantity:</strong> {{ selectedFormation.quantity }}</p>
-          <p class="mb-1"><strong>Status:</strong>
-            <p-tag
-              [value]="selectedFormation.inventoryStatus"
-              [severity]="getSeverity(selectedFormation)">
-            </p-tag>
-          </p>
-          <p><strong>Rating:</strong>
-            <p-rating
-              [readonly]="true"
-              [cancel]="false"
-              [ngModel]="selectedFormation.rating">
-            </p-rating>
-          </p>
-        </div>
-  
-      </p-dialog>
+
+
   
     </div>
   </div>
