@@ -1,0 +1,38 @@
+/* Style for the drop area */
+.drop-area {
+    min-height: 80px;
+  }
+  
+  .border-dashed {
+    border: 2px dashed #dee2e6;
+    border-radius: 6px;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+  
+  /* Style for when dragged over */
+  .drop-area.p-droppable-enter .border-dashed {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+  }
+  
+  /* Style for active tab */
+  .tab-pane.active {
+    display: block;
+  }
+  
+  /* Animation for dragging */
+  .dragging-card {
+    opacity: 0.5;
+    transform: scale(0.95);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  
+  /* Ensure the tabs have proper height */
+  .tab-content {
+    min-height: 300px;
+  }
+  
+  /* Style for empty state message */
+  .text-muted {
+    color: #6c757d;
+  }

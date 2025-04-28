@@ -1,0 +1,9 @@
+/* list-client-group.component.css */
+.dragging-card {
+    opacity: 0.5;
+    transform: scale(0.95);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .border-dashed {
+    border: 2px dashed #dee2e6;
+  }
