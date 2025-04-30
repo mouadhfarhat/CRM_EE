@@ -3,16 +3,39 @@
     <div class="row mb-2">
       <div class="col-sm-6">
         <h1 class="m-0">Categories</h1>
-      </div><!-- /.col -->
+      </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="#">Home</a></li>
         </ol>
-      </div><!-- /.col -->
-    </div><!-- /.row -->
-  </div><!-- /.container-fluid -->
+      </div>
+    </div>
+  </div>
 </div>
 
+<p-carousel 
+    [value]="categories" 
+    [numVisible]="3" 
+    [numScroll]="1" 
+    [responsiveOptions]="responsiveOptions" 
+    circular="true" 
+    autoplayInterval="3000">
 
 
 
+  <ng-template let-category pTemplate="item">
+    <div class="border-1 surface-border border-round m-2 p-3 text-center">
+      <div class="mb-3">
+        <img 
+          [src]="category.image ? category.image : 'assets/default-category.jpg'" 
+          alt="{{ category.name }}" 
+          style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">
+      </div>
+      <div class="font-medium text-xl mt-2">
+        {{ category.name }}
+      </div>
+    </div>
+  </ng-template>
+
+
+</p-carousel>
