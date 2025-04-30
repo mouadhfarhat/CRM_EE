@@ -1,0 +1,56 @@
+<div class="chat-container" [ngClass]="{'open': isChatOpen}">
+    <!-- Chat Button -->
+    <button class="chat-button" (click)="toggleChat()">
+      <i class="fa" [ngClass]="isChatOpen ? 'fa-times' : 'fa-comments'"></i>
+    </button>
+    
+    <!-- Chat Dialog -->
+    <div class="chat-dialog" *ngIf="isChatOpen">
+      <div class="chat-header">
+        <div class="chat-title">
+          <i class="fa fa-robot"></i>
+          <span>Assistance</span>
+        </div>
+        <button class="close-button" (click)="toggleChat()">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="chat-messages" #scrollContainer>
+        <div *ngFor="let message of messages" 
+             class="message" 
+             [ngClass]="{'user-message': message.isUser, 'bot-message': !message.isUser}">
+          <div class="message-content">
+            <div [innerHTML]="message.content | linky" class="message-text"></div>
+            <div class="message-timestamp">
+              {{ message.timestamp | date:'short' }}
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="isLoading" class="bot-message loading-message">
+          <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+      
+      <form [formGroup]="chatForm" (ngSubmit)="sendMessage()" class="chat-input-form">
+        <textarea
+          formControlName="message"
+          placeholder="Type your message..."
+          (keydown)="handleKeyPress($event)"
+          rows="1"
+          class="chat-input"
+        ></textarea>
+        <button 
+          type="submit" 
+          class="send-button" 
+          [disabled]="chatForm.invalid || isLoading">
+          <i class="fa fa-paper-plane"></i>
+        </button>
+      </form>
+    </div>
+  </div>
