@@ -26,28 +26,57 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "node_modules/primeflex/primeflex.css", 
-              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
-              "src/styles.css"
-            ],
-            "scripts": [
-            ]
+"styles": [
+  "public/plugins/fontawesome-free/css/all.min.css",
+  "public/plugins/icheck-bootstrap/icheck-bootstrap.min.css",
+  "public/plugins/jqvmap/jqvmap.min.css",
+  "public/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css",
+  "public/plugins/overlayScrollbars/css/OverlayScrollbars.min.css",
+  "public/plugins/daterangepicker/daterangepicker.css",
+  "public/plugins/summernote/summernote-bs4.min.css",
+  "public/dist/css/adminlte.min.css",
+  "node_modules/primeflex/primeflex.css",
+  "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+  "node_modules/primeng/resources/primeng.min.css",
+  "node_modules/primeicons/primeicons.css",
+  "src/styles.css"
+],
+"scripts": [
+  "public/plugins/jquery/jquery.min.js",
+  "public/plugins/jquery-ui/jquery-ui.min.js",
+  "public/plugins/bootstrap/js/bootstrap.bundle.min.js",
+  "public/plugins/chart.js/Chart.min.js",
+  "public/plugins/sparklines/sparkline.js",
+  "public/plugins/jqvmap/jquery.vmap.min.js",
+  "public/plugins/jqvmap/maps/jquery.vmap.usa.js",
+  "public/plugins/jquery-knob/jquery.knob.min.js",
+  "public/plugins/moment/moment.min.js",
+  "public/plugins/daterangepicker/daterangepicker.js",
+  "public/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js",
+  "public/plugins/summernote/summernote-bs4.min.js",
+  "public/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js",
+  "public/dist/js/adminlte.js",
+  "public/plugins/jquery-mousewheel/jquery.mousewheel.js",
+  "public/plugins/raphael/raphael.min.js",
+  "public/plugins/jquery-mapael/jquery.mapael.min.js",
+  "public/plugins/jquery-mapael/maps/usa_states.min.js",
+  "public/dist/js/pages/dashboard2.js"
+]
+
+
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "6MB",
+                  "maximumError": "10MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "6kB",
+                  "maximumError": "10kB"
                 }
               ],
               "outputHashing": "all"
