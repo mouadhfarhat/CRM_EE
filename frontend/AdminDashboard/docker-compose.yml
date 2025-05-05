@@ -20,14 +20,19 @@ services:
     command: ["start-dev"]
 
   angular-app:
-    build:  
-      context: .
-      dockerfile: Dockerfile.angular
+    image: node:18  # Use Node.js image directly
     container_name: angular-app2
     ports:
-      - "4200:80"
+      - "4200:4200"  # Map port for ng serve
     depends_on:
       - keycloak
+    volumes:
+      - ./:/app  # Map Angular project for live changes
+      - /app/node_modules  # Exclude node_modules
+    working_dir: /app
+    command: ["npm", "run", "start"]  # Run ng serve
+    environment:
+      - WATCHPACK_POLLING=true  # Ensure hot-reloading works in Docker
 
 volumes:
   keycloak_data:

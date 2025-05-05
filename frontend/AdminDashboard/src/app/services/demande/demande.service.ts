@@ -14,6 +14,16 @@ export class DemandeService {
   private apiUrl = 'http://localhost:8080/demandes'; // adjust if your backend runs elsewhere
 
   constructor(private http: HttpClient) {}
+  
+  // Fetch unassigned demands
+  getUnassignedDemandes(): Observable<Demande[]> {
+    return this.http.get<Demande[]>(`${this.apiUrl}/unassigned`);
+  }
+
+  // Assign a demand to the current gestionnaire
+  assignDemande(demandeId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${demandeId}/choose`, {});
+  }
 
   // demande.service.ts
   getDemandesByGestionnaireId(gestionnaireId: number): Observable<Demande[]> {

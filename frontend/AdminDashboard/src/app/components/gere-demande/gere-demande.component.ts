@@ -2,36 +2,36 @@ import { Component, OnInit } from '@angular/core';
 import { Demande } from '../../domains/demande.model';
 import { DemandeService } from '../../services/demande/demande.service';
 import { CommonModule } from '@angular/common';
-import {  HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { DemandeStatut, DemandeType } from '../../domains/enums';
 import { ToolbarModule } from 'primeng/toolbar';
 
 @Component({
   selector: 'app-gere-demande',
-  imports: [ ToolbarModule,HttpClientModule,CommonModule,FormsModule],
-  providers: [DemandeService],
+  imports: [ ToolbarModule, CommonModule, FormsModule ],
+  providers: [ DemandeService ],
   templateUrl: './gere-demande.component.html',
   styleUrl: './gere-demande.component.css',
-  standalone:true
+  standalone: true
 })
 export class GereDemandeComponent implements OnInit {
   demandes: Demande[] = [];
-
   demandesEnAttente: Demande[] = [];
   demandesEnCours: Demande[] = [];
   demandesTermine: Demande[] = [];
   demandesRefuse: Demande[] = [];
-
   allGestionnaires: any[] = [];
   selectedGestionnaireId: number | null = null;
   selectedDemandeId: number | null = null;
   showModal = false;
   showDetailsModal = false;
   selectedDemande: Demande | null = null;
-  
+
   maxDescriptionLength = 100;
   expandedDemandes: {[key: number]: boolean} = {};
+
+  private currentGestionnaireId: number | null = null;
 
   constructor(
     private demandeService: DemandeService,
@@ -39,8 +39,7 @@ export class GereDemandeComponent implements OnInit {
   ) {}
   
   ngOnInit() {
-    const gestionnaireId = 5; // or get this dynamically
-    this.loadDemandes(gestionnaireId);
+    this.getCurrentGestionnaire();
     this.loadGestionnaires();
   }
 
@@ -58,27 +57,26 @@ export class GereDemandeComponent implements OnInit {
 
   categorizeDemandes() {
     const addShowDetails = (d: Demande) => ({ ...d, showDetails: false });
-  
+
     this.demandesEnAttente = this.demandes
       .filter(d => d.statut === DemandeStatut.EN_ATTENTE)
       .map(addShowDetails);
-  
+
     this.demandesEnCours = this.demandes
       .filter(d => d.statut === DemandeStatut.EN_COURS)
       .map(addShowDetails);
-  
+
     this.demandesTermine = this.demandes
       .filter(d => d.statut === DemandeStatut.TERMINE)
       .map(addShowDetails);
-  
+
     this.demandesRefuse = this.demandes
       .filter(d => d.statut === DemandeStatut.REFUSE)
       .map(addShowDetails);
   }
-  
 
   changeStatus(demandeId: number, newStatus: string) {
-    const gestionnaireId = 5; // or get this dynamically
+    const gestionnaireId = this.getGestionnaireId(); // Get dynamically
     this.demandeService.updateDemandeStatus(demandeId, newStatus, gestionnaireId).subscribe(
       () => {
         this.updateLocalDemandes(demandeId, newStatus);
@@ -219,62 +217,73 @@ export class GereDemandeComponent implements OnInit {
   }
 
   // Add to your component class
-searchParams = {
-  title: '',
-  description: '',
-  clientName: '',
-  statut: null as DemandeStatut | null,
-  type: null as DemandeType | null
-};
-
-statutOptions = Object.values(DemandeStatut);
-typeOptions = Object.values(DemandeType);
-isSearching = false;
-
-searchDemandes(): void {
-  this.isSearching = true;
-  const gestionnaireId = this.getGestionnaireId(); // Get from auth service or state
-  
-  this.demandeService.searchDemandesByGestionnaire(
-    gestionnaireId,
-    this.searchParams.title.trim(),
-    this.searchParams.description.trim(),
-    this.searchParams.clientName.trim(),
-    this.searchParams.statut || undefined,
-    this.searchParams.type || undefined
-  ).subscribe({
-    next: (data) => {
-      this.demandes = data;
-      this.categorizeDemandes();
-      this.isSearching = false;
-    },
-    error: (error) => {
-      console.error('Search failed:', error);
-      this.isSearching = false;
-      // Show error toast/notification
-    }
-  });
-}
-
-resetSearch(): void {
-  this.searchParams = {
+  searchParams = {
     title: '',
     description: '',
     clientName: '',
-    statut: null,
-    type: null
+    statut: null as DemandeStatut | null,
+    type: null as DemandeType | null
   };
-  const gestionnaireId = this.getGestionnaireId();
-  this.loadDemandes(gestionnaireId);
-}
 
-private getGestionnaireId(): number {
-  // Implement your logic to get the current gestionnaire ID
-  // Example: return this.authService.currentUser.id;
-  return 5; // Temporary - replace with actual implementation
-}
+  statutOptions = Object.values(DemandeStatut);
+  typeOptions = Object.values(DemandeType);
+  isSearching = false;
 
+  searchDemandes(): void {
+    this.isSearching = true;
+    const gestionnaireId = this.getGestionnaireId(); // Get from auth service or state
+    
+    this.demandeService.searchDemandesByGestionnaire(
+      gestionnaireId,
+      this.searchParams.title.trim(),
+      this.searchParams.description.trim(),
+      this.searchParams.clientName.trim(),
+      this.searchParams.statut || undefined,
+      this.searchParams.type || undefined
+    ).subscribe({
+      next: (data) => {
+        this.demandes = data;
+        this.categorizeDemandes();
+        this.isSearching = false;
+      },
+      error: (error) => {
+        console.error('Search failed:', error);
+        this.isSearching = false;
+      }
+    });
+  }
 
+  resetSearch(): void {
+    this.searchParams = {
+      title: '',
+      description: '',
+      clientName: '',
+      statut: null,
+      type: null
+    };
+    this.getCurrentGestionnaire();
+  }
 
+  getCurrentGestionnaire() {
+    const token = sessionStorage.getItem('token');
+const headers = { Authorization: `Bearer ${token}` };
 
+this.http.get<any>('http://localhost:8080/gestionnaires/me', { headers }).subscribe({
+  next: (g) => {
+    console.log("Gestionnaire from Oracle:", g);
+    this.currentGestionnaireId = g.id;
+    this.loadDemandes(g.id);
+  },
+  error: (err) => {
+    console.error("Failed to fetch current gestionnaire", err);
+  }
+});
+  }
+
+  private getGestionnaireId(): number {
+    if (this.currentGestionnaireId === null) {
+      throw new Error("Gestionnaire ID not yet loaded.");
+    }
+    return this.currentGestionnaireId;
+  }
 }

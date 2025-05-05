@@ -6,6 +6,7 @@ import { Gestionnaire } from './gestionnaire.model';
 
 
 export interface Demande {
+  selected: any;
   id: number;
   title: string;
   description: string;

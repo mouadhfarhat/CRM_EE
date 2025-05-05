@@ -36,6 +36,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/events/all", "/api/events/{id}").authenticated()
                 .requestMatchers("/api/formateurs", "/api/formateurs/search").authenticated()
                 .requestMatchers("/api/food-companies", "/api/food-companies/search").authenticated()
+                .requestMatchers("/gestionnaires/me").authenticated()
+
                 // Client-only endpoints
                 .requestMatchers("/demandes/create").hasRole("CLIENT")
                 .requestMatchers("/demandes/client/{clientId}").hasRole("CLIENT")
@@ -49,6 +51,9 @@ public class SecurityConfig {
                                 "/demandes/shared-with/{gestionnaireId}").hasRole("GESTIONNAIRE")
                 .requestMatchers("/demandes/{demandeId}/share/{gestionnaireId}",
                                 "/demandes/{demandeId}/status").hasRole("GESTIONNAIRE")
+                .requestMatchers("/demandes/unassigned").hasRole("GESTIONNAIRE")
+                .requestMatchers("/demandes/{demandeId}/choose").hasRole("GESTIONNAIRE")
+                
                 // Admin-only endpoints
                 .requestMatchers("/api/categories/**").hasRole("ADMIN")
                 .requestMatchers("/api/formateurs/**").hasRole("ADMIN")
@@ -61,8 +66,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/events/**").hasRole("ADMIN")
                 .requestMatchers("/formations/**").hasRole("ADMIN")
                 .requestMatchers("/api/groups/**").hasRole("ADMIN")
-                .requestMatchers("/gestionnaires/**").hasRole("ADMIN")
-                // Default: require login
+                .requestMatchers("/gestionnaires/**").hasAnyAuthority("ADMIN", "GESTIONNAIRE")                // Default: require login
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2

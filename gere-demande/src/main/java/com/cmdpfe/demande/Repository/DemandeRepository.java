@@ -30,6 +30,7 @@ public interface DemandeRepository extends JpaRepository<Demande, Long> {
     
 
     Optional<Demande> findById(Long id);
+    List<Demande> findByGestionnaireAssigneIsNull();
     
     
     

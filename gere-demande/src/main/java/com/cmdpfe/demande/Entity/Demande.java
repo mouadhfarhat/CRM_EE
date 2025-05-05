@@ -33,7 +33,7 @@ public class Demande {
     private Formation formation;
 
     @ManyToOne
-    @JoinColumn(name = "gestionnaire_id", nullable = false)
+    @JoinColumn(name = "gestionnaire_id", nullable = true)
     @JsonIgnore
     private Gestionnaire gestionnaireAssigne;
 

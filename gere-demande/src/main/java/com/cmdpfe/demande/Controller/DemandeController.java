@@ -51,6 +51,13 @@ public class DemandeController {
         List<Client> clients = demandeRepository.findClientsByFormationAndTypeAndDoneStatus(formationId, type);
         return ResponseEntity.ok(clients);
     }
+    
+    //unassigned demande
+    @GetMapping("/unassigned")
+    @PreAuthorize("hasRole('GESTIONNAIRE')")
+    public List<Demande> getUnassignedDemandes() {
+        return demandeRepository.findByGestionnaireAssigneIsNull();
+    }
 
     @GetMapping("/search")
     @PreAuthorize("hasRole('ADMIN')")
@@ -231,18 +238,6 @@ public class DemandeController {
             throw new RuntimeException("Unauthorized: Client ID does not match authenticated user");
         }
 
-        DepartmentType departmentType = mapDemandeTypeToDepartmentType(demandeRequest.getType());
-        List<Gestionnaire> gestionnaires = gestionnaireRepository.findByDepartment(departmentType);
-
-        if (gestionnaires.isEmpty()) {
-            throw new RuntimeException("No Gestionnaire available for this type of demande");
-        }
-
-        int index = roundRobinCounter
-                .computeIfAbsent(departmentType, k -> new AtomicInteger(0))
-                .getAndIncrement() % gestionnaires.size();
-        Gestionnaire assignedGestionnaire = gestionnaires.get(index);
-
         Demande newDemande = new Demande(
                 demandeRequest.getTitle(),
                 demandeRequest.getDescription(),
@@ -250,23 +245,10 @@ public class DemandeController {
                 DemandeStatut.EN_COURS,
                 clientOpt.get(),
                 formationOpt.get(),
-                assignedGestionnaire
+                null // No gestionnaire assigned
         );
 
         return demandeRepository.save(newDemande);
-    }
-
-    private DepartmentType mapDemandeTypeToDepartmentType(DemandeType demandeType) {
-        switch (demandeType) {
-            case REJOINDRE:
-                return DepartmentType.REJOINDRE;
-            case ADMINISTRATIVE:
-                return DepartmentType.ADMINISTRATIVE;
-            case RECLAMATION:
-                return DepartmentType.RECLAMATION;
-            default:
-                throw new IllegalArgumentException("Unknown demande type");
-        }
     }
 
     @PutMapping("/update/{id}")
@@ -276,6 +258,33 @@ public class DemandeController {
             demande.setStatut(demandeUpdate.getStatut());
             return demandeRepository.save(demande);
         }).orElseThrow(() -> new RuntimeException("Demande not found"));
+    }
+    
+    
+    //assign demande
+    /*** Choose a Demand ***/
+    @PostMapping("/{demandeId}/choose")
+    @PreAuthorize("hasRole('GESTIONNAIRE')")
+    public ResponseEntity<Map<String, String>> chooseDemande(@PathVariable Long demandeId) {
+        CustomJwt jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
+        Gestionnaire gestionnaire = gestionnaireRepository.findByEmail(jwt.getEmail())
+                .orElseThrow(() -> new RuntimeException("Gestionnaire not found"));
+
+        Optional<Demande> optionalDemande = demandeRepository.findById(demandeId);
+        if (optionalDemande.isPresent()) {
+            Demande demande = optionalDemande.get();
+            if (demande.getGestionnaireAssigne() == null) {
+                demande.setGestionnaireAssigne(gestionnaire);
+                demandeRepository.save(demande);
+                return ResponseEntity.ok(Map.of("message", "Demande chosen successfully"));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "Demande already assigned"));
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Demande not found"));
+        }
     }
 
     @DeleteMapping("/delete/{id}")

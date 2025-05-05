@@ -1,18 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Demande } from '../../../domains/demande.model';
+import { DemandeService } from '../../../services/demande/demande.service';
+import { KeycloakService } from '../../../services/keycloak/keycloak.service';
 
-interface Mail {
-  id: number;
-  from: string;
-  subject: string;
-  content: string;
-  date: string;
-  starred: boolean;
-  selected: boolean;
-  hasAttachment: boolean;
-}
 
 @Component({
   selector: 'app-mailbox',
@@ -21,82 +14,70 @@ interface Mail {
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule]
 })
-export class MailboxComponent {
-  // Add these properties
+export class MailboxComponent implements OnInit {
   currentFolder: string = 'inbox';
   selectAll = false;
   currentPage = 1;
   itemsPerPage = 10;
-  totalItems = 200;
+  totalItems = 0;
+  demands: Demande[] = [];
 
-  // Add this method
-  changeFolder(folder: string): void {
-    this.currentFolder = folder;
-    // Add any additional logic for folder change
+  constructor(
+    private demandeService: DemandeService,
+    private keycloakService: KeycloakService
+  ) {}
+
+  async ngOnInit(): Promise<void> {
+    try {
+      const isLoggedIn = await this.keycloakService.isLoggedIn();
+      if (isLoggedIn) {
+        this.loadUnassignedDemands();
+      } else {
+        console.error('User not logged in');
+        await this.keycloakService.login();
+      }
+    } catch (error) {
+      console.error('Keycloak initialization error:', error);
+    }
   }
 
-  mails: Mail[] = [
-    {
-      id: 1,
-      from: 'Alexander Pierce',
-      subject: 'AdminLTE 3.0 Issue',
-      content: 'Trying to find a solution to this problem...',
-      date: '5 mins ago',
-      starred: true,
-      selected: false,
-      hasAttachment: false
-    },
-    {
-      id: 2,
-      from: 'Alexander Pierce',
-      subject: 'AdminLTE 3.0 Issue',
-      content: 'Trying to find a solution to this problem...',
-      date: '5 mins ago',
-      starred: true,
-      selected: false,
-      hasAttachment: false
-    },
-    {
-      id: 3,
-      from: 'Alexander test',
-      subject: 'AdminLTE 3.0 Issue',
-      content: 'Trying to find a solution to this problem...',
-      date: '5 mins ago',
-      starred: true,
-      selected: false,
-      hasAttachment: false
-    },
-    {
-      id: 4,
-      from: 'test Pierce',
-      subject: 'AdminLTE 3.0 Issue',
-      content: 'Trying to find a solution to this problem...',
-      date: '5 mins ago',
-      starred: true,
-      selected: false,
-      hasAttachment: false
-    },
-    // Add more mail objects as needed
-  ];
+  loadUnassignedDemands(): void {
+    this.demandeService.getUnassignedDemandes().subscribe({
+      next: (demands) => {
+        this.demands = demands.map(demand => ({
+          ...demand,
+          selected: false
+        }));
+        this.totalItems = demands.length;
+      },
+      error: (err) => console.error('Error fetching demands:', err)
+    });
+  }
+
+  assignDemande(demandeId: number): void {
+    this.demandeService.assignDemande(demandeId).subscribe({
+      next: () => {
+        this.loadUnassignedDemands();
+        alert('Demande assigned successfully');
+      },
+      error: (err) => console.error('Error assigning demande:', err)
+    });
+  }
 
   toggleSelectAll(): void {
     this.selectAll = !this.selectAll;
-    this.mails = this.mails.map(mail => ({
-      ...mail,
+    this.demands = this.demands.map(demand => ({
+      ...demand,
       selected: this.selectAll
     }));
   }
 
-  toggleStar(mail: Mail): void {
-    mail.starred = !mail.starred;
-  }
-
   deleteSelected(): void {
-    this.mails = this.mails.filter(mail => !mail.selected);
+    this.demands = this.demands.filter(demand => !demand.selected);
   }
 
-  refreshMails(): void {
-    // Implement refresh logic here
+  refreshDemands(): void {
+    this.loadUnassignedDemands();
     this.currentPage = 1;
   }
 

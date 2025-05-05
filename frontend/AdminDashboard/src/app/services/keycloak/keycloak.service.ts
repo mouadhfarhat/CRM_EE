@@ -37,29 +37,27 @@ export class KeycloakService {
         console.error("Keycloak instance is undefined!");
         return;
       }
-  
+
       const authenticated = await this.keycloak.init({
         onLoad: 'login-required',
         checkLoginIframe: false,
       });
-  
+
       console.log('Authenticated:', authenticated);
-  
+
       if (authenticated) {
         this._profile = (await this.keycloak.loadUserProfile()) as UserProfile;
         this._profile.token = this.keycloak.token || '';
         sessionStorage.setItem('token', this._profile.token);
-        console.log('Token stored in sessionStorage:', this._profile.token);
+        console.log('Token stored in sessionStorage:', this._profile.token.substring(0, 20) + '...');
       } else {
         console.warn("User not authenticated. Redirecting to login.");
-        this.keycloak.login();
+        await this.keycloak.login();
       }
     } catch (error) {
       console.error('Keycloak initialization failed:', error);
     }
   }
-  
-  
 
   async login(): Promise<void> {
     await this.keycloak?.login();
@@ -67,8 +65,8 @@ export class KeycloakService {
 
   async logout(): Promise<void> {
     sessionStorage.clear();
-    this.tokenService.token = ''; 
-    this.keycloak?.clearToken(); // Clears the stored Keycloak token
+    this.tokenService.token = '';
+    this.keycloak?.clearToken();
     await this.keycloak?.logout({ redirectUri: 'http://localhost:4200' });
   }
 
@@ -77,19 +75,46 @@ export class KeycloakService {
     console.log('User is logged in:', authenticated);
     return authenticated;
   }
-  
 
   async getToken(): Promise<string | undefined> {
-    if (this.keycloak) {
+    if (!this.keycloak) {
+      console.warn('Keycloak instance is undefined');
+      return undefined;
+    }
+
+    let token = sessionStorage.getItem('token');
+    if (token) {
       if (this.keycloak.isTokenExpired()) {
         console.log("Token expired, refreshing...");
-        await this.keycloak.updateToken(30); // Refresh if token is expiring in 30s
-        sessionStorage.setItem('token', this.keycloak.token || '');
+        await this.keycloak.updateToken(30);
+        token = this.keycloak.token || '';
+        sessionStorage.setItem('token', token);
+        console.log('Refreshed token:', token.substring(0, 20) + '...');
+      } else {
+        console.log('Retrieved token from sessionStorage:', token.substring(0, 20) + '...');
       }
-      return this.keycloak.token;
+      return token;
     }
+
+    console.warn('No token available in sessionStorage');
     return undefined;
   }
-  
-  
+
+  async getUserDetails(): Promise<{ sub: string; email: string } | null> {
+    if (!this.keycloak || !this.keycloak.authenticated) {
+      console.warn('User not authenticated or Keycloak not initialized');
+      return null;
+    }
+    try {
+      const profile = await this.keycloak.loadUserProfile();
+      return {
+        sub: this.keycloak.subject || '',
+        email: (profile as any).email || ''
+      };
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      return null;
+    }
+  }
+
 }
