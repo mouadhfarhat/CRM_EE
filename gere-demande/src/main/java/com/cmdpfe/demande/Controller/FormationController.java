@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -286,4 +287,87 @@ public class FormationController {
 
         return ResponseEntity.ok(stats);
     }
+    
+    
+    
+    
+    @PostMapping("/{id}/interest")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<Map<String, String>> markInterestInFormation(@PathVariable Long id) {
+        CustomJwt jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
+        Optional<Formation> formationOpt = formationRepository.findById(id);
+        if (formationOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Optional<Client> clientOpt = Optional.ofNullable(clientRepository.findByEmail(jwt.getEmail()));
+        if (clientOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Client client = clientOpt.get();
+        Formation formation = formationOpt.get();
+
+        if (!client.getInterested().contains(formation)) {
+            client.getInterested().add(formation);
+            clientRepository.save(client);
+
+            Demande demande = new Demande();
+            demande.setClient(client);
+            demande.setFormation(formation);
+            demande.setType(DemandeType.REJOINDRE);
+            demandeRepository.save(demande);
+
+            Notification notification = new Notification();
+            notification.setClient(client);
+            notification.setType(NotificationType.INTEREST_CONFIRMATION);
+            notification.setTitle("Intérêt enregistré pour la formation");
+            notification.setMessage(String.format(
+                    "Vous avez marqué un intérêt pour la formation « %s ». Vous serez notifié des nouvelles formations dans cette catégorie.",
+                    formation.getTitle()
+            ));
+            notification.setCreatedAt(LocalDateTime.now());
+            notification.setRead(false);
+            notificationRepository.save(notification);
+        }
+
+        return ResponseEntity.ok(Map.of("message", "Interest in formation and category registered successfully"));
+    }
+    
+    @DeleteMapping("/{id}/interest")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<Map<String, String>> unmarkInterestInFormation(@PathVariable Long id) {
+        CustomJwt jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
+        Optional<Formation> formationOpt = formationRepository.findById(id);
+        if (formationOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Optional<Client> clientOpt = Optional.ofNullable(clientRepository.findByEmail(jwt.getEmail()));
+        if (clientOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Client client = clientOpt.get();
+        Formation formation = formationOpt.get();
+
+        if (client.getInterested().contains(formation)) {
+            client.getInterested().remove(formation);
+            clientRepository.save(client);
+            return ResponseEntity.ok(Map.of("message","Interest removed from formation"));
+        }
+
+        return ResponseEntity.ok(Map.of("message", "Interest removed from formation"));
+    }
+    
+    @GetMapping("/interested")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<List<Long>> getInterestedFormationIds() {
+        CustomJwt jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
+        Client client = clientRepository.findByEmail(jwt.getEmail());
+        if (client == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        List<Long> ids = client.getInterested().stream().map(Formation::getId).toList();
+        return ResponseEntity.ok(ids);
+    }
+
+
 }

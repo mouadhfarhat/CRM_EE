@@ -48,6 +48,13 @@ public class SecurityConfig {
                 .requestMatchers("/gestionnaires/me").authenticated()
                 .requestMatchers("/demandes/my").hasRole("CLIENT")
                 .requestMatchers("/demandes/historique").hasRole("CLIENT")
+                .requestMatchers("/formations/{id}/interest").hasRole("CLIENT")
+                .requestMatchers("/formations/interested").hasRole("CLIENT")
+
+                
+
+
+
                 .requestMatchers("/demandes/{id}/rate").hasRole("CLIENT")
                 .requestMatchers("/api/clients/by-username/{username}").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")
                 .requestMatchers("/api/users/me/{id}/formations/count").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")

@@ -100,6 +100,17 @@ createFormation(formation: Formation): Observable<Formation> {
   updateFormation1(formation: Formation): Observable<Formation> {
     return this.http.put<Formation>(`${this.apiUrl}/${formation.id}`, formation);
   }
+markInterest(formationId: number): Observable<{ message: string }> {
+  return this.http.post<{ message: string }>(`${this.apiUrl}/${formationId}/interest`, {});
+}
+
+unmarkInterest(formationId: number): Observable<{ message: string }> {
+  return this.http.delete<{ message: string }>(`${this.apiUrl}/${formationId}/interest`);
+}
+
+getInterestedFormations(): Observable<number[]> {
+  return this.http.get<number[]>(`${this.apiUrl}/interested`);
+}
 
 
 

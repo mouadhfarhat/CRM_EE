@@ -6,5 +6,6 @@ public enum NotificationType {
 	REMINDER,
 	STATUS_UPDATE,
 	RATING_REQUEST,
+	INTEREST_CONFIRMATION
 
 }

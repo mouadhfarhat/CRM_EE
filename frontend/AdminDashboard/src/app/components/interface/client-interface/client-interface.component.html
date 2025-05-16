@@ -60,26 +60,39 @@
                style="max-height: 180px; object-fit: contain;"/>
         </div>
         <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-3">
-          <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
-            <div>
-              <span class="font-medium text-secondary text-xs">{{ item.category }}</span>
-              <div class="text-base font-medium text-900 mt-1">{{ item.title }}</div>
-            </div>
-            <div class="surface-100 p-1 border-round-2xl">
-              <div class="surface-0 flex align-items-center gap-1 justify-content-center py-1 px-2 border-round-2xl shadow-1">
-                <span class="text-900 font-medium text-xs">{{ item.rating }}</span>
-                <i class="pi pi-star-fill text-yellow-500 text-xs"></i>
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-column md:align-items-end gap-2">
-            <span class="text-lg font-semibold text-900">{{ item.price | currency }}</span>
-            <div class="flex gap-1">
-              <p-button size="small" icon="pi pi-heart" [outlined]="true"></p-button>
-              <p-button size="small" icon="pi pi-envelope" label="Make Demande" [routerLink]="'/composeMail'"></p-button>
-            </div>
-          </div> <!-- This closes the md:align-items-end div -->
-        </div> <!-- This closes the flex-1 gap-3 div -->
+  <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
+    <div>
+      <span class="font-medium text-secondary text-xs">{{ item.category }}</span>
+      <div class="text-base font-medium text-900 mt-1">{{ item.title }}</div>
+    </div>
+    <div class="surface-100 p-1 border-round-2xl">
+      <div class="surface-0 flex align-items-center gap-1 justify-content-center py-1 px-2 border-round-2xl shadow-1">
+        <span class="text-900 font-medium text-xs">{{ item.rating }}</span>
+        <i class="pi pi-star-fill text-yellow-500 text-xs"></i>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-column md:align-items-end gap-2">
+    <span class="text-lg font-semibold text-900">{{ item.price | currency }}</span>
+    <div class="flex gap-1">
+<p-button
+  size="small"
+  [icon]="isInterested(item.id) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+  [severity]="isInterested(item.id) ? 'danger' : 'secondary'"
+  [outlined]="!isInterested(item.id)"
+  pTooltip="Mark as Interested"
+  (onClick)="toggleInterest(item.id)"
+></p-button>
+
+      <p-button
+        size="small"
+        icon="pi pi-envelope"
+        label="Make Demande"
+        [routerLink]="'/composeMail'"
+      ></p-button>
+    </div>
+  </div>
+</div>
       </div> <!-- This closes the main flex container -->
     </div>
   </div>
@@ -117,7 +130,14 @@
                           <div class="flex flex-column gap-3 mt-3">
                             <span class="text-xl font-semibold text-900">{{ item.price | currency }}</span>
                             <div class="flex gap-2">
-                              <p-button icon="pi pi-heart" [outlined]="true" />
+<p-button
+  size="small"
+  [icon]="isInterested(item.id) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+  [severity]="isInterested(item.id) ? 'danger' : 'secondary'"
+  [outlined]="!isInterested(item.id)"
+  pTooltip="Mark as Interested"
+  (onClick)="toggleInterest(item.id)"
+></p-button>
                               <p-button
                                 size="small"
                                 icon="pi pi-envelope"
