@@ -1,110 +1,60 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';  
-import { FormsModule } from '@angular/forms';  
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DataViewModule } from 'primeng/dataview';
-import { SelectButtonModule } from 'primeng/selectbutton';  
-import { FormationService } from '../../../services/formation/formation.service';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RatingModule } from 'primeng/rating';
-import { Formation } from '../../../domains/formation';
-import { Router } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { TagModule } from 'primeng/tag';
+import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { RouterLink } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { Router, RouterLink } from '@angular/router';
 
-
+import { FormationService } from '../../../services/formation/formation.service';
+import { DemandeService }   from '../../../services/demande/demande.service';
+import { Formation }        from '../../../domains/formation';
 
 @Component({
   selector: 'app-historique',
   standalone: true,
   imports: [
-    HttpClientModule,
     CommonModule,
-    DialogModule,
-    DataViewModule,
-    RatingModule,
     FormsModule,
-    SelectButtonModule,
-    ButtonModule,
+    RatingModule,
     TagModule,
+    ButtonModule,
+    DialogModule,
+    SelectButtonModule,
     RouterLink
   ],
   templateUrl: './historique.component.html',
-  styleUrls: ['./historique.component.css'],
-  providers: [MessageService, ConfirmationService, FormationService],
+  styleUrls: ['./historique.component.css']
 })
 export class HistoriqueComponent implements OnInit {
   formations: Formation[] = [];
-  displayDialog: boolean = false;
-  selectedFormation: Formation | null = null;
-  
-  constructor(
-    private formationService: FormationService,
-    private router: Router
-  ) {}
+  loading = true;
+  error: string| null = null;
+
+  constructor(private demandeService: DemandeService) {}
 
   ngOnInit(): void {
-    this.loadFormations();
-  }
-
-  loadFormations(): void {
-    this.formationService.getFormations().subscribe(
-      (data) => {
+    this.demandeService.getHistorique().subscribe({
+      next: data => {
+        console.log('historique payload:', data);
         this.formations = data;
+        this.loading = false;
       },
-      (error) => {
-        console.error('Error loading formations:', error);
-        // Fallback to static data if API fails
-      }
-    );
-  }
-
-  getImageUrl(imageName: string | undefined): string {
-    if (!imageName) return 'assets/images/placeholder.jpg';
-    return `assets/images/formations/${imageName}`;
-  }
-
-  getStatusSeverity(status: string | undefined): "success" | "secondary" | "info" | "warning" | "danger" | "contrast" | undefined {
-    if (!status) return 'info';
-    
-    switch (status.toLowerCase()) {
-      case 'completed': return 'success';
-      case 'in progress': return 'info';
-      case 'pending': return 'warning';
-      case 'cancelled': return 'danger';
-      default: return 'info';
-    }
-  }
-
-
-  openDialog(formation: Formation): void {
-    this.selectedFormation = formation;
-    this.displayDialog = true;
-  }
-
-  closeDialog(): void {
-    this.displayDialog = false;
-    this.selectedFormation = null;
-  }
-
-  navigateToComposeMail(formation: Formation): void {
-    // You could also use queryParams to pass formation info
-    this.router.navigate(['/composeMail'], { 
-      state: { 
-        formationInfo: formation 
+      error: err => {
+        console.error('Error loading history', err);
+        this.error = err.message || 'Server error';
+        this.loading = false;
       }
     });
   }
-
-  // For handling rating changes
+  // Called whenever the user clicks a star
   onRatingChange(formation: Formation, value: number): void {
-    formation.rating = value;
-    // Here you would typically save the review to backend
-    console.log(`Submitting rating ${value} for formation ${formation.name}`);
-    // You could implement a service method to submit the review
+    if (!formation.id) return;
+    this.demandeService.submitRating(formation.id, value).subscribe({
+      next: () => console.log(`Rated formation ${formation.title} = ${value}`),
+      error: e => console.error('Rating failed', e)
+    });
   }
-
- 
-  }
+}

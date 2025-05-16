@@ -22,6 +22,9 @@ public class CustomJwt extends JwtAuthenticationToken {
         this.firstname = jwt.getClaimAsString("given_name");
         this.lastname = jwt.getClaimAsString("family_name");
         this.phoneNumber = jwt.getClaimAsString("phone_number");
+        System.out.println("JWT Subject: " + id);
+        System.out.println("Email: " + email);
+        System.out.println("Username: " + username);
     }
 
     public String getId() {
@@ -47,4 +50,9 @@ public class CustomJwt extends JwtAuthenticationToken {
     public String getPhoneNumber() {
         return phoneNumber;
     }
+
+	public Object getSubject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -15,7 +15,7 @@ public interface GestionnaireRepository extends JpaRepository<Gestionnaire, Long
     //List<Gestionnaire> findByDepartment(DemandeType department);
     List<Gestionnaire> findByDepartment(DemandeType type);
     List<Gestionnaire> findByDepartment(DepartmentType departmentType);
-    Gestionnaire findByKeycloakId(String keycloakId);
+    Optional<Gestionnaire> findByKeycloakId(String keycloakId);
     Optional<Gestionnaire> findByEmail(String email);
     
 }

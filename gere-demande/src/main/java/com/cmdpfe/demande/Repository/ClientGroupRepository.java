@@ -12,6 +12,8 @@ public interface ClientGroupRepository extends JpaRepository<ClientGroup, Long> 
     @Query("SELECT g FROM ClientGroup g WHERE g.formation.id = :formationId")
     List<ClientGroup> findByFormationId(@Param("formationId") Long formationId);
 
+	List<ClientGroup> findByNameContainingIgnoreCase(String name);
+
     
 
 }

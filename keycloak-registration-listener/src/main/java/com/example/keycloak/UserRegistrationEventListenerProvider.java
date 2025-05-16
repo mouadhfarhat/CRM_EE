@@ -20,7 +20,7 @@ import java.util.Map;
 public class UserRegistrationEventListenerProvider implements EventListenerProvider {
     private final KeycloakSession session;
     private final String syncEndpoint = "http://host.docker.internal:8080/sync-user";
-    private final String apiKey = "7b9f2c4d-8e1a-4b3c-9d5e-f6a7b8c9d0e1"; // Match Spring Boot
+    private final String apiKey = "7b9f2c4d-8e1a-4b3c-9d5e-f6a7b8c9d0e1";
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -30,12 +30,12 @@ public class UserRegistrationEventListenerProvider implements EventListenerProvi
 
     @Override
     public void onEvent(Event event) {
-        if (event.getType() == EventType.REGISTER || event.getType() == EventType.LOGIN) {
+        if (event.getType() == EventType.REGISTER || event.getType() == EventType.LOGIN || event.getType() == EventType.UPDATE_PROFILE) {
             RealmModel realm = session.realms().getRealm(event.getRealmId());
             UserModel user = session.users().getUserById(realm, event.getUserId());
 
             if (user != null) {
-                // Handle REGISTER: Assign client role
+                // Assign role only on register
                 if (event.getType() == EventType.REGISTER) {
                     RoleModel clientRole = realm.getRole("client");
                     if (clientRole != null && !user.hasRole(clientRole)) {
@@ -43,7 +43,6 @@ public class UserRegistrationEventListenerProvider implements EventListenerProvi
                     }
                 }
 
-                // Determine user type based on roles
                 String type = null;
                 if (user.hasRole(realm.getRole("ADMIN"))) {
                     type = "admin";

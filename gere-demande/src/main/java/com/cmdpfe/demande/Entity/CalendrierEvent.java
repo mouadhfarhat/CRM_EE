@@ -26,7 +26,7 @@ public class CalendrierEvent {
 
     @ManyToOne
     @JoinColumn(name = "gestionnaire_id")
-    @JsonIgnore // gestionnaire hidden from frontend
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // gestionnaire hidden from frontend
     private Gestionnaire gestionnaire;
 
     @ManyToMany

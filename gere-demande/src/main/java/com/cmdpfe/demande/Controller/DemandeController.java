@@ -6,6 +6,7 @@ import com.cmdpfe.demande.Repository.DemandeRepository;
 import com.cmdpfe.demande.Repository.FormationRepository;
 import com.cmdpfe.demande.Repository.GestionnaireRepository;
 import com.cmdpfe.demande.Repository.NotificationRepository;
+import com.cmdpfe.demande.Repository.RatingRepository;
 import com.cmdpfe.demande.jwt.CustomJwt;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,20 +31,26 @@ public class DemandeController {
     private final FormationRepository formationRepository;
     private final GestionnaireRepository gestionnaireRepository;
     private final NotificationRepository notificationRepository;
+    private final RatingRepository ratingRepository;
+
+    
+    
 
     private final ConcurrentHashMap<DepartmentType, AtomicInteger> roundRobinCounter = new ConcurrentHashMap<>();
 
     public DemandeController(DemandeRepository demandeRepository, ClientRepository clientRepository,
                              FormationRepository formationRepository, GestionnaireRepository gestionnaireRepository,
-                             NotificationRepository notificationRepository) {
+                             NotificationRepository notificationRepository,
+                             RatingRepository ratingRepository) {
         this.demandeRepository = demandeRepository;
         this.clientRepository = clientRepository;
         this.formationRepository = formationRepository;
         this.gestionnaireRepository = gestionnaireRepository;
         this.notificationRepository = notificationRepository;
+        this.ratingRepository = ratingRepository;
     }
 
-    @GetMapping("/search2")
+    @GetMapping("/search2")	
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Client>> searchClientsByFormationAndType(
             @RequestParam("formationId") Long formationId,
@@ -141,33 +148,36 @@ public class DemandeController {
 
     @PutMapping("/{demandeId}/share/{gestionnaireId}")
     @PreAuthorize("hasRole('GESTIONNAIRE')")
-    public ResponseEntity<Map<String, String>> shareDemandeWithGestionnaire(@PathVariable Long demandeId, @PathVariable Long gestionnaireId) {
-        CustomJwt jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
-        if (!gestionnaireRepository.findById(gestionnaireId)
-                .map(g -> g.getEmail().equals(jwt.getEmail()))
-                .orElse(false)) {
-            throw new RuntimeException("Unauthorized: Gestionnaire ID does not match authenticated user");
-        }
-        Optional<Demande> optionalDemande = demandeRepository.findById(demandeId);
-        Optional<Gestionnaire> optionalGestionnaire = gestionnaireRepository.findById(gestionnaireId);
+    public ResponseEntity<Map<String, String>> shareDemandeWithGestionnaire(
+            @PathVariable Long demandeId,
+            @PathVariable Long gestionnaireId) {
 
+        CustomJwt jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
         Map<String, String> response = new HashMap<>();
 
-        if (optionalDemande.isPresent() && optionalGestionnaire.isPresent()) {
-            Demande demande = optionalDemande.get();
-            Gestionnaire friend = optionalGestionnaire.get();
 
-            demande.setSharedWith(friend);
-            demandeRepository.save(demande);
-
-            response.put("message", "Demande shared with Gestionnaire ID: " + gestionnaireId);
-            return ResponseEntity.ok(response);
-        } else {
-            response.put("error", "Demande or Gestionnaire not found");
+        // 2. Verify the target gestionnaire exists
+        Optional<Gestionnaire> targetGestionnaire = gestionnaireRepository.findById(gestionnaireId);
+        if (targetGestionnaire.isEmpty()) {
+            response.put("error", "Target gestionnaire not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-    }
 
+        // 3. Verify the demande exists
+        Optional<Demande> demande = demandeRepository.findById(demandeId);
+        if (demande.isEmpty()) {
+            response.put("error", "Demande not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        // 4. Share the demande with the target gestionnaire
+        demande.get().setSharedWith(targetGestionnaire.get());
+        demandeRepository.save(demande.get());
+
+        // 5. Return success
+        response.put("message", "Demande shared with Gestionnaire ID: " + gestionnaireId);
+        return ResponseEntity.ok(response);
+    }
     @PutMapping("/{demandeId}/status")
     @PreAuthorize("hasRole('GESTIONNAIRE')")
     public ResponseEntity<Map<String, Object>> updateDemandeStatus(
@@ -288,9 +298,119 @@ public class DemandeController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String deleteDemande(@PathVariable Long id) {
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<Map<String, String>> deleteDemande(@PathVariable Long id) {
+        CustomJwt jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
+        String keycloakId = jwt.getId();
+
+        Client client = clientRepository.findByKeycloakId(keycloakId);
+        Optional<Demande> optionalDemande = demandeRepository.findById(id);
+
+        if (optionalDemande.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Demande not found"));
+        }
+
+        Demande demande = optionalDemande.get();
+        if (!demande.getClient().getId().equals(client.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Not authorized to delete this demande"));
+        }
+
         demandeRepository.deleteById(id);
-        return "Demande deleted successfully";
+        return ResponseEntity.ok(Map.of("message", "Demande deleted successfully"));
+    }
+
+
+    
+    
+    @GetMapping("/my")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<List<Demande>> myDemandesByDbId() {
+      // 1) extract Keycloak sub
+      CustomJwt jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
+      String keycloakId = jwt.getId();
+
+      // 2) lookup the Client row in your Oracle DB
+      Client me = clientRepository.findByKeycloakId(keycloakId);
+
+      // 3) fetch all demandes by that Oracle-PK
+      List<Demande> history = demandeRepository.findByClient_IdOrderByCreatedAtDesc(me.getId());
+      return ResponseEntity.ok(history);
+    }
+    
+    @GetMapping("/historique")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<List<Formation>> getHistorique() {
+        CustomJwt jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
+        String keycloakId = jwt.getId();
+
+        Client client = clientRepository.findByKeycloakId(keycloakId);
+
+        List<Demande> demandes = demandeRepository.findByClientIdAndType(client.getId(), DemandeType.REJOINDRE);
+
+        List<Formation> formations = demandes.stream()
+                .map(Demande::getFormation)
+                .distinct()
+                .toList();
+
+        return ResponseEntity.ok(formations);
+    }
+    
+    @PutMapping("/{id}/rate")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<Map<String, String>> rateFormation(
+        @PathVariable Long id,
+        @RequestParam int value
+    ) {
+        // 1) Validate rating range
+        if (value < 1 || value > 3) {
+            return ResponseEntity
+                .badRequest()
+                .body(Map.of("error", "Rating must be between 1 and 3"));
+        }
+
+        // 2) Load the formation or 404
+        Optional<Formation> formationOpt = formationRepository.findById(id);
+        if (formationOpt.isEmpty()) {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", "Formation not found"));
+        }
+        Formation formation = formationOpt.get();
+
+        // 3) Identify the current client from the JWT
+        CustomJwt jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
+        Client client = clientRepository.findByKeycloakId(jwt.getId());
+        if (client == null) {
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("error", "Client not found"));
+        }
+
+        // 4) Upsert this client's Rating
+        Rating rating = ratingRepository
+            .findByClient_IdAndFormation_Id(client.getId(), formation.getId())
+            .orElseGet(() -> {
+                Rating r = new Rating();
+                r.setClient(client);
+                r.setFormation(formation);
+                return r;
+            });
+        rating.setValue(value);
+        ratingRepository.save(rating);
+
+        // 5) Recompute and persist the new average
+        double avg = ratingRepository.findByFormation_Id(formation.getId())
+            .stream()
+            .mapToInt(Rating::getValue)
+            .average()
+            .orElse(0.0);
+        formation.setAverageRating(avg);
+        formationRepository.save(formation);
+
+        return ResponseEntity.ok(Map.of("message", "Average rating is now " + avg));
     }
 }
+  
+
+
+

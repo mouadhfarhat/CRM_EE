@@ -22,4 +22,7 @@ public class NotificationController {
     public List<Notification> getClientNotifications(@PathVariable Long clientId) {
         return notificationRepo.findByClientIdOrderByCreatedAtDesc(clientId);
     }
+    
+    
+    
 }

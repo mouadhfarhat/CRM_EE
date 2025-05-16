@@ -3,6 +3,7 @@ import { Client } from "./client";
 import { EventStatus, EventType, RecurrenceType } from "./enums";
 import { Formation } from "./formation";
 import { Gestionnaire } from "./gestionnaire.model";
+import { ClientGroup } from "./clients-group.model"; // Ensure this import is added
 
 export interface CalendrierEvent {
   id?: number;
@@ -15,10 +16,10 @@ export interface CalendrierEvent {
   status: EventStatus;
   reminderMinutesBefore?: number;
   gestionnaire?: Gestionnaire;
-  clients?: Client[];
+  clients?: Client[]; // Optional: Keep if both clients and groups are needed, or remove if groups replace clients
+  groups?: ClientGroup[]; // Added to associate events with groups
   formation?: Formation;
   attachments?: Attachment[];
   backgroundColor?: string;
   borderColor?: string;
-  
 }

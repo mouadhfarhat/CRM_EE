@@ -1,6 +1,7 @@
 package com.cmdpfe.demande.Controller;
 
 import com.cmdpfe.demande.Entity.Client;
+import com.cmdpfe.demande.Entity.Notification;
 import com.cmdpfe.demande.Repository.ClientRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,4 +90,23 @@ public class ClientController {
     public void deleteClient(@PathVariable Long id) {
         clientRepository.deleteById(id);
     }
+    @GetMapping("/by-username/{username}")
+    public Long getClientIdByUsername(@PathVariable String username) {
+        return clientRepository.findByUsername(username)
+                               .map(Client::getId)
+                               .orElseThrow(() -> new RuntimeException("Client not found"));
+    }
+ // In ClientController
+    @GetMapping("/by-formation/{formationId}")
+    public List<Client> getClientsByFormation(@PathVariable Long formationId) {
+        return clientRepository.findByFormationId(formationId);
+    }
+    
+ // In ClientController
+    @GetMapping("/by-group/{groupId}")
+    public List<Client> getClientsByGroup(@PathVariable Long groupId) {
+        return clientRepository.findByGroupId(groupId);
+    }
+
+
 }

@@ -24,4 +24,17 @@ public interface FormationRepository extends JpaRepository<Formation, Long> {
     @Query("SELECT f FROM Formation f WHERE f.registrationEndDate <= :today AND :today < f.dateDebut")
     List<Formation> findFormationsEligibleForGroups(@Param("today") LocalDate today);
 
+    @Query("select count(f) from Formation f join f.interestedClients c where c.keycloakId = :keycloakId")
+    long countByInterestedClients_KeycloakId(@Param("keycloakId") String keycloakId);
+
+
+	long countByInterestedClients_Id(Long id);
+	
+	@Query(value = "SELECT COUNT(*) FROM client_group WHERE formation_id = :formationId", nativeQuery = true)
+	int countGroupsByFormationId(@Param("formationId") Long formationId);
+
+	@Query(value = "SELECT COUNT(DISTINCT client_id) FROM demande WHERE formation_id = :formationId", nativeQuery = true)
+	int countDemandeClientsByFormationId(@Param("formationId") Long formationId);
+
+
 }

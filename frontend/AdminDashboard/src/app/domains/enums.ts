@@ -36,3 +36,12 @@ export enum DemandeType {
     CANCELLED = 'CANCELLED',
     POSTPONED = 'POSTPONED'
   }
+
+  export enum NotificationType {
+    NEW_COURSE = 'NEW_COURSE',
+    GROUP_CREATED = 'GROUP_CREATED',
+    CALENDAR_EVENT = 'CALENDAR_EVENT',
+    REMINDER = 'REMINDER',
+    STATUS_UPDATE = 'STATUS_UPDATE',
+    RATING_REQUEST = 'RATING_REQUEST'
+  }

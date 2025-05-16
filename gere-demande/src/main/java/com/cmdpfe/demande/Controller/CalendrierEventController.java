@@ -4,11 +4,13 @@ import com.cmdpfe.demande.Entity.CalendrierEvent;
 import com.cmdpfe.demande.Entity.Client;
 import com.cmdpfe.demande.Entity.ClientGroup;
 import com.cmdpfe.demande.Entity.Formation;
+import com.cmdpfe.demande.Entity.Gestionnaire;
 import com.cmdpfe.demande.Entity.Notification;
 import com.cmdpfe.demande.Entity.NotificationType;
 import com.cmdpfe.demande.Repository.CalendrierEventRepository;
 import com.cmdpfe.demande.Repository.ClientGroupRepository;
 import com.cmdpfe.demande.Repository.FormationRepository;
+import com.cmdpfe.demande.Repository.GestionnaireRepository;
 import com.cmdpfe.demande.Repository.NotificationRepository;
 
 import jakarta.transaction.Transactional;
@@ -38,11 +40,20 @@ public class CalendrierEventController {
     private NotificationRepository notificationRepo;
     @Autowired
     private ClientGroupRepository groupRepository;
+    @Autowired
+    private GestionnaireRepository gestionnaireRepository;
 
 
-    @PostMapping
+    @PostMapping("/add")
     @Transactional
     public ResponseEntity<CalendrierEvent> createEvent(@RequestBody CalendrierEvent event) {
+
+    	// Debug logging
+        System.out.println("Received event: " + event);
+        System.out.println("Gestionnaire: " + event.getGestionnaire());
+        if (event.getGestionnaire() != null) {
+            System.out.println("Gestionnaire ID: " + event.getGestionnaire().getId());
+        }
 
         // 1. Load Formation
         if (event.getFormation() == null || event.getFormation().getId() == null) {
@@ -52,7 +63,16 @@ public class CalendrierEventController {
                 .orElseThrow(() -> new RuntimeException("Formation not found"));
         event.setFormation(formation);
 
-        // 2. Load Groups selected
+        // 2. Validate and load Gestionnaire
+        if (event.getGestionnaire() == null || event.getGestionnaire().getId() == null) {
+            throw new RuntimeException("Gestionnaire must be provided");
+        }
+        Long gestionnaireId = event.getGestionnaire().getId();
+        Gestionnaire gestionnaire = gestionnaireRepository.findById(gestionnaireId)
+                .orElseThrow(() -> new RuntimeException("Gestionnaire with id " + gestionnaireId + " not found"));
+        event.setGestionnaire(gestionnaire);
+
+        // 3. Load Groups selected
         List<ClientGroup> selectedGroups = new ArrayList<>();
         if (event.getGroups() != null && !event.getGroups().isEmpty()) {
             for (ClientGroup group : event.getGroups()) {
@@ -65,7 +85,7 @@ public class CalendrierEventController {
         }
         event.setGroups(selectedGroups);
 
-        // 3. Automatically attach Clients from selected Groups (NOT formation)
+        // 4. Automatically attach Clients from selected Groups
         Set<Client> clientsToNotify = new HashSet<>();
         for (ClientGroup group : selectedGroups) {
             if (group.getClients() != null) {
@@ -74,10 +94,10 @@ public class CalendrierEventController {
         }
         event.setClients(new ArrayList<>(clientsToNotify));
 
-        // 4. Save Event
+        // 5. Save Event
         CalendrierEvent saved = eventRepo.save(event);
 
-        // 5. Notify clients linked to the selected Groups
+        // 6. Notify clients linked to the selected Groups
         if (!saved.getClients().isEmpty()) {
             String title = "Nouvel événement: " + saved.getTitle();
             String message = String.format(

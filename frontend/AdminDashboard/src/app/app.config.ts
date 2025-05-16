@@ -7,7 +7,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { KeycloakService } from './services/keycloak/keycloak.service';
-import { httpTokenInterceptor } from './services/interceptor/http-token.interceptor';
+import { HttpTokenInterceptor } from './services/interceptor/http-token.interceptor';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // Keycloak initialization factory
 export function kcFactory(kcService: KeycloakService) {
@@ -23,7 +24,12 @@ export function kcFactory(kcService: KeycloakService) {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(withInterceptors([httpTokenInterceptor])),
+    importProvidersFrom(HttpClientModule, DragDropModule),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpTokenInterceptor,
+      multi: true
+    },
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimations(),

@@ -23,3 +23,27 @@
     gap: 0.5rem;
   }
   
+  .custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+
+
+.d-flex.gap-2 > button {
+  min-width: 180px;
+  font-weight: 500;
+}
+.formation-card {
+  transition: all 0.3s ease;
+}
+.formation-card:hover {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+  border-color: #17a2b8;
+}

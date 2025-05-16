@@ -1,0 +1,93 @@
+.card-body {
+    padding: 1rem;
+    background-color: #1f2937; /* gray-900 */
+    color: #fff;
+    height: 100%;
+  }
+  
+  .card {
+    background-color: #111827; /* gray-800 */
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    padding: 1rem;
+  }
+  
+  /* Loading / Empty / Error */
+  .card .status-message {
+    padding: 1.5rem;
+    text-align: center;
+    font-style: italic;
+    color: #9ca3af; /* gray-400 */
+  }
+  
+  .card .error {
+    color: #f87171; /* red-400 */
+    font-weight: bold;
+  }
+  
+  /* Scrollable List */
+  .scrollable-list {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  /* Optional: Custom Scrollbar */
+  .scrollable-list::-webkit-scrollbar {
+    width: 8px;
+  }
+  .scrollable-list::-webkit-scrollbar-thumb {
+    background-color: #4b5563; /* gray-600 */
+    border-radius: 4px;
+  }
+  .scrollable-list::-webkit-scrollbar-track {
+    background-color: #1f2937; /* gray-900 */
+  }
+  
+  /* Formation Card */
+  .formation-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background-color: #374151; /* gray-700 */
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.2s;
+    margin-bottom: 1rem;
+  }
+  
+  .formation-card:hover {
+    background-color: #4b5563; /* gray-600 */
+  }
+  
+  /* Title & Category */
+  .formation-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .formation-category {
+    font-size: 0.875rem;
+    color: #d1d5db; /* gray-300 */
+  }
+  
+  /* Button */
+  .formation-card button {
+    background-color: #3b82f6; /* blue-500 */
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.4rem 1rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+  
+  .formation-card button:hover {
+    background-color: #2563eb; /* blue-600 */
+  }
+  

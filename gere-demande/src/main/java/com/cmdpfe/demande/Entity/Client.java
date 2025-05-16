@@ -25,6 +25,10 @@ public class Client extends User {
     @ManyToMany(mappedBy = "clients")
     @JsonIgnoreProperties("clients")
     private List<CalendrierEvent> events = new ArrayList<>();
+    @ManyToMany(mappedBy = "clients")
+    @JsonIgnoreProperties("clients")
+    private List<ClientGroup> groups = new ArrayList<>();
+
 
     // Constructors
     public Client() {}
@@ -33,6 +37,9 @@ public class Client extends User {
         super(keycloakId, username, email, firstname, lastname, phoneNumber);
         this.interested = interested;
     }
+    public List<ClientGroup> getGroups() { return groups; }
+    public void setGroups(List<ClientGroup> groups) { this.groups = groups; }
+
 
     // Getters & Setters
     public List<Formation> getInterested() { return interested; }

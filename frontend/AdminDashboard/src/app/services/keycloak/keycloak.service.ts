@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import Keycloak from 'keycloak-js';
+import Keycloak, { KeycloakProfile } from 'keycloak-js';
 import { TokenService } from '../token/token.service';
 import { UserProfile } from './user-profile';
 
@@ -67,7 +67,9 @@ export class KeycloakService {
     sessionStorage.clear();
     this.tokenService.token = '';
     this.keycloak?.clearToken();
-    await this.keycloak?.logout({ redirectUri: 'http://localhost:4200' });
+    await this.keycloak?.logout({
+      redirectUri: 'http://localhost:4200'
+    });
   }
 
   async isLoggedIn(): Promise<boolean> {
@@ -117,4 +119,18 @@ export class KeycloakService {
     }
   }
 
+  async loadUserProfile(): Promise<KeycloakProfile> {
+    if (!this.keycloak) {
+      throw new Error('Keycloak is not initialized');
+    }
+    return await this.keycloak.loadUserProfile();
+  }
+
+  getUserRoles(): string[] {
+    if (!this.keycloak || !this.keycloak.tokenParsed) {
+      return [];
+    }
+    const roles = this.keycloak.tokenParsed['realm_access']?.roles || [];
+    return roles;
+  }
 }

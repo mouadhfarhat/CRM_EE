@@ -181,4 +181,21 @@ public class ClientGroupController {
     public void deleteGroup(@PathVariable Long groupId) {
         groupRepo.deleteById(groupId);
     }
+ // In ClientGroupController
+    @GetMapping("/searchByName")
+    public ResponseEntity<List<ClientGroup>> searchGroupsByName(@RequestParam String name) {
+        List<ClientGroup> results = groupRepo.findByNameContainingIgnoreCase(name);
+        return ResponseEntity.ok(results);
+    }
+    
+ // In ClientGroupController
+    @GetMapping("/{groupId}/clients/count")
+    public ResponseEntity<Long> countClientsInGroup(@PathVariable Long groupId) {
+        Optional<ClientGroup> g = groupRepo.findById(groupId);
+        return g.map(gr ->
+            ResponseEntity.ok((long) gr.getClients().size())
+        ).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
 }

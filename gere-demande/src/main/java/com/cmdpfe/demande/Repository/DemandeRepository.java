@@ -34,6 +34,26 @@ public interface DemandeRepository extends JpaRepository<Demande, Long> {
     
     
     
+    
+    @Query("""
+    		SELECT d.client
+    		FROM Demande d
+    		WHERE d.formation.id = :formationId
+    		  AND d.type = :type
+    		  AND d.statut = :statut
+    		  AND d.client.id NOT IN (
+    		    SELECT DISTINCT c.id
+    		    FROM ClientGroup g
+    		    JOIN g.clients c
+    		    WHERE g.formation.id = :formationId
+    		  )
+    		""")
+    	List<Client> findEligibleClients(@Param("formationId") Long formationId,
+    	                                 @Param("type") DemandeType type,
+    	                                 @Param("statut") DemandeStatut statut);
+
+    
+    /*
  // Returns clients who made a "rejoindre" demande and whose status is TERMINE
     @Query("SELECT d.client FROM Demande d " +
            "WHERE d.formation.id = :formationId " +
@@ -43,7 +63,7 @@ public interface DemandeRepository extends JpaRepository<Demande, Long> {
         @Param("formationId") Long formationId,
         @Param("type") DemandeType type,
         @Param("statut") DemandeStatut statut
-    );
+    );*/
 
     @Query("SELECT g FROM Gestionnaire g WHERE g.department = :department")
     List<Gestionnaire> findGestionnairesByDepartment(@Param("department") DepartmentType department);
@@ -102,9 +122,16 @@ public interface DemandeRepository extends JpaRepository<Demande, Long> {
     	         AND d.formation.category.id = :catId
     	    """)
     	    List<Client> findClientsRequestingCategory(@Param("catId") Long categoryId);
+    long countByClient_KeycloakId(String keycloakId);
     
+    List<Demande> findByClient_IdOrderByCreatedAtDesc(Long clientId);
+
     
-    
+    //historique 
+    List<Demande> findByClientIdAndType(Long clientId, DemandeType type);
+
+	long countByClient_Id(Long id);
+
     
 
 }

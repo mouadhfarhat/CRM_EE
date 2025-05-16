@@ -8,4 +8,5 @@ import com.cmdpfe.demande.Entity.FoodCompany;
 
 public interface FoodCompanyRepository extends JpaRepository<FoodCompany, Long> {
     List<FoodCompany> findByNameContainingIgnoreCase(String name);
+    
 }

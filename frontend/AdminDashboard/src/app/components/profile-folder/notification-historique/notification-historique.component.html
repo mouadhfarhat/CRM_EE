@@ -1,0 +1,16 @@
+<div *ngIf="notifications.length > 0; else noNotifications" class="notification-scroll-container">
+  <ul class="notification-list">
+    <li *ngFor="let notification of notifications">
+      <span class="icon">{{ getIcon(notification.type) }}</span>
+      <div class="notification-content">
+        <strong>{{ notification.title }}</strong>
+        <p>{{ notification.message }}</p>
+        <small>{{ notification.createdAt | date: 'dd/MM/yyyy' }}</small>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<ng-template #noNotifications>
+  <p class="no-data">Aucune notification trouvée.</p>
+</ng-template>

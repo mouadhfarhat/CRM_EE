@@ -63,7 +63,7 @@ export class ClientGestionnaireComponent implements OnInit {
 
   selectFormation(formation: Formation): void {
     this.formationSearchTerm = formation.title;
-    this.selectedFormationId = formation.id;
+    this.selectedFormationId = formation.id!;
     this.filteredFormations = [];
   }
 

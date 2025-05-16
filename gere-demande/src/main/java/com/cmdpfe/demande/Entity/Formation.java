@@ -4,10 +4,13 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 public class Formation {
+
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,6 +21,12 @@ public class Formation {
     private LocalDate dateDebut;
     private LocalDate dateFin;
     private LocalDate registrationEndDate;
+
+    private Double averageRating;
+    private String imagePath; // NEW: To store the path or name of the image file
+    private Double price; // NEW: Price field
+
+    private String fileName; // NEW: PDF file name/path
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -44,147 +53,197 @@ public class Formation {
     private List<CalendrierEvent> events = new ArrayList<>();
 
     @OneToMany(mappedBy = "formation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("formation-group") // Important for groups serialization!
+    @JsonManagedReference("formation-group")
+    @JsonIgnore // Prevent deserialization of groups during POST
     private List<ClientGroup> groups = new ArrayList<>();
+    
+    
+    @OneToMany(mappedBy = "formation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Rating> ratings = new ArrayList<>();
 
 
-	public Long getId() {
-		return id;
+    // Getters and Setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public List<Rating> getRatings() {
+		return ratings;
+	}
+
+	public void setRatings(List<Rating> ratings) {
+		this.ratings = ratings;
 	}
 
 	public void setId(Long id) {
-		this.id = id;
-	}
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public LocalDate getDateDebut() {
-		return dateDebut;
-	}
+    public LocalDate getDateDebut() {
+        return dateDebut;
+    }
 
-	public void setDateDebut(LocalDate dateDebut) {
-		this.dateDebut = dateDebut;
-	}
+    public void setDateDebut(LocalDate dateDebut) {
+        this.dateDebut = dateDebut;
+    }
 
-	public LocalDate getDateFin() {
-		return dateFin;
-	}
+    public LocalDate getDateFin() {
+        return dateFin;
+    }
 
-	public void setDateFin(LocalDate dateFin) {
-		this.dateFin = dateFin;
-	}
+    public void setDateFin(LocalDate dateFin) {
+        this.dateFin = dateFin;
+    }
 
-	public LocalDate getRegistrationEndDate() {
-		return registrationEndDate;
-	}
+    public LocalDate getRegistrationEndDate() {
+        return registrationEndDate;
+    }
 
-	public void setRegistrationEndDate(LocalDate registrationEndDate) {
-		this.registrationEndDate = registrationEndDate;
-	}
+    public void setRegistrationEndDate(LocalDate registrationEndDate) {
+        this.registrationEndDate = registrationEndDate;
+    }
 
-	public Category getCategory() {
-		return category;
-	}
+    public Double getAverageRating() {
+        return averageRating;
+    }
 
-	public void setCategory(Category category) {
-		this.category = category;
-	}
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
+    }
 
-	public Formateur getFormateur() {
-		return formateur;
-	}
+    public Double getPrice() {
+        return price;
+    }
 
-	public void setFormateur(Formateur formateur) {
-		this.formateur = formateur;
-	}
+    public void setPrice(Double price) {
+        this.price = price;
+    }
 
-	public FoodCompany getFoodCompany() {
-		return foodCompany;
-	}
+    public String getFileName() {
+        return fileName;
+    }
 
-	public void setFoodCompany(FoodCompany foodCompany) {
-		this.foodCompany = foodCompany;
-	}
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
-	public List<Client> getInterestedClients() {
-		return interestedClients;
-	}
+    public Category getCategory() {
+        return category;
+    }
 
-	public void setInterestedClients(List<Client> interestedClients) {
-		this.interestedClients = interestedClients;
-	}
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
-	public List<Demande> getDemanded() {
-		return demanded;
-	}
+    public Formateur getFormateur() {
+        return formateur;
+    }
 
-	public void setDemanded(List<Demande> demanded) {
-		this.demanded = demanded;
-	}
+    public void setFormateur(Formateur formateur) {
+        this.formateur = formateur;
+    }
 
-	public List<CalendrierEvent> getEvents() {
-		return events;
-	}
+    public FoodCompany getFoodCompany() {
+        return foodCompany;
+    }
 
-	public void setEvents(List<CalendrierEvent> events) {
-		this.events = events;
-	}
+    public void setFoodCompany(FoodCompany foodCompany) {
+        this.foodCompany = foodCompany;
+    }
 
-	public List<ClientGroup> getGroups() {
-		return groups;
-	}
+    public List<Client> getInterestedClients() {
+        return interestedClients;
+    }
 
-	public void setGroups(List<ClientGroup> groups) {
-		this.groups = groups;
-	}
+    public void setInterestedClients(List<Client> interestedClients) {
+        this.interestedClients = interestedClients;
+    }
 
-	public Formation(Long id, String name, String title, String description, LocalDate dateDebut, LocalDate dateFin,
-			LocalDate registrationEndDate, Category category, Formateur formateur, FoodCompany foodCompany,
-			List<Client> interestedClients, List<Demande> demanded, List<CalendrierEvent> events,
-			List<ClientGroup> groups) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.title = title;
-		this.description = description;
-		this.dateDebut = dateDebut;
-		this.dateFin = dateFin;
-		this.registrationEndDate = registrationEndDate;
-		this.category = category;
-		this.formateur = formateur;
-		this.foodCompany = foodCompany;
-		this.interestedClients = interestedClients;
-		this.demanded = demanded;
-		this.events = events;
-		this.groups = groups;
-	}
+    public List<Demande> getDemanded() {
+        return demanded;
+    }
 
-	public Formation() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    public void setDemanded(List<Demande> demanded) {
+        this.demanded = demanded;
+    }
 
-    
+    public List<CalendrierEvent> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<CalendrierEvent> events) {
+        this.events = events;
+    }
+
+    public List<ClientGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<ClientGroup> groups) {
+        this.groups = groups;
+    }
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    // Constructors
+
+    public Formation() {
+        super();
+    }
+
+    public Formation(Long id, String name, String title, String description, LocalDate dateDebut, LocalDate dateFin,
+            LocalDate registrationEndDate, Double averageRating, Double price, String fileName, String imagePath,
+            Category category, Formateur formateur, FoodCompany foodCompany,
+            List<Client> interestedClients, List<Demande> demanded,
+            List<CalendrierEvent> events, List<ClientGroup> groups) {
+						this.id = id;
+						this.name = name;
+						this.title = title;
+						this.description = description;
+						this.dateDebut = dateDebut;
+						this.dateFin = dateFin;
+						this.registrationEndDate = registrationEndDate;
+						this.averageRating = averageRating;
+						this.price = price;
+						this.fileName = fileName;
+						this.imagePath = imagePath; // Add to constructor
+						this.category = category;
+						this.formateur = formateur;
+						this.foodCompany = foodCompany;
+						this.interestedClients = interestedClients;
+						this.demanded = demanded;
+						this.events = events;
+						this.groups = groups;
+						}
 }

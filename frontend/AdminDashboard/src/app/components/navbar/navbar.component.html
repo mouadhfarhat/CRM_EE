@@ -13,21 +13,21 @@
       <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link text-danger" (click)="onLogout()" style="cursor:pointer;">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </li>
     </ul>
 
     <!-- Right navbar links -->
 
     <ul class="navbar-nav ml-auto">
 
-      <!-- Visitor: Only show login -->
-      <ng-container *ngIf="role === 'visitor'">
-        <li class="nav-item">
-          <app-login></app-login>
-        </li>
-      </ng-container>
-    
+      <!-- Visitor: Only show login -->   
+
       <!-- Client: Display favorites, notifications, and logout -->
-      <ng-container *ngIf="role === 'client'">
+      <ng-container *ngIf="role === 'CLIENT'">
         <!-- Favorite Button -->
         <li class="nav-item">
           <p-button 
@@ -67,11 +67,7 @@
         </li>
     
         <!-- Logout Button -->
-        <li class="nav-item">
-          <a class="nav-link text-danger" (click)="logout()" style="cursor:pointer;">
-            <i class="fas fa-sign-out-alt"></i> Logout
-          </a>
-        </li>
+ 
       </ng-container>
     
       <!-- Optionally add additional containers for gestionnaire & admin roles -->

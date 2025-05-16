@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ListClientGroupComponent } from '../list-client-group/list-client-group.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from 'primeng/dragdrop';
 import { Client } from '../../../../domains/client';
+import { Formation } from '../../../../domains/formation';
+import { ListClientGroupComponent } from '../list-client-group/list-client-group.component';
 
 interface GroupTab {
   id: string;
@@ -16,88 +17,83 @@ interface GroupTab {
 @Component({
   selector: 'app-add-group',
   standalone: true,
-  imports: [
-    ListClientGroupComponent,
-    HttpClientModule,
-    CommonModule,
-    FormsModule,
-    DragDropModule
-  ],
+  imports: [ListClientGroupComponent, CommonModule, FormsModule, DragDropModule],
   templateUrl: './add-group.component.html',
-  styleUrl: './add-group.component.css'
+  styleUrls: ['./add-group.component.css']
 })
 export class AddGroupComponent implements OnInit {
   groupTabs: GroupTab[] = [];
   groupCounter = 1;
   draggedClient: Client | null = null;
-  
-  // Track assigned client IDs
   assignedClientIds: number[] = [];
 
+  formations: Formation[] = [];
+  selectedFormationId: number | undefined;
+  eligibleClients: Client[] = [];
+
+  constructor(private http: HttpClient) {}
+
   ngOnInit() {
-    // Initialize with first group
     this.addNewGroup();
+    this.loadFormationsByDeadline();
+  }
+
+  loadFormationsByDeadline(): void {
+    this.http.get<Formation[]>('http://localhost:8080/api/groups/formations/deadline')
+      .subscribe({
+        next: (data) => this.formations = data,
+        error: (err) => console.error('Failed to load formations', err)
+      });
+  }
+
+  loadEligibleClients(): void {
+    if (!this.selectedFormationId) {
+      alert("Please select a formation.");
+      return;
+    }
+
+    const url = `http://localhost:8080/api/groups/demandes/eligible?formationId=${this.selectedFormationId}`;
+    this.http.get<Client[]>(url).subscribe({
+      next: (data) => this.eligibleClients = data,
+      error: (err) => console.error('Failed to load eligible clients', err)
+    });
   }
 
   addNewGroup() {
-    // Deactivate all existing tabs
     this.groupTabs.forEach(tab => tab.active = false);
-    
-    // Get the next available sequential number
     const nextGroupNumber = this.getNextSequentialGroupNumber();
-    
-    // Create new tab with sequential numbering
     const newTab: GroupTab = {
       id: `group${nextGroupNumber}`,
       name: `Group ${nextGroupNumber}`,
       active: true,
       clients: []
     };
-    
     this.groupTabs.push(newTab);
-  }
-  // Helper method to get the next available group number
-  getNextSequentialGroupNumber(): number {
-    // If no groups exist, start with 1
-    if (this.groupTabs.length === 0) {
-      return 1;
-    }
-    
-    // Get all current group numbers from the group names
-    const currentNumbers = this.groupTabs.map(tab => {
-      // Extract number from "Group X" format
-      const match = tab.name.match(/Group (\d+)/);
-      return match ? parseInt(match[1], 10) : 0;
-    });
-    
-    // Find the first missing number in sequence
-    let nextNumber = 1;
-    while (currentNumbers.includes(nextNumber)) {
-      nextNumber++;
-    }
-    
-    return nextNumber;
   }
 
   deleteLastGroup() {
     if (this.groupTabs.length <= 1) {
-      // Don't delete if it's the only tab
+      alert("At least one group must remain.");
       return;
     }
-    
-    // Remove the last tab
-    const removedTab = this.groupTabs.pop();
-    
-    // If the removed tab was active, activate the new last tab
-    if (removedTab?.active) {
-      const lastIndex = this.groupTabs.length - 1;
-      if (lastIndex >= 0) {
-        this.groupTabs[lastIndex].active = true;
-      }
+
+    const removedGroup = this.groupTabs.pop();
+    if (removedGroup?.active && this.groupTabs.length > 0) {
+      this.groupTabs[this.groupTabs.length - 1].active = true;
     }
-    
-    // Update assigned clients
+
     this.updateAssignedClients();
+  }
+
+  getNextSequentialGroupNumber(): number {
+    if (this.groupTabs.length === 0) return 1;
+    const currentNumbers = this.groupTabs.map(tab => {
+      const match = tab.name.match(/Group (\d+)/);
+      return match ? parseInt(match[1], 10) : 0;
+    });
+    let nextNumber = 1;
+    while (currentNumbers.includes(nextNumber)) nextNumber++;
+    return nextNumber;
   }
 
   activateTab(selectedTab: GroupTab) {
@@ -105,54 +101,40 @@ export class AddGroupComponent implements OnInit {
     selectedTab.active = true;
   }
 
-  // Drag and Drop methods
   onDragClient(client: Client) {
     this.draggedClient = client;
   }
 
   dropClient() {
     if (this.draggedClient) {
-      // Find active tab
       const activeTab = this.groupTabs.find(tab => tab.active);
-      
       if (activeTab) {
-        // Check if client already exists in this tab
-        const clientExists = activeTab.clients.some(c => c.id === this.draggedClient!.id);
-        
-        if (!clientExists) {
-          // Add client to the active tab
-          activeTab.clients.push({...this.draggedClient});
-          
-          // Update assigned clients
-          this.updateAssignedClients();
+        // Remove client from all other groups
+        this.groupTabs.forEach(tab => {
+          tab.clients = tab.clients.filter(c => c.id !== this.draggedClient!.id);
+        });
+
+        // Add to active group if not already there
+        if (!activeTab.clients.some(c => c.id === this.draggedClient!.id)) {
+          activeTab.clients.push({ ...this.draggedClient });
         }
+
+        this.updateAssignedClients();
       }
-      
       this.draggedClient = null;
     }
   }
 
-  // Method to remove a client from a group
   removeFromGroup(group: GroupTab, client: Client) {
     const index = group.clients.findIndex(c => c.id === client.id);
     if (index !== -1) {
       group.clients.splice(index, 1);
-      
-      // Update assigned clients
       this.updateAssignedClients();
     }
   }
 
-  // Get the active tab
-  getActiveTab(): GroupTab | undefined {
-    return this.groupTabs.find(tab => tab.active);
-  }
-  
-  // Update the list of assigned client IDs
   updateAssignedClients() {
-    // Get all client IDs from all groups
     this.assignedClientIds = [];
-    
     for (const tab of this.groupTabs) {
       for (const client of tab.clients) {
         if (!this.assignedClientIds.includes(client.id)) {
@@ -160,5 +142,45 @@ export class AddGroupComponent implements OnInit {
         }
       }
     }
+  }
+
+  saveGroups() {
+    if (!this.selectedFormationId) {
+      alert("Formation is required.");
+      return;
+    }
+
+    // Send a POST request for each group
+    for (const tab of this.groupTabs) {
+      if (tab.clients.length === 0) {
+        alert(`Group "${tab.name}" has no clients. Please add clients or remove the group.`);
+        return;
+      }
+
+      const clientIds = tab.clients.map(c => c.id);
+      const url = `http://localhost:8080/api/groups?formationId=${this.selectedFormationId}&name=${encodeURIComponent(tab.name)}&clientIds=${clientIds.join(',')}`;
+      
+      this.http.post(url, {}).subscribe({
+        next: () => console.log(`Group ${tab.name} saved successfully.`),
+        error: (err) => {
+          console.error(`Failed to save group ${tab.name}`, err);
+          alert(`Failed to save group ${tab.name}.`);
+        }
+      });
+    }
+
+    alert("All groups saved successfully.");
+  }
+  newGroupName: string = '';
+
+
+
+
+  updateGroupName(tab: GroupTab, newName: string) {
+    if (newName.trim() === '') {
+      alert("Group name cannot be empty.");
+      return;
+    }
+    tab.name = newName.trim();
   }
 }

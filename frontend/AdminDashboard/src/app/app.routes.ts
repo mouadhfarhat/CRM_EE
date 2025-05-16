@@ -38,6 +38,8 @@ export const routes: Routes = [
          { path: 'gere', component: GereDemandeComponent  },
          { path: 'groups', component: GroupsComponent  },
          { path: 'addgroups', component: AddGroupComponent  },
+         { path: 'profile/:id', component: ProfileComponent }
+
 
 
          

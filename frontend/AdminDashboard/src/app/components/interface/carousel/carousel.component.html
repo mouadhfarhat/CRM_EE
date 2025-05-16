@@ -1,18 +1,95 @@
-<div class="content-header">
-  <div class="container-fluid">
-    <div class="row mb-2">
-      <div class="col-sm-6">
-        <h1 class="m-0">Categories</h1>
-      </div><!-- /.col -->
-      <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="#">Home</a></li>
-        </ol>
-      </div><!-- /.col -->
-    </div><!-- /.row -->
-  </div><!-- /.container-fluid -->
+<div class="mb-6">
+  <div class="bg-gray-800 rounded-lg p-4 shadow-lg">
+    <!-- Header with Title and Controls -->
+    <div class="flex flex-col sm:flex-row items-center justify-between mb-4 gap-4">
+      <h2 class="text-xl font-bold text-white">Formation Categories</h2>
+      <div class="flex items-center gap-2">
+        <!-- Sort Dropdown -->
+        <select
+          [(ngModel)]="sortOption"
+          (change)="onSortChange($event)"
+          class="p-2 bg-gray-700 rounded-md text-gray-100 text-sm"
+        >
+          <option value="default">Sort: Default</option>
+          <option value="priceLowToHigh">Price: Low to High</option>
+          <option value="priceHighToLow">Price: High to Low</option>
+          <option value="ratingHighToLow">Rating: High to Low</option>
+        </select>
+
+        <!-- Category Search -->
+        <div class="relative">
+          <input
+            type="text"
+            [(ngModel)]="categorySearchTerm"
+            (input)="searchCategories()"
+            placeholder="Search categories..."
+            class="pl-8 pr-10 py-2 bg-gray-700 rounded-md text-gray-100 w-48 text-sm"
+          />
+          <span class="pi pi-search absolute left-2 top-3 text-gray-400"></span>
+          <button
+            *ngIf="categorySearchTerm"
+            (click)="categorySearchTerm = ''; searchCategories()"
+            class="absolute right-2 top-3 text-gray-400 hover:text-gray-200"
+          >
+            <span class="pi pi-times"></span>
+          </button>
+        </div>
+
+        <!-- Formation Search -->
+        <div class="relative" *ngIf="showSearch; else searchButton">
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="onSearchChange()"
+            placeholder="Search formations..."
+            class="pl-8 pr-10 py-2 bg-gray-700 rounded-md text-gray-100 w-48 text-sm"
+          />
+          <span class="pi pi-search absolute left-2 top-3 text-gray-400"></span>
+          <button
+            *ngIf="searchTerm"
+            (click)="searchTerm = ''; onSearchChange()"
+            class="absolute right-2 top-3 text-gray-400 hover:text-gray-200"
+          >
+            <span class="pi pi-times"></span>
+          </button>
+        </div>
+        <ng-template #searchButton>
+          <button
+            (click)="toggleSearch()"
+            class="p-2 bg-gray-700 rounded-full hover:bg-gray-600"
+          >
+            <span class="pi pi-search" style="font-size: 20px;"></span>
+          </button>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Category Carousel -->
+    <div class="relative">
+      <p-carousel
+        [value]="categories"
+        [numVisible]="4"
+        [numScroll]="4"
+        [circular]="false"
+        [showIndicators]="false"
+        [showNavigators]="true"
+        [responsiveOptions]="responsiveOptions"
+      >
+        <ng-template pTemplate="item" let-category>
+  <div
+    (click)="selectCategory(category)"
+    class="flex-shrink-0 px-4 py-2 rounded-md cursor-pointer transition-all text-sm text-center"
+    [ngClass]="{
+      'bg-blue-800 text-white font-medium': activeCategoryId === category.id,
+      'bg-gray-700 text-gray-300 hover:bg-gray-600': activeCategoryId !== category.id
+    }"
+  >
+    {{ category.name }}
+  </div>
+</ng-template>
+      </p-carousel>
+    </div>
+  </div>
 </div>
-
-
 
 

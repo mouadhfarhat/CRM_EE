@@ -27,32 +27,44 @@
             <div class="col-md-3">
   
               <!-- Profile Image -->
-              <div class="card card-primary card-outline">
-                <div class="card-body box-profile">
-                  <div class="text-center">
-                    <img class="profile-user-img img-fluid img-circle"
-                         src="../../dist/img/user4-128x128.jpg"
-                         alt="User profile picture">
-                  </div>
-  
-                  <h3 class="profile-username text-center">Nina Mcintire</h3>
-  
-                  <p class="text-muted text-center">Software Engineer</p>
-  
-                  <ul class="list-group list-group-unbordered mb-3">
-                    <li class="list-group-item">
-                      <b>Formations</b> <a class="float-right">1,322</a>
-                    </li>
-                    <li class="list-group-item">
-                      <b>Demandes</b> <a class="float-right">543</a>
-                    </li>
-                    <li class="list-group-item">
-                      <b>Friends</b> <a class="float-right">13,287</a>
-                    </li>
-                  </ul>
-  
-                  <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
-                </div>
+              <div  class="card bg-gray-800 border border-gray-700 text-white shadow-sm">
+<div class="card-body box-profile">
+  <div class="text-center">
+    <img class="profile-user-img img-fluid img-circle"
+         src="../../dist/img/user4-128x128.jpg"
+         alt="User profile picture">
+  </div>
+
+  <!-- Full Name Display -->
+  <h3 class="profile-username text-center">
+    {{ firstname }} {{ lastname }}
+  </h3>
+
+  <!-- Role -->
+  <p class="text-muted text-center">{{ role }}</p>
+
+  <!-- Contact Info -->
+  <p class="text-center">
+    <i class="fas fa-envelope"></i> {{ username }}<br>
+    <i class="fas fa-phone-alt"></i> {{ phoneNumber }}
+  </p>
+
+  <!-- Stats -->
+  <ul class="list-group list-group-unbordered mb-3">
+    <li class="list-group-item bg-gray-800 text-white border-gray-700">
+      <b>Formations</b>
+      <a class="float-right">{{ formationsCount }}</a>
+    </li>
+    <li class="list-group-item bg-gray-800 text-white border-gray-700">
+      <b>Demandes</b>
+      <a class="float-right">{{ demandesCount }}</a>
+    </li>
+  </ul>
+
+  <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+</div>
+
+                
                 <!-- /.card-body -->
               </div>
               <!-- /.card -->
@@ -69,6 +81,7 @@
                     <li class="nav-item"><a class="nav-link active" href="#myDemandes" data-toggle="tab">My demandes</a></li>
                     <li class="nav-item"><a class="nav-link" href="#historique" data-toggle="tab">Historique</a></li>
                     <li class="nav-item"><a class="nav-link" href="#editProfile" data-toggle="tab">Edit profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#notification" data-toggle="tab">Notifications</a></li>
                   </ul>
                 </div><!-- /.card-header -->
                 <div class="card-body">
@@ -84,8 +97,12 @@
                       </div>
                       <!-- /.tab-pane -->  
                       <div class="tab-pane" id="editProfile">
-                        <app-update-prodile></app-update-prodile>
+                        <app-update-profile></app-update-profile>
                       </div>
+                      <div class="tab-pane" id="notification">
+                        <app-notification-historique></app-notification-historique>
+                      </div>
+
                       
                     <!-- /.tab-pane -->
                   

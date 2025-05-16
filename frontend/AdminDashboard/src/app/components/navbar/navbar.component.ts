@@ -7,6 +7,7 @@ import { LoginComponent } from '../login/login.component';
 import { RoleService } from '../../services/role/role.service';
 import { NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
+import { KeycloakService } from '../../services/keycloak/keycloak.service';
 @Component({
   selector: 'app-navbar',
   imports: [
@@ -25,7 +26,7 @@ import { CommonModule } from '@angular/common';
 export class NavbarComponent {
   role: string = 'visitor'; // 'visitor', 'client', 'gestionnaire', 'admin'
 
-  constructor(private roleService: RoleService) {
+  constructor(private keycloakService: KeycloakService,private roleService: RoleService) {
     this.roleService.role$.subscribe((r) => (this.role = r));
   }
 
@@ -41,11 +42,12 @@ export class NavbarComponent {
   }
 
   // Example method for logout action (client)
-  logout() {
-    // Reset the role to 'visitor' or implement your logout logic
-    this.roleService.setRole('visitor');
-    console.log('User logged out');
+  onLogout(): void {
+    this.keycloakService.logout();
+
   }
+  
+  
 
   // Method to toggle the sidebar (if needed)
   toggleSidebar() {

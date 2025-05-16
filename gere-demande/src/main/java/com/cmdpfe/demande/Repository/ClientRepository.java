@@ -24,5 +24,17 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 	    Client findByEmail(String email);	
 	    Client findByKeycloakId(String keycloakId);
 
+		Optional<Client> findByUsername(String username);
+
+		@Query("SELECT COUNT(c) FROM Client c JOIN c.interested f WHERE f.id = :formationId")
+		long countByFormationId(@Param("formationId") Long formationId);
+
+		@Query("SELECT c FROM Client c JOIN c.interested f WHERE f.id = :formationId")
+		List<Client> findByFormationId(@Param("formationId") Long formationId);
+
+		@Query("SELECT c FROM Client c JOIN c.groups g WHERE g.id = :groupId")
+		List<Client> findByGroupId(@Param("groupId") Long groupId);
+
+
 
 }

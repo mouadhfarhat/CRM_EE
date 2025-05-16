@@ -40,6 +40,7 @@ public class ProfileController {
                        .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    
     @PutMapping
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<Client> updateProfile(@RequestBody Client updatedClient) {

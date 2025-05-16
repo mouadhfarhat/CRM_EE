@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Client } from '../../domains/client';
 import { Observable } from 'rxjs';
+import { Formation } from '../../domains/formation';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClientService {
-  private apiUrl = 'http://localhost:8080/clients'; // adjust to your backend URL
+  private apiUrl = 'http://localhost:8080/api/clients'; // adjust to your backend URL
 
   constructor(private http: HttpClient) {}
 
@@ -49,7 +50,21 @@ export class ClientService {
   searchClientsByFormationAndType(formationId: number, type: string): Observable<Client[]> {
     return this.http.get<Client[]>(`http://localhost:8080/demandes/search2?formationId=${formationId}&type=${type}`);
   }
-  
-  
+
+
+  search(username: string): Observable<Client[]> {
+    return this.http.get<Client[]>(`${this.apiUrl}/search`, { params: { username } });
+  }
+
+  getByFormation(formationId: number): Observable<Client[]> {
+    return this.http.get<Client[]>(`${this.apiUrl}/by-formation/${formationId}`);
+  }
+
+  getByGroup(groupId: number): Observable<Client[]> {
+    return this.http.get<Client[]>(`${this.apiUrl}/by-group/${groupId}`);
+  }
+  getAlll(): Observable<Formation[]> {  // Correct return type
+  return this.http.get<Formation[]>(this.apiUrl);
+}
   
 }

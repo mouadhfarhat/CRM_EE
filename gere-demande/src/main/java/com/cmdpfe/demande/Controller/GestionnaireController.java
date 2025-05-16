@@ -33,16 +33,13 @@ public class GestionnaireController {
     public ResponseEntity<Gestionnaire> getMe(Authentication authentication) {
         String keycloakId = authentication.getName(); // JWT `sub`
 
-        Gestionnaire gestionnaire = gestionnaireRepository.findByKeycloakId(keycloakId);
+        Optional<Gestionnaire> gestionnaireOpt = gestionnaireRepository.findByKeycloakId(keycloakId);
 
-        if (gestionnaire == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
-        return ResponseEntity.ok(gestionnaire);
+        return gestionnaireOpt
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
-
-
+    
     // Get gestionnaire by ID
     @GetMapping("/{id}")
     public Optional<Gestionnaire> getGestionnaireById(@PathVariable Long id) {

@@ -1,42 +1,48 @@
-import { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { from, mergeMap } from 'rxjs';
+// src/app/services/interceptor/http-token.interceptor.ts
+import { Injectable } from '@angular/core';
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+  HttpEvent
+} from '@angular/common/http';
+import { Observable, from } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { KeycloakService } from '../keycloak/keycloak.service';
 
-export const httpTokenInterceptor: HttpInterceptorFn = (req, next) => {
-  const keycloakService = inject(KeycloakService);
-  
-  // First check sessionStorage synchronously
-  const sessionToken = sessionStorage.getItem('token');
-  if (sessionToken) {
-    console.log('Using token from sessionStorage');
-    return next(addTokenToRequest(req, sessionToken));
-  }
+@Injectable()
+export class HttpTokenInterceptor implements HttpInterceptor {
+  constructor(private keycloakService: KeycloakService) {}
 
-  // If no token in sessionStorage and Keycloak is available
-  if (keycloakService.keycloak) {
-    return from(keycloakService.getToken()).pipe(
-      mergeMap(token => {
-        if (token) {
-          console.log('Adding token from Keycloak:', token.substring(0, 20) + '...');
-          sessionStorage.setItem('token', token); // Cache the token
-          return next(addTokenToRequest(req, token));
-        }
-        console.warn('No token available from Keycloak');
-        return next(req);
-      })
-    );
-  }
-
-  console.warn('No token available, sending request without Authorization header');
-  return next(req);
-};
-
-// Helper function to add token to request
-function addTokenToRequest(req: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
-  return req.clone({
-    setHeaders: {
-      Authorization: `Bearer ${token}`
+  intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    const sessionToken = sessionStorage.getItem('token');
+    if (sessionToken) {
+      console.log('Using token from sessionStorage');
+      return next.handle(this.addToken(req, sessionToken));
     }
-  });
+
+    if (this.keycloakService.keycloak) {
+      return from(this.keycloakService.getToken()).pipe(
+        mergeMap(token => {
+          if (token) {
+            console.log('Adding token from Keycloak:', token.substring(0, 20), '…');
+            sessionStorage.setItem('token', token);
+            return next.handle(this.addToken(req, token));
+          }
+          return next.handle(req);
+        })
+      );
+    }
+
+    console.warn('No token available, sending request without Authorization header');
+    return next.handle(req);
+  }
+
+  private addToken(req: HttpRequest<unknown>, token: string) {
+    return req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
 }

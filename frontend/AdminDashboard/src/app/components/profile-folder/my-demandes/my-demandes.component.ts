@@ -1,31 +1,59 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RatingModule } from 'primeng/rating';
+import { Demande } from '../../../domains/demande.model';
+import { DemandeService } from '../../../services/demande/demande.service';
+
 @Component({
   selector: 'app-my-demandes',
   standalone: true,
-  imports: [HttpClientModule
-,    FormsModule, RatingModule,CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './my-demandes.component.html',
   styleUrl: './my-demandes.component.css'
 })
-export class MyDemandesComponent {
+export class MyDemandesComponent implements OnInit {
+  demandes: Demande[] = [];
 
-  value!: number;
-  // Sample list of demandes, you can replace this with your actual data
-  demandes = [
-    { title: 'Demande 1', type: 'Administrative', status: 'received', createdDate: '01.01.2019' },
-    { title: 'Demande 2', type: 'Reclamative', status: 'in progress', createdDate: '02.02.2020' },
-    { title: 'Demande 3', type: 'Reclamative', status: 'treated', createdDate: '02.02.2020' }
+  constructor(private demandeService: DemandeService) {}
 
-];
+  ngOnInit(): void {
+    this.fetchDemandes();
+  }
 
-// Array to store the ratings for each demande
-ratings: number[] = [0, 0]; // Initialize with the same number of entries as your demandes
+  fetchDemandes(): void {
+    this.demandeService.getMyDemandes().subscribe({
+      next: (data) => {
+        this.demandes = data;
+      },
+      error: (err) => {
+        console.error('Failed to fetch demandes:', err);
+      }
+    });
+  }
+
+  onView(demandeId: number): void {
+    console.log('Viewing demande', demandeId);
+    // navigate or show modal
+  }
+
+  onEdit(demandeId: number): void {
+    console.log('Editing demande', demandeId);
+    // navigate or show modal
+  }
+
+  onDelete(demandeId: number): void {
+    if (!confirm('Are you sure you want to delete this demande?')) return;
+  
+    this.demandeService.deleteDemande(demandeId).subscribe({
+      next: () => {
+        this.demandes = this.demandes.filter(d => d.id !== demandeId);
+        console.log('Demande deleted successfully');
+      },
+      error: (err) => {
+        console.error('Error deleting demande:', err);
+        alert('Failed to delete demande.');
+      }
+    });
+  }
+  
 }
-
-
-
-

@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Demande } from '../../domains/demande.model';
 import { DemandeStatut, DemandeType } from '../../domains/enums';
+import { Formation } from '../../domains/formation';
   
 
 @Injectable({
@@ -48,8 +49,9 @@ export class DemandeService {
   }
 
   deleteDemande(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/delete/${id}`, { responseType: 'text' });
+    return this.http.delete(`${this.apiUrl}/delete/${id}`);
   }
+  
 
   updateDemandeStatus(demandeId: number, newStatus: string, gestionnaireId: number): Observable<any> {
     const params = new HttpParams()
@@ -61,6 +63,21 @@ export class DemandeService {
   updateDemandeStatut(demandeId: number, statut: DemandeStatut): Observable<any> {
     return this.http.put(`${this.apiUrl}/${demandeId}/statut`, { statut });
   }
+  getMyDemandes(): Observable<Demande[]> {
+    return this.http.get<Demande[]>(`${this.apiUrl}/my`);
+  }
+  getHistorique(): Observable<Formation[]> {
+    return this.http.get<Formation[]>(`${this.apiUrl}/historique`);
+  }
+
+  submitRating(demandeId: number, value: number) {
+    return this.http.put(
+      `http://localhost:8080/demandes/${demandeId}/rate`,
+      null,
+      { params: { value } }
+    );
+  }
+  
 
 
   //search by all demande not the gestionnaie wa
