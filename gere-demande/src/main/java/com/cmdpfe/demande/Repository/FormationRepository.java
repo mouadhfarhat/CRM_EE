@@ -37,4 +37,7 @@ public interface FormationRepository extends JpaRepository<Formation, Long> {
 	int countDemandeClientsByFormationId(@Param("formationId") Long formationId);
 
 
+    List<Formation>findByCategoryId(Long categoryId);
+
+
 }

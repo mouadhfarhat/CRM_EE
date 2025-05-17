@@ -22,12 +22,12 @@
             <span class="badge badge-info">{{ demande.statut }}</span>
           </td>
           <td class="text-right">
-            <button class="btn btn-outline-primary btn-sm" (click)="onView(demande.id)">
-              <i class="fas fa-folder"></i> View
+            <!-- Only Edit -->
+            <button class="btn btn-outline-info btn-sm" (click)="onEdit(demande)">
+              <i class="fas fa-pencil-alt"></i> Modifier
             </button>
-            <button class="btn btn-outline-info btn-sm" (click)="onEdit(demande.id)">
-              <i class="fas fa-pencil-alt"></i> Edit
-            </button>
+
+  
             <button class="btn btn-outline-danger btn-sm" (click)="onDelete(demande.id)">
               <i class="fas fa-trash"></i> Delete
             </button>
@@ -37,3 +37,32 @@
     </table>
   </div>
 </div>
+
+<!-- Edit Demande Modal -->
+<div class="modal fade" id="editDemandeModal" tabindex="-1" aria-labelledby="editDemandeLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white border-secondary">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title" id="editDemandeLabel">Modifier la Demande</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <form #editForm="ngForm">
+          <div class="mb-3">
+            <label for="title" class="form-label">Titre</label>
+            <input type="text" class="form-control bg-dark text-white border-secondary" id="title" [(ngModel)]="editableDemande.title" name="title" required />
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control bg-dark text-white border-secondary" id="description" rows="3" [(ngModel)]="editableDemande.description" name="description" required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-secondary">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" (click)="confirmEdit()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+

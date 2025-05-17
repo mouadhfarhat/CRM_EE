@@ -409,6 +409,37 @@ public class DemandeController {
 
         return ResponseEntity.ok(Map.of("message", "Average rating is now " + avg));
     }
+    
+    
+    @PutMapping("/update-full/{id}")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<Demande> updateDemande(
+            @PathVariable Long id,
+            @RequestBody Demande demandeRequest) {
+
+        CustomJwt jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
+
+        Demande existing = demandeRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Demande not found"));
+
+        if (!existing.getClient().getEmail().equals(jwt.getEmail())) {
+            throw new RuntimeException("Unauthorized: Client mismatch");
+        }
+
+        // Optionally validate formation still exists
+        Optional<Formation> formationOpt = formationRepository.findById(demandeRequest.getFormation().getId());
+        if (formationOpt.isEmpty()) {
+            throw new RuntimeException("Formation not found");
+        }
+
+        existing.setTitle(demandeRequest.getTitle());
+        existing.setDescription(demandeRequest.getDescription());
+        existing.setType(demandeRequest.getType());
+        existing.setFormation(formationOpt.get());
+
+        return ResponseEntity.ok(demandeRepository.save(existing));
+    }
+
 }
   
 

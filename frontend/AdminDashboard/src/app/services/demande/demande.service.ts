@@ -34,6 +34,11 @@ export class DemandeService {
     return this.http.get<Demande>(`${this.apiUrl}/${id}`);
   }
 
+  updateDemande(demande: Demande): Observable<Demande> {
+  return this.http.put<Demande>(`${this.apiUrl}/update-full/${demande.id}`, demande);
+}
+
+
   createDemande(demande: { title: string, description: string, type: DemandeType, client: Client, formation: Formation }): Observable<Demande> {
     const demandeRequest = {
       title: demande.title,

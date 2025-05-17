@@ -16,7 +16,7 @@ import { Category } from '../../../domains/category.model';
 export class CarouselComponent implements OnInit {
   categories: Category[] = [];
   activeCategoryId: number | null = null;
-  @Output() categorySelected = new EventEmitter<number>(); // Emit category ID
+  @Output() categorySelected = new EventEmitter<number | null>();
   @Output() searchTermChanged = new EventEmitter<string>();
   @Output() sortOptionChanged = new EventEmitter<string>();
 
@@ -26,21 +26,9 @@ export class CarouselComponent implements OnInit {
   categorySearchTerm: string = '';
 
   responsiveOptions = [
-    {
-      breakpoint: '1024px',
-      numVisible: 3,
-      numScroll: 3
-    },
-    {
-      breakpoint: '768px',
-      numVisible: 2,
-      numScroll: 2
-    },
-    {
-      breakpoint: '560px',
-      numVisible: 1,
-      numScroll: 1
-    }
+    { breakpoint: '1024px', numVisible: 3, numScroll: 3 },
+    { breakpoint: '768px', numVisible: 2, numScroll: 2 },
+    { breakpoint: '560px', numVisible: 1, numScroll: 1 }
   ];
 
   constructor(private categoryService: CategoryService) {}
@@ -53,10 +41,9 @@ export class CarouselComponent implements OnInit {
     this.categoryService.getAllCategories().subscribe({
       next: (categories: Category[]) => {
         this.categories = categories;
-        if (categories.length > 0) {
-          this.activeCategoryId = categories[0].id;
-          this.categorySelected.emit(this.activeCategoryId);
-        }
+        // Optionally, set "All" as default
+        this.activeCategoryId = null;
+        this.categorySelected.emit(null);
       },
       error: (error) => {
         console.error('Error fetching categories:', error);
@@ -69,20 +56,27 @@ export class CarouselComponent implements OnInit {
       this.categoryService.searchCategories(this.categorySearchTerm).subscribe({
         next: (categories: Category[]) => {
           this.categories = categories;
-          this.activeCategoryId = null; // Reset active category
+          this.activeCategoryId = null;
+          this.categorySelected.emit(null);
         },
         error: (error) => {
           console.error('Error searching categories:', error);
         }
       });
     } else {
-      this.loadCategories(); // Reload all categories if search term is empty
+      this.loadCategories();
     }
   }
 
-  selectCategory(category: Category): void {
-    this.activeCategoryId = category.id;
-    this.categorySelected.emit(category.id);
+  selectCategory(category: Category | { id: null; name: string }): void {
+    const categoryId = category.id;
+    if (this.activeCategoryId === categoryId) {
+      this.activeCategoryId = null;
+      this.categorySelected.emit(null);
+    } else {
+      this.activeCategoryId = categoryId;
+      this.categorySelected.emit(categoryId);
+    }
   }
 
   toggleSearch(): void {

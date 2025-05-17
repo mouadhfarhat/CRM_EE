@@ -10,152 +10,88 @@
       ></app-carousel>
 
       <!-- Main Content -->
-      <section class="content">
-        <div class="container-fluid">
-          <div class="flex justify-content-center">
-            <div class="card p-1 text-sm">
-              <p-dataView
-                #dv
-                [value]="formations"
-                [layout]="layout"
-                [paginator]="true"
-                [rows]="rowsPerPage"
-                [rowsPerPageOptions]="[5, 10, 20]"
-                paginatorPosition="bottom"
-                (onPage)="onPageChange($event)"
-              >
-                <!-- Header -->
-                <ng-template pTemplate="header">
-                  <div class="relative flex justify-between items-center mb-2">
-                    <div class="text-lg font-semibold">View Mode</div>
-                    <div class="absolute top-0 right-0 flex gap-2">
-                      <button
-                        class="view-toggle-btn"
-                        [class.active]="layout === 'list'"
-                        (click)="layout = 'list'"
-                      >
-                        <i class="pi pi-bars mr-1"></i> List
-                      </button>
-                      <button
-                        class="view-toggle-btn"
-                        [class.active]="layout === 'grid'"
-                        (click)="layout = 'grid'"
-                      >
-                        <i class="pi pi-th-large mr-1"></i> Grid
-                      </button>
-                    </div>
-                  </div>
-                </ng-template>
+<section class="content">
+  <div class="container-fluid">
+    <div class="formation-carousel-wrapper">
+      <div class="formation-carousel">
+        <div class="formation-card" *ngFor="let item of formations">
+          <div class="p-6 border-round-lg shadow-4 surface-card h-full flex flex-column justify-between gap-4 hover:shadow-6 transition-all">
+            <!-- Image -->
+            <div class="flex justify-content-center">
+              <img
+                [src]="imageUrls[item.id!] || 'assets/placeholder.png'"
+                [alt]="item.title"
+                class="rounded w-full"
+                style="max-height: 180px; object-fit: cover; background: #1f1f1f;" />
+            </div>
 
-                <!-- List Layout -->
-<!-- List Layout -->
-<ng-template pTemplate="list" let-formations>
-  <div class="grid grid-nogutter">
-    <div class="col-12" *ngFor="let item of formations; let first = first">
-      <div class="flex flex-column sm:flex-row sm:align-items-center p-3 gap-3 border-bottom-1 surface-border"
-           style="border-radius: 6px;">
-        <div class="md:w-6rem relative">
-<img [src]="imageUrls[item.id] || 'assets/placeholder.png'"               [alt]="item.title"
-               class="img-fluid rounded"
-               style="max-height: 180px; object-fit: contain;"/>
-        </div>
-        <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-3">
-  <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
-    <div>
-      <span class="font-medium text-secondary text-xs">{{ item.category }}</span>
-      <div class="text-base font-medium text-900 mt-1">{{ item.title }}</div>
-    </div>
-    <div class="surface-100 p-1 border-round-2xl">
-      <div class="surface-0 flex align-items-center gap-1 justify-content-center py-1 px-2 border-round-2xl shadow-1">
-        <span class="text-900 font-medium text-xs">{{ item.rating }}</span>
-        <i class="pi pi-star-fill text-yellow-500 text-xs"></i>
-      </div>
-    </div>
-  </div>
-  <div class="flex flex-column md:align-items-end gap-2">
-    <span class="text-lg font-semibold text-900">{{ item.price | currency }}</span>
-    <div class="flex gap-1">
+            <!-- Info -->
+            <div class="flex flex-column gap-2">
+              <h3 class="text-xl font-bold text-white leading-snug">{{ item.title }}</h3>
+              <p class="text-sm text-gray-400 truncate-3-lines">{{ item.description }}</p>
+
+              <div class="text-xs text-gray-500 mt-2 space-y-1.5">
+                <div><i class="pi pi-calendar mr-1"></i>Du {{ item.dateDebut | date: 'mediumDate' }} au {{ item.dateFin | date: 'mediumDate' }}</div>
+                <div><i class="pi pi-clock mr-1"></i>Inscription avant le {{ item.registrationEndDate | date: 'mediumDate' }}</div>
+                <div><i class="pi pi-user mr-1"></i>{{ item.formateur?.firstname || 'N/A' }} {{ item.formateur?.lastname || '' }}</div>
+                <div><i class="pi pi-briefcase mr-1"></i>{{ item.foodCompany?.name || 'Rayan Food' }}</div>
+              </div>
+            </div>
+
+            <!-- Rating & Price -->
+            <div class="flex justify-between items-center mt-3">
+              <div class="flex items-center gap-1 text-sm">
+                <span class="text-white font-medium">{{ item.rating ?? item.averageRating ?? '0' }}</span>
+                <i class="pi pi-star-fill text-yellow-500"></i>
+              </div>
+              <span class="text-green-400 font-semibold text-base">{{ item.price | currency:'EUR' }}</span>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-between items-center mt-4 gap-3 flex-wrap">
+              <p-button
+                size="small"
+                [icon]="isInterested(item.id!) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                [severity]="isInterested(item.id!) ? 'danger' : 'secondary'"
+                [outlined]="false"
+                pTooltip="Marquer comme intéressé"
+                (onClick)="toggleInterest(item.id!)">
+              </p-button>
 <p-button
+ class="demande-btn"
+  [ngClass]="{ 'disabled-btn': isRegistrationClosed(item.registrationEndDate) }"
   size="small"
-  [icon]="isInterested(item.id) ? 'pi pi-heart-fill' : 'pi pi-heart'"
-  [severity]="isInterested(item.id) ? 'danger' : 'secondary'"
-  [outlined]="!isInterested(item.id)"
-  pTooltip="Mark as Interested"
-  (onClick)="toggleInterest(item.id)"
-></p-button>
+  icon="pi pi-envelope"
+  label="Faire une demande"
+  [routerLink]="['/composeMail']"
+  [queryParams]="{ clientId: clientId, formationId: item.id }"
+  *ngIf="clientId"
+  [disabled]="isRegistrationClosed(item.registrationEndDate)"
+  [style.backgroundColor]="isRegistrationClosed(item.registrationEndDate) ? '#ccc' : ''"
+  [style.color]="isRegistrationClosed(item.registrationEndDate) ? '#666' : ''"
+>
+</p-button>
 
-      <p-button
-        size="small"
-        icon="pi pi-envelope"
-        label="Make Demande"
-        [routerLink]="'/composeMail'"
-      ></p-button>
-    </div>
-  </div>
-</div>
-      </div> <!-- This closes the main flex container -->
-    </div>
-  </div>
-</ng-template>
 
-                <!-- Grid Layout -->
-                <ng-template pTemplate="grid" let-formations>
-                  <div class="grid grid-nogutter">
-                    <div class="col-12 sm:col-6 lg:col-4 p-1" *ngFor="let item of formations">
-                      <div class="p-2 border-1 surface-border surface-card border-round">
-                        <div class="surface-50 flex justify-content-center border-round p-1">
-                          <div class="relative">
-                            
-<img [src]="imageUrls[item.id] || 'assets/placeholder.png'"                              [alt]="item.title"
-                              class="img-fluid rounded"
-                              style="max-height: 180px; object-fit: contain;"
-                            />
-                          </div>
-                        </div>
-                        <div class="pt-2">
-                          <div class="flex justify-content-between align-items-start">
-                            <div>
-                              <span class="font-medium text-secondary text-sm">{{ item.category }}</span>
-                              <div class="text-lg font-medium text-900 mt-1">{{ item.title }}</div>
-                            </div>
-                            <div class="surface-100 p-1 border-round-2xl">
-                              <div
-                                class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2 border-round-2xl shadow-1"
-                              >
-                                <span class="text-900 font-medium text-sm">{{ item.rating }}</span>
-                                <i class="pi pi-star-fill text-yellow-500"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="flex flex-column gap-3 mt-3">
-                            <span class="text-xl font-semibold text-900">{{ item.price | currency }}</span>
-                            <div class="flex gap-2">
-<p-button
-  size="small"
-  [icon]="isInterested(item.id) ? 'pi pi-heart-fill' : 'pi pi-heart'"
-  [severity]="isInterested(item.id) ? 'danger' : 'secondary'"
-  [outlined]="!isInterested(item.id)"
-  pTooltip="Mark as Interested"
-  (onClick)="toggleInterest(item.id)"
-></p-button>
-                              <p-button
-                                size="small"
-                                icon="pi pi-envelope"
-                                label="Make Demande"
-                                [routerLink]="'/composeMail'"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ng-template>
-              </p-dataView>
+
+              <a
+  *ngIf="item.fileName"
+  (click)="downloadFile(item.fileName)"
+  class="download-link cursor-pointer text-blue-500 hover:underline flex items-center gap-1"
+>
+  <i class="pi pi-download"></i> PDF
+</a>
+
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
     </div>
   </div>
 </div>

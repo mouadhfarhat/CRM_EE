@@ -36,32 +36,53 @@
   </div>
 
   <!-- Full Name Display -->
-  <h3 class="profile-username text-center">
-    {{ firstname }} {{ lastname }}
-  </h3>
+<h3 class="profile-username text-center">
+  {{ firstname }} {{ lastname }}
+</h3>
 
-  <!-- Role -->
-  <p class="text-muted text-center">{{ role }}</p>
+<!-- Role with Badge -->
+<p class="text-muted text-center">
+  <span class="badge bg-info text-dark px-3 py-1">{{ role }}</span>
+</p>
 
-  <!-- Contact Info -->
-  <p class="text-center">
-    <i class="fas fa-envelope"></i> {{ username }}<br>
-    <i class="fas fa-phone-alt"></i> {{ phoneNumber }}
-  </p>
+<!-- Contact Info -->
+<p class="text-center">
+  <i class="fas fa-envelope"></i> {{ username }}<br>
+  <i class="fas fa-phone-alt"></i> {{ phoneNumber }}
+</p>
 
-  <!-- Stats -->
-  <ul class="list-group list-group-unbordered mb-3">
-    <li class="list-group-item bg-gray-800 text-white border-gray-700">
-      <b>Formations</b>
-      <a class="float-right">{{ formationsCount }}</a>
-    </li>
-    <li class="list-group-item bg-gray-800 text-white border-gray-700">
-      <b>Demandes</b>
-      <a class="float-right">{{ demandesCount }}</a>
-    </li>
-  </ul>
+<!-- Stats -->
+<ul class="list-group list-group-unbordered mb-3">
+  <li class="list-group-item bg-gray-800 text-white border-gray-700">
+    <b>Formations</b>
+    <a class="float-right">{{ formationsCount }}</a>
+  </li>
+  <li class="list-group-item bg-gray-800 text-white border-gray-700">
+    <b>Demandes</b>
+    <a class="float-right">{{ demandesCount }}</a>
+  </li>
+  <li class="list-group-item bg-gray-800 text-white border-gray-700">
+    <b>Interested Formations</b>
+    <div class="mt-2">
+      <ng-container *ngIf="client?.interested?.length; else noInterests">
+<span
+  *ngFor="let formation of client?.interested"
+  class="badge bg-success text-white me-1 mb-1 formation-badge"
+  title="{{ formation.title }}"
+>
+  {{ formation.title }}
+</span>
 
-  <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+
+      </ng-container>
+      <ng-template #noInterests>
+        <span class="text-muted">No interests listed</span>
+      </ng-template>
+    </div>
+  </li>
+</ul>
+
+
 </div>
 
                 

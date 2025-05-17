@@ -1,70 +1,54 @@
 <div class="mb-6">
-  <div class="bg-gray-800 rounded-lg p-4 shadow-lg">
-    <!-- Header with Title and Controls -->
-    <div class="flex flex-col sm:flex-row items-center justify-between mb-4 gap-4">
-      <h2 class="text-xl font-bold text-white">Formation Categories</h2>
-      <div class="flex items-center gap-2">
-        <!-- Sort Dropdown -->
-        <select
-          [(ngModel)]="sortOption"
-          (change)="onSortChange($event)"
-          class="p-2 bg-gray-700 rounded-md text-gray-100 text-sm"
-        >
-          <option value="default">Sort: Default</option>
-          <option value="priceLowToHigh">Price: Low to High</option>
-          <option value="priceHighToLow">Price: High to Low</option>
-          <option value="ratingHighToLow">Rating: High to Low</option>
-        </select>
+  <div class="bg-gray-800 rounded-2xl p-6 shadow-2xl">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
+      <h2 class="text-2xl font-bold text-white tracking-wide">
+        Explorer les Formations par Catégorie
+      </h2>
 
-        <!-- Category Search -->
+      <!-- Search Inputs -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Recherche Catégorie -->
         <div class="relative">
           <input
             type="text"
             [(ngModel)]="categorySearchTerm"
             (input)="searchCategories()"
-            placeholder="Search categories..."
-            class="pl-8 pr-10 py-2 bg-gray-700 rounded-md text-gray-100 w-48 text-sm"
+            placeholder="Rechercher une catégorie..."
+            class="carousel-search-input"
           />
-          <span class="pi pi-search absolute left-2 top-3 text-gray-400"></span>
+          <i class="pi pi-search carousel-input-icon-left"></i>
           <button
             *ngIf="categorySearchTerm"
             (click)="categorySearchTerm = ''; searchCategories()"
-            class="absolute right-2 top-3 text-gray-400 hover:text-gray-200"
+            class="carousel-input-icon-right"
           >
-            <span class="pi pi-times"></span>
+            <i class="pi pi-times text-sm"></i>
           </button>
         </div>
 
-        <!-- Formation Search -->
-        <div class="relative" *ngIf="showSearch; else searchButton">
+        <!-- Recherche Formation -->
+        <div class="relative">
           <input
             type="text"
             [(ngModel)]="searchTerm"
             (input)="onSearchChange()"
-            placeholder="Search formations..."
-            class="pl-8 pr-10 py-2 bg-gray-700 rounded-md text-gray-100 w-48 text-sm"
+            placeholder="Rechercher une formation..."
+            class="carousel-search-input"
           />
-          <span class="pi pi-search absolute left-2 top-3 text-gray-400"></span>
+          <i class="pi pi-search carousel-input-icon-left"></i>
           <button
             *ngIf="searchTerm"
             (click)="searchTerm = ''; onSearchChange()"
-            class="absolute right-2 top-3 text-gray-400 hover:text-gray-200"
+            class="carousel-input-icon-right"
           >
-            <span class="pi pi-times"></span>
+            <i class="pi pi-times text-sm"></i>
           </button>
         </div>
-        <ng-template #searchButton>
-          <button
-            (click)="toggleSearch()"
-            class="p-2 bg-gray-700 rounded-full hover:bg-gray-600"
-          >
-            <span class="pi pi-search" style="font-size: 20px;"></span>
-          </button>
-        </ng-template>
       </div>
     </div>
 
-    <!-- Category Carousel -->
+    <!-- Carousel Catégories -->
     <div class="relative">
       <p-carousel
         [value]="categories"
@@ -76,20 +60,18 @@
         [responsiveOptions]="responsiveOptions"
       >
         <ng-template pTemplate="item" let-category>
-  <div
-    (click)="selectCategory(category)"
-    class="flex-shrink-0 px-4 py-2 rounded-md cursor-pointer transition-all text-sm text-center"
-    [ngClass]="{
-      'bg-blue-800 text-white font-medium': activeCategoryId === category.id,
-      'bg-gray-700 text-gray-300 hover:bg-gray-600': activeCategoryId !== category.id
-    }"
-  >
-    {{ category.name }}
-  </div>
-</ng-template>
+          <div
+            (click)="selectCategory(category)"
+            class="carousel-category-card"
+            [ngClass]="{
+              'carousel-category-active': activeCategoryId === category.id,
+              'carousel-category-default': activeCategoryId !== category.id
+            }"
+          >
+            {{ category.name }}
+          </div>
+        </ng-template>
       </p-carousel>
     </div>
   </div>
 </div>
-
-

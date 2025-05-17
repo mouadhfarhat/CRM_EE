@@ -50,7 +50,10 @@ public class SecurityConfig {
                 .requestMatchers("/demandes/historique").hasRole("CLIENT")
                 .requestMatchers("/formations/{id}/interest").hasRole("CLIENT")
                 .requestMatchers("/formations/interested").hasRole("CLIENT")
+                .requestMatchers("/formations/by-category/{categoryId}").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")
+                .requestMatchers("/demandes/update-full/{id}").hasRole("CLIENT")
 
+                
                 
 
 

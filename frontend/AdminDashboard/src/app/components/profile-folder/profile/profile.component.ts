@@ -7,11 +7,14 @@ import { HttpClient } from '@angular/common/http';
 import { NotificationHistoriqueComponent } from "../notification-historique/notification-historique.component";
 import { UpdateProfileComponent } from '../update-prodile/update-prodile.component';
 import { ActivatedRoute } from '@angular/router';
+import { Client } from '../../../domains/client';
+import { CommonModule } from '@angular/common'; // ✅ import this
+
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [MyDemandesComponent, HistoriqueComponent,UpdateProfileComponent, AboutMeComponent, NotificationHistoriqueComponent],
+  imports: [CommonModule,MyDemandesComponent, HistoriqueComponent,UpdateProfileComponent, AboutMeComponent, NotificationHistoriqueComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -24,6 +27,7 @@ export class ProfileComponent implements OnInit {
   demandesCount = 0;
   formationsCount = 0;
   clientId?: number;
+client?: Client; // Add this to the top of the class
 
   constructor(
     private route: ActivatedRoute,
@@ -31,33 +35,40 @@ export class ProfileComponent implements OnInit {
     private http: HttpClient
   ) {}
 
-  ngOnInit() {
-    this.clientId = +this.route.snapshot.paramMap.get('id')!;
+ngOnInit() {
+  this.clientId = +this.route.snapshot.paramMap.get('id')!;
 
-    if (this.clientId) {
-      this.http.get<any>(`http://localhost:8080/api/clients/${this.clientId}`).subscribe(user => {
-        this.username = user.username;
-        this.role = user.role;
-        this.firstname = user.firstname;
-        this.lastname = user.lastname;
-        this.phoneNumber = user.phoneNumber;
-      });
-
-      this.http.get<{ count: number }>(`http://localhost:8080/api/users/me/${this.clientId}/demandes/count`)
-        .subscribe(res => this.demandesCount = res.count);
-
-      this.http.get<{ count: number }>(`http://localhost:8080/api/users/me/${this.clientId}/formations/count`)
-        .subscribe(res => this.formationsCount = res.count);
-    } else {
-      this.username = this.auth.username;
-      this.role = this.auth.role;
-
-
-      this.http.get<{ count: number }>('http://localhost:8080/api/users/me/demandes/count')
-        .subscribe(res => this.demandesCount = res.count);
-
-      this.http.get<{ count: number }>('http://localhost:8080/api/users/me/formations/count')
-        .subscribe(res => this.formationsCount = res.count);
-    }
+  if (this.clientId) {
+    this.loadClient(this.clientId);
+  } else {
+    this.auth.getClientId().subscribe(id => {
+      this.clientId = id;
+      this.loadClient(id);
+    });
   }
+}
+
+loadClient(clientId: number) {
+  this.http.get<Client>(`http://localhost:8080/api/clients/${clientId}`).subscribe(user => {
+    this.client = user;
+    this.username = user.username;
+      this.firstname = user.firstname;
+    this.lastname = user.lastname;
+    this.phoneNumber = user.phoneNumber;
+  });
+
+  this.http.get<{ count: number }>(`http://localhost:8080/api/users/me/${clientId}/demandes/count`)
+    .subscribe(res => this.demandesCount = res.count);
+
+  this.http.get<{ count: number }>(`http://localhost:8080/api/users/me/${clientId}/formations/count`)
+    .subscribe(res => this.formationsCount = res.count);
+}
+
+
+getInterestsFormatted(client: Client): string {
+  return client.interested?.map(f => f.title).join(', ') || 'No interests';
+}
+
+
+
 }

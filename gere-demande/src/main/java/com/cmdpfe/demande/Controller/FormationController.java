@@ -369,5 +369,11 @@ public class FormationController {
         return ResponseEntity.ok(ids);
     }
 
+    @GetMapping("/by-category/{categoryId}")
+    public ResponseEntity<List<Formation>> getFormationsByCategory(@PathVariable Long categoryId) {
+        List<Formation> formations = formationRepository.findByCategoryId(categoryId);
+        return ResponseEntity.ok(formations);
+    }
+
 
 }

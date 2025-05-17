@@ -23,6 +23,12 @@ constructor(private http: HttpClient) {}
      });
  }
 
+
+ getFormationsByCategory(categoryId: number): Observable<Formation[]> {
+  return this.http.get<Formation[]>(`${this.apiUrl}/by-category/${categoryId}`);
+}
+
+
  getAll(): Observable<ClientGroup[]> {
     return this.http.get<ClientGroup[]>(this.apiUrl);
   }

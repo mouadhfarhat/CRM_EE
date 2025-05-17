@@ -5,7 +5,6 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { DataViewModule } from 'primeng/dataview';
 import { DialogModule } from 'primeng/dialog';
-import { PaginatorModule } from 'primeng/paginator';
 import { RatingModule } from 'primeng/rating';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
@@ -14,6 +13,9 @@ import { Formation } from '../../../domains/formation';
 import { CarouselComponent } from '../carousel/carousel.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastModule } from 'primeng/toast';
+import { Client } from '../../../domains/client';
+import { ClientService } from '../../../services/client/client.service';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-client-interface',
@@ -26,7 +28,6 @@ import { ToastModule } from 'primeng/toast';
     TagModule,
     DialogModule,
     RouterModule,
-    PaginatorModule,
     RatingModule,
     CarouselComponent,
     TooltipModule,
@@ -39,31 +40,69 @@ import { ToastModule } from 'primeng/toast';
 export class ClientInterfaceComponent implements OnInit {
   formations: Formation[] = [];
   layout: 'list' | 'grid' = 'grid';
-  currentPage: number = 1;
-  totalRecords: number = 0;
-  rowsPerPage: number = 5;
   activeCategoryId: number | null = null;
   searchTerm: string = '';
   sortOption: string = 'default';
   imageUrls: { [id: number]: string } = {};
   interestedFormations: Set<number> = new Set();
+  client: Client | null = null;
+  clientId: number | null = null;
+
 
   constructor(
     private formationService: FormationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private clientService: ClientService,
+    private authService: AuthService,
+    
   ) {}
 
   ngOnInit(): void {
     this.loadFormations();
     this.loadInterestedFormations();
+    this.loadClientId();
+
+  }
+
+  loadClientId(): void {
+    this.authService.getClientId().subscribe({
+      next: (id: number) => {
+        this.clientId = id;
+      },
+      error: (err) => {
+        console.error('Error fetching client ID:', err);
+      }
+    });
   }
 
   loadFormations(): void {
     this.formationService.getAllFormations().subscribe({
       next: (data: Formation[]) => {
-        this.totalRecords = data.length;
-        this.formations = data.slice((this.currentPage - 1) * this.rowsPerPage, this.currentPage * this.rowsPerPage);
+        let filteredFormations = data;
 
+        // Apply category filter
+        if (this.activeCategoryId !== null) {
+          filteredFormations = filteredFormations.filter(
+            formation => formation.category?.id === this.activeCategoryId
+          );
+        }
+
+        // Apply search filter
+        if (this.searchTerm) {
+          const lowerSearchTerm = this.searchTerm.toLowerCase();
+          filteredFormations = filteredFormations.filter(
+            formation =>
+              formation.title.toLowerCase().includes(lowerSearchTerm) ||
+              formation.description.toLowerCase().includes(lowerSearchTerm)
+          );
+        }
+
+        
+
+        // Set all formations
+        this.formations = filteredFormations;
+
+        // Load images
         this.formations.forEach(formation => {
           if (formation.imagePath) {
             this.formationService.getImage(formation.imagePath).subscribe(blob => {
@@ -144,26 +183,45 @@ export class ClientInterfaceComponent implements OnInit {
     }
   }
 
-  onCategorySelected(categoryId: number): void {
+  onCategorySelected(categoryId: number | null): void {
     this.activeCategoryId = categoryId;
-    this.currentPage = 1;
     this.loadFormations();
   }
 
   onSearchTermChanged(searchTerm: string): void {
     this.searchTerm = searchTerm;
-    this.currentPage = 1;
     this.loadFormations();
   }
 
   onSortOptionChanged(sortOption: string): void {
     this.sortOption = sortOption;
-    this.currentPage = 1;
     this.loadFormations();
   }
 
-  onPageChange(event: any): void {
-    this.currentPage = event.page + 1;
-    this.loadFormations();
-  }
+  downloadFile(fileName: string): void {
+  this.formationService.getFile(fileName).subscribe({
+    next: (blob: Blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    },
+    error: (err) => {
+      console.error('File download failed:', err);
+    }
+  });
+}
+
+
+isRegistrationClosed(registrationEndDate: string): boolean {
+  const today = new Date();
+  const endDate = new Date(registrationEndDate);
+  return endDate < today;
+}
+
+
 }

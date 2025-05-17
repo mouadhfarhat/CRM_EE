@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Demande } from '../../../domains/demande.model';
 import { DemandeService } from '../../../services/demande/demande.service';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-my-demandes',
@@ -36,10 +37,34 @@ export class MyDemandesComponent implements OnInit {
     // navigate or show modal
   }
 
-  onEdit(demandeId: number): void {
+  onEdit2(demandeId: number): void {
     console.log('Editing demande', demandeId);
     // navigate or show modal
   }
+
+    editableDemande: Demande = {} as Demande;
+  private editModal: any;
+
+  
+  onEdit(demande: Demande): void {
+    this.editableDemande = { ...demande };
+    const modalElement = document.getElementById('editDemandeModal');
+    this.editModal = new bootstrap.Modal(modalElement);
+    this.editModal.show();
+  }
+  confirmEdit(): void {
+    this.demandeService.updateDemande(this.editableDemande).subscribe({
+      next: () => {
+        alert('Demande mise à jour avec succès');
+        this.editModal.hide();
+      },
+      error: () => {
+        alert('Erreur lors de la mise à jour');
+        this.editModal.hide();
+      }
+    });
+  }
+
 
   onDelete(demandeId: number): void {
     if (!confirm('Are you sure you want to delete this demande?')) return;
