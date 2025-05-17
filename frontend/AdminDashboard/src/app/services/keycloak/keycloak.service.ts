@@ -133,4 +133,12 @@ export class KeycloakService {
     const roles = this.keycloak.tokenParsed['realm_access']?.roles || [];
     return roles;
   }
+
+
+
+  getKeycloakId(): string | undefined {
+  return this._keycloak?.subject;
+}
+
+
 }

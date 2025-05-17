@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RoleService } from '../../services/role/role.service';
 import { KeycloakService } from '../../services/keycloak/keycloak.service'; // Import KeycloakService
+import { AuthService } from '../../services/auth/auth.service';
+import { HttpClient } from '@angular/common/http';
+import { Client } from '../../domains/client';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,21 +17,57 @@ import { KeycloakService } from '../../services/keycloak/keycloak.service'; // I
 export class SidebarComponent implements OnInit {
   username: string = '';
   role: string = 'visitor';
+  imageSrc: any = '';
+  clientId?: number;
+
 
   constructor(
     private roleService: RoleService,
-    private keycloakService: KeycloakService
+    private keycloakService: KeycloakService,
+    private auth: AuthService,
+    private http: HttpClient,
+    private sanitizer: DomSanitizer
+    
+    
   ) {
     this.roleService.role$.subscribe((r) => (this.role = r));
   }
 
-  async ngOnInit() {
-    // Get username from Keycloak profile
-    if (await this.keycloakService.isLoggedIn()) {
-      const profile = this.keycloakService.profile;
-      this.username = profile?.username || 
-                     profile?.username || 
-                     'My Profile'; // Fallback
+async ngOnInit() {
+  if (await this.keycloakService.isLoggedIn()) {
+    const profile = this.keycloakService.profile;
+    this.username = profile?.username || 'My Profile';
+
+    const keycloakId = this.keycloakService.getKeycloakId();
+    if (keycloakId) {
+      this.loadUserImage(keycloakId);
+    } else {
+      console.warn("Keycloak ID is undefined");
     }
   }
+}
+
+loadUserImage(keycloakId: string) {
+  this.http.get<any>(`http://localhost:8080/api/users/${keycloakId}`).subscribe(user => {
+    const imageUrl = user.imageUrl;
+    this.loadProfileImage(imageUrl);
+  });
+}
+
+loadProfileImage(imageUrl?: string) {
+  const url = imageUrl
+    ? `http://localhost:8080${imageUrl}?t=${new Date().getTime()}`
+    : `http://localhost:8080/images/users/default.png`;
+
+  this.http.get(url, { responseType: 'blob' }).subscribe(blob => {
+    const objectURL = URL.createObjectURL(blob);
+    this.imageSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+  });
+}
+
+
+
+
+
+  
 }

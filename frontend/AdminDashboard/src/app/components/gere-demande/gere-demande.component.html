@@ -92,13 +92,15 @@
                     </div>
                     
                     <div class="card-body">
-                        <div *ngFor="let demande of demandesEnAttente" class="card card-primary card-outline">
+                        <div *ngFor="let demande of demandesEnAttente" class="card card-primary card-outline" [ngClass]="{'border border-success border-3': demande.id === selectedDemandeId}">
                         <!-- Demande Header -->
                         <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+                            
                             <h4 class="card-title mb-0 d-flex align-items-center" 
                                 (click)="demande.showDetails = !demande.showDetails" 
                                 style="cursor: pointer;">
                             <i class="far fa-file-alt me-2"></i>{{ demande.title }}
+
                             </h4>
                     
                             <!-- Card Tools at far right -->
@@ -121,6 +123,10 @@
                                 <button class="dropdown-item" (click)="openShareModal(demande)">
                                     <i class="fas fa-share-alt text-primary me-2"></i> Partager
                                 </button>
+                                <button class="dropdown-item" (click)="openAddTaskModal(demande)">
+                                    <i class="fas fa-tasks text-warning me-2"></i> Ajouter une tâche
+                                </button>
+
                                 </div>
                             </div>
                             </div>
@@ -179,7 +185,7 @@
                     </div>
                     
                     <div class="card-body">
-                        <div *ngFor="let demande of demandesEnCours" class="card card-info card-outline">
+                        <div *ngFor="let demande of demandesEnCours" class="card card-info card-outline" [ngClass]="{'border border-success border-3': demande.id === selectedDemandeId}">
                         <!-- Demande Header -->
                         <div class="card-header bg-info text-white d-flex align-items-center">
                             <h4 class="card-title mb-0 d-flex align-items-center" 
@@ -207,6 +213,9 @@
                                 <div class="dropdown-divider"></div>
                                 <button class="dropdown-item" (click)="openShareModal(demande)">
                                     <i class="fas fa-share-alt text-primary me-2"></i> Partager
+                                </button>
+                                                                <button class="dropdown-item" (click)="openAddTaskModal(demande)">
+                                    <i class="fas fa-tasks text-warning me-2"></i> Ajouter une tâche
                                 </button>
                                 </div>
                             </div>
@@ -263,7 +272,7 @@
                     </div>
                     
                     <div class="card-body">
-                        <div *ngFor="let demande of demandesTermine" class="card card-success card-outline">
+                        <div *ngFor="let demande of demandesTermine" class="card card-success card-outline" [ngClass]="{'border border-success border-3': demande.id === selectedDemandeId}">
                         <!-- Demande Header -->
                         <div class="card-header bg-success text-white d-flex align-items-center justify-content-between">
                             <h4 class="card-title mb-0 d-flex align-items-center"
@@ -291,6 +300,9 @@
                                 <div class="dropdown-divider"></div>
                                 <button class="dropdown-item" (click)="openShareModal(demande)">
                                     <i class="fas fa-share-alt text-primary me-2"></i> Partager
+                                </button>
+                                                                <button class="dropdown-item" (click)="openAddTaskModal(demande)">
+                                    <i class="fas fa-tasks text-warning me-2"></i> Ajouter une tâche
                                 </button>
                                 </div>
                             </div>
@@ -347,7 +359,7 @@
                     </div>
                     
                     <div class="card-body">
-                        <div *ngFor="let demande of demandesRefuse" class="card card-danger card-outline">
+                        <div *ngFor="let demande of demandesRefuse" class="card card-danger card-outline" [ngClass]="{'border border-success border-3': demande.id === selectedDemandeId}">
                         <!-- Demande Header -->
                         <div class="card-header bg-danger text-white d-flex align-items-center justify-content-between">
                             <h4 class="card-title mb-0 d-flex align-items-center"
@@ -375,6 +387,9 @@
                                 <div class="dropdown-divider"></div>
                                 <button class="dropdown-item" (click)="openShareModal(demande)">
                                     <i class="fas fa-share-alt text-primary me-2"></i> Partager
+                                </button>
+                                                                <button class="dropdown-item" (click)="openAddTaskModal(demande)">
+                                    <i class="fas fa-tasks text-warning me-2"></i> Ajouter une tâche
                                 </button>
                                 </div>
                             </div>
@@ -454,3 +469,25 @@
         </main>
     </div>
 </div>
+
+<!-- Task Modal -->
+<div class="modal fade" [class.show]="showTaskModal" [ngStyle]="{ display: showTaskModal ? 'block' : 'none' }" id="addTaskModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ajouter une tâche</h5>
+        <button type="button" class="btn-close" (click)="closeTaskModal()" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <input [(ngModel)]="newTaskContent" class="form-control" placeholder="Décrivez la tâche à ajouter" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeTaskModal()">Annuler</button>
+        <button type="button" class="btn btn-primary" (click)="addTask()">Ajouter</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Optional backdrop for task modal -->
+<div class="modal-backdrop fade show" *ngIf="showTaskModal"></div>

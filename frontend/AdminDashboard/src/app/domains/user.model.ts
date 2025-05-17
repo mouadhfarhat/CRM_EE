@@ -8,5 +8,5 @@ export interface User {
     firstname: string;
     lastname: string;
     phoneNumber: string;
-    image?: string;
+  imageUrl?: string; // ✅ renamed from image to imageUrl
   }

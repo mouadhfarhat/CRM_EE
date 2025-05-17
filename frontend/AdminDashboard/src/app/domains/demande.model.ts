@@ -3,6 +3,7 @@ import { Client } from './client';
 import { DemandeType, DemandeStatut } from './enums';
 import { Formation } from './formation';
 import { Gestionnaire } from './gestionnaire.model';
+import { Task } from './Task.model';
 
 
 export interface Demande {
@@ -13,10 +14,11 @@ export interface Demande {
   type: DemandeType;
   statut: DemandeStatut;
   createdAt: Date;
-  client: Client;                  // Client who made the demande
+  client: Client;
   formation: Formation;            // Formation related to demande
   gestionnaireAssigne: Gestionnaire; // Assigned gestionnaire
   sharedWith?: Gestionnaire;       // Optional: Shared with another gestionnaire
   showDetails?: boolean;
+  tasks?: Task[];
 
 }

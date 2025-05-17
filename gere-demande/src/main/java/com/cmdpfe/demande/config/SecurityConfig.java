@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -52,11 +53,16 @@ public class SecurityConfig {
                 .requestMatchers("/formations/interested").hasRole("CLIENT")
                 .requestMatchers("/formations/by-category/{categoryId}").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")
                 .requestMatchers("/demandes/update-full/{id}").hasRole("CLIENT")
+                .requestMatchers("/api/users/{userId}/upload-image").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")
+                .requestMatchers("/api/users/{id}").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")
+
+                .requestMatchers("/api/tasks/**").hasRole("GESTIONNAIRE")
+                .requestMatchers("/demandes/search-by-gestionnaire-username").hasRole("ADMIN")
+                .requestMatchers("/demandes/search-by-client-username").hasRole("ADMIN")
 
                 
+
                 
-
-
 
                 .requestMatchers("/demandes/{id}/rate").hasRole("CLIENT")
                 .requestMatchers("/api/clients/by-username/{username}").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")
@@ -100,10 +106,9 @@ public class SecurityConfig {
                     "/demandes/search",
                     "/demandes/search2"
                 ).hasRole("ADMIN")
-                .requestMatchers(
-                    "/demandes/update/{id}",
-                    "/demandes/delete/{id}"
-                ).hasRole("CLIENT")
+                .requestMatchers("/demandes/delete/{id}").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")
+
+                .requestMatchers("/demandes/update/{id}").hasAnyRole("ADMIN", "GESTIONNAIRE","CLIENT")
                 .requestMatchers("/api/clients/**").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")
                 .requestMatchers("/api/events/**").hasAnyRole("ADMIN", "GESTIONNAIRE")
                 .requestMatchers("/formations/**").hasAnyRole("ADMIN", "GESTIONNAIRE")

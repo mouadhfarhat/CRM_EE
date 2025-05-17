@@ -5,4 +5,5 @@ export interface UserProfile {
     lastName?: string;
     phoneNumber?:String;
     token?: string;
+    
   }

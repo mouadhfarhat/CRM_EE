@@ -1,0 +1,99 @@
+.selected-demande {
+  border: 3px solid #28a745; /* green */
+  box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+}
+/***/
+
+.card {
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.selected-demande {
+  border: 3px solid #28a745 !important;
+}
+
+.text-decoration-line-through {
+  opacity: 0.6;
+}
+
+
+
+.task-deleted {
+  background-color: #fff0f0;
+  opacity: 0.8;
+  transition: opacity 0.5s ease;
+}
+
+.deletion-banner {
+  background-color: #ffe0e0;
+  color: #a00;
+  padding: 4px 8px;
+  border-left: 4px solid #d00;
+  font-size: 0.9rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+
+/* Optional: style scrollbar */
+.task-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.task-scroll-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.task-deleted {
+  background-color: #fff0f0;
+  opacity: 0.8;
+  transition: opacity 0.5s ease;
+}
+
+.deletion-banner {
+  background-color: #ffe0e0;
+  color: #a00;
+  padding: 4px 8px;
+  border-left: 4px solid #d00;
+  font-size: 0.9rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.task-scroll-container {
+  max-height: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 5px;
+}
+
+
+
+.todo-scroll-container {
+  max-height: 500px; /* adjust as needed */
+  overflow-y: auto;
+  padding-right: 10px; /* space for scrollbar */
+}
+.todo-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.todo-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}

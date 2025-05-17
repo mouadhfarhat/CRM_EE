@@ -1,0 +1,54 @@
+<div class="todo-scroll-container">
+  <div *ngFor="let demande of demandesWithTasks" class="mb-4">
+    <div 
+      class="card shadow-sm border rounded-4"
+      [ngClass]="{'border-success border-3': demande.id === selectedDemandeId}"
+    >
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top-4">
+        <div>
+          <strong>Demande:</strong> {{ demande.title || 'Sans titre' }}<br>
+          <small><strong>Client:</strong> {{ demande.client?.username || 'Inconnu' }}</small>
+        </div>
+        <span *ngIf="demande.id === selectedDemandeId" class="badge bg-warning text-dark">Sélectionnée</span>
+      </div>
+
+      <ul class="list-group list-group-flush">
+        <li 
+          *ngFor="let task of demande.tasks" 
+          class="list-group-item d-flex flex-column"
+          [ngClass]="{ 'task-deleted': task.completed }"
+        >
+          <div class="d-flex justify-content-between align-items-center">
+            <span 
+              [class.text-decoration-line-through]="task.completed"
+              class="me-2"
+            >
+              <i class="fas fa-check-circle me-1 text-success" *ngIf="task.completed"></i>
+              {{ task.content }}
+            </span>
+            <div>
+              <button class="btn btn-sm btn-outline-primary me-2" (click)="goToGere(demande)">
+                <i class="fas fa-rocket me-1"></i>Gérer
+              </button>
+              <button 
+                class="btn btn-sm btn-outline-danger" 
+                (click)="confirmDeleteTask(task, demande.id)"
+                [disabled]="task.completed"
+              >
+                <i class="fas fa-trash-alt me-1"></i>Supprimer
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="task.completed" class="deletion-banner mt-2">
+            Tâche supprimée ✔️
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div *ngIf="demandesWithTasks.length === 0" class="alert alert-info text-center">
+    <i class="fas fa-info-circle me-2"></i> Aucune tâche pour le moment.
+  </div>
+</div>

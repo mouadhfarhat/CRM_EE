@@ -30,9 +30,17 @@
               <div  class="card bg-gray-800 border border-gray-700 text-white shadow-sm">
 <div class="card-body box-profile">
   <div class="text-center">
-    <img class="profile-user-img img-fluid img-circle"
-         src="../../dist/img/user4-128x128.jpg"
-         alt="User profile picture">
+<img class="profile-user-img img-fluid img-circle"
+     [src]="imageSrc"
+     alt="User profile picture">
+<div class="text-center mt-2">
+  <label class="btn btn-sm btn-primary">
+    <i class="fas fa-edit"></i> Edit Image
+    <input type="file" hidden (change)="onFileSelected($event)">
+  </label>
+</div>
+
+
   </div>
 
   <!-- Full Name Display -->
@@ -103,6 +111,8 @@
                     <li class="nav-item"><a class="nav-link" href="#historique" data-toggle="tab">Historique</a></li>
                     <li class="nav-item"><a class="nav-link" href="#editProfile" data-toggle="tab">Edit profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="#notification" data-toggle="tab">Notifications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#todolist" data-toggle="tab">Todolist</a></li>
+
                   </ul>
                 </div><!-- /.card-header -->
                 <div class="card-body">
@@ -123,8 +133,9 @@
                       <div class="tab-pane" id="notification">
                         <app-notification-historique></app-notification-historique>
                       </div>
-
-                      
+                      <div class="tab-pane" id="todolist">
+                        <app-todolist></app-todolist>
+                      </div>
                     <!-- /.tab-pane -->
                   
                   </div>

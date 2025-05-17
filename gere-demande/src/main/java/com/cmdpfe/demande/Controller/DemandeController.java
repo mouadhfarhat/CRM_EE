@@ -297,26 +297,11 @@ public class DemandeController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('DELETE_DEMANDE')")
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<Map<String, String>> deleteDemande(@PathVariable Long id) {
-        CustomJwt jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
-        String keycloakId = jwt.getId();
-
-        Client client = clientRepository.findByKeycloakId(keycloakId);
-        Optional<Demande> optionalDemande = demandeRepository.findById(id);
-
-        if (optionalDemande.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Demande not found"));
-        }
-
-        Demande demande = optionalDemande.get();
-        if (!demande.getClient().getId().equals(client.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Not authorized to delete this demande"));
-        }
-
+    public ResponseEntity<?> deleteDemande(@PathVariable Long id) {
         demandeRepository.deleteById(id);
-        return ResponseEntity.ok(Map.of("message", "Demande deleted successfully"));
+        return ResponseEntity.ok().build();
     }
 
 
@@ -439,6 +424,19 @@ public class DemandeController {
 
         return ResponseEntity.ok(demandeRepository.save(existing));
     }
+    @GetMapping("/search-by-client-username")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Demande> searchByClientUsername(@RequestParam String username) {
+        return demandeRepository.searchDemandesByClientUsername(username);
+    }
+
+    @GetMapping("/search-by-gestionnaire-username")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Demande> searchByGestionnaireUsername(@RequestParam String username) {
+        return demandeRepository.searchDemandesByGestionnaireUsername(username);
+    }
+
+
 
 }
   

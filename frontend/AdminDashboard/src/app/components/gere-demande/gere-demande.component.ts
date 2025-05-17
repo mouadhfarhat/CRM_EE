@@ -6,6 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { DemandeStatut, DemandeType } from '../../domains/enums';
 import { ToolbarModule } from 'primeng/toolbar';
+import { TaskService } from '../../services/task/task.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-gere-demande',
@@ -35,12 +37,17 @@ export class GereDemandeComponent implements OnInit {
 
   constructor(
     private demandeService: DemandeService,
+    private TaskService: TaskService,
+    private route: ActivatedRoute,
     private http: HttpClient
   ) {}
   
   ngOnInit() {
     this.getCurrentGestionnaire();
     this.loadGestionnaires();
+    this.route.queryParams.subscribe(params => {
+    this.selectedDemandeId = +params['selectedId'] || null;
+  });
   }
 
   loadDemandes(gestionnaireId: number) {
@@ -286,4 +293,61 @@ this.http.get<any>('http://localhost:8080/gestionnaires/me', { headers }).subscr
     }
     return this.currentGestionnaireId;
   }
+
+newTaskContent: string = '';
+
+
+
+
+addTask() {
+  if (!this.selectedDemande || !this.newTaskContent.trim()) return;
+
+  const task = { content: this.newTaskContent };
+
+  const gestionnaireId = this.getGestionnaireId(); // Ensure this is available
+
+  this.TaskService.addTaskToDemande(this.selectedDemande.id, gestionnaireId, task).subscribe({
+    next: (savedTask) => {
+      if (!this.selectedDemande?.tasks) {
+        this.selectedDemande!.tasks = [];
+      }
+      this.selectedDemande!.tasks.push(savedTask);
+      this.newTaskContent = '';
+      this.closeModal(); // hide modal via Angular
+    },
+    error: (err) => {
+      console.error("Erreur lors de l'ajout de la tâche", err);
+    }
+  });
+}
+
+
+showTaskModal = false;
+showShareModal = false;
+
+
+openAddTaskModal(demande: Demande) {
+  this.selectedDemande = demande;
+  this.newTaskContent = '';
+  this.showTaskModal = true;
+}
+
+
+closeTaskModal() {
+  this.showTaskModal = false;
+  this.newTaskContent = '';
+  this.selectedDemande = null;
+}
+
+closeShareModal() {
+  this.showShareModal = false;
+  this.selectedGestionnaireId = null;
+  this.selectedDemande = null;
+}
+
+
+
+
+
+
 }

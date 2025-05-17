@@ -7,4 +7,5 @@ export interface Gestionnaire extends User {
   department: DepartmentType;
   assignedDemandes?: Demande[];      // Demandes assigned to this gestionnaire
   demandesSharedWithMe?: Demande[];  // Demandes shared with this gestionnaire
+  keycloakId?:string
 }

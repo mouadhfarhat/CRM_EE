@@ -131,8 +131,21 @@ public interface DemandeRepository extends JpaRepository<Demande, Long> {
     List<Demande> findByClientIdAndType(Long clientId, DemandeType type);
 
 	long countByClient_Id(Long id);
+	
+	@Query("""
+		    SELECT d FROM Demande d
+		    WHERE LOWER(d.client.username) LIKE LOWER(CONCAT('%', :username, '%'))
+		""")
+		List<Demande> searchDemandesByClientUsername(@Param("username") String username);
 
-    
+	
+	
+	@Query("""
+		    SELECT d FROM Demande d
+		    WHERE LOWER(d.gestionnaireAssigne.username) LIKE LOWER(CONCAT('%', :username, '%'))
+		""")
+		List<Demande> searchDemandesByGestionnaireUsername(@Param("username") String username);
+
 
 }
 

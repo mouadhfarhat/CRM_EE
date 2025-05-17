@@ -1,6 +1,8 @@
 package com.cmdpfe.demande.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -10,12 +12,14 @@ public class Gestionnaire extends User {
     @Enumerated(EnumType.STRING)
     private DepartmentType department;
 
+ // In Gestionnaire.java
+ // Gestionnaire.java
     @OneToMany(mappedBy = "gestionnaireAssigne", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<Demande> assignedDemandes;
 
     @OneToMany(mappedBy = "sharedWith")
     private List<Demande> demandesSharedWithMe;
+
 
     // Constructors
     public Gestionnaire() {}

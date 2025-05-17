@@ -2,9 +2,13 @@ package com.cmdpfe.demande.Entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "demande")
 public class Demande {
@@ -22,6 +26,20 @@ public class Demande {
     private DemandeStatut statut;
 
     private LocalDateTime createdAt;
+    
+    @OneToMany(mappedBy = "demande", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Task> tasks;
+
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
@@ -32,15 +50,18 @@ public class Demande {
     @JsonIgnoreProperties({"demanded", "events", "groups", "interestedClients"})
     private Formation formation;
 
+ // Demande.java
     @ManyToOne
     @JoinColumn(name = "gestionnaire_id", nullable = true)
-    @JsonIgnore
+    @JsonIgnoreProperties({"assignedDemandes", "demandesSharedWithMe"}) // avoid recursive serialization
     private Gestionnaire gestionnaireAssigne;
 
     @ManyToOne
     @JoinColumn(name = "shared_with_id")
-    @JsonIgnore
+    @JsonIgnoreProperties({"assignedDemandes", "demandesSharedWithMe"})
     private Gestionnaire sharedWith;
+
+
     public Demande() {
         this.createdAt = LocalDateTime.now();
     }
@@ -97,4 +118,6 @@ public class Demande {
 
     public Gestionnaire getGestionnaireAssigne() { return gestionnaireAssigne; }
     public void setGestionnaireAssigne(Gestionnaire gestionnaireAssigne) { this.gestionnaireAssigne = gestionnaireAssigne; }
+
+
 }

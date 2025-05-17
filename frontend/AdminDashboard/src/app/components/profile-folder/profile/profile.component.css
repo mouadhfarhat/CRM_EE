@@ -6,3 +6,13 @@
   text-overflow: ellipsis;
   vertical-align: middle;
 }
+
+
+.profile-user-img {
+  width: 120px;              /* or any fixed size */
+  height: 120px;
+  object-fit: cover;         /* prevents distortion */
+  border-radius: 50%;        /* makes it a circle */
+  border: 3px solid #adb5bd; /* optional: gray border */
+}
+

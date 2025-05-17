@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Client extends User {
@@ -48,4 +49,6 @@ public class Client extends User {
     public void setDemandes(List<Demande> demandes) { this.demandes = demandes; }
     public List<CalendrierEvent> getEvents() { return events; }
     public void setEvents(List<CalendrierEvent> events) { this.events = events; }
+
+
 }
