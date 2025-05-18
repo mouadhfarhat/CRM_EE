@@ -67,4 +67,9 @@ export class ClientService {
   return this.http.get<Formation[]>(this.apiUrl);
 }
   
+getClientsInterestedInFormation(formationId: number): Observable<Client[]> {
+  return this.http.get<Client[]>(`${this.apiUrl}/interested-in/${formationId}`);
+}
+
+
 }

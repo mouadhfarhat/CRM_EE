@@ -55,6 +55,8 @@ public class SecurityConfig {
                 .requestMatchers("/demandes/update-full/{id}").hasRole("CLIENT")
                 .requestMatchers("/api/users/{userId}/upload-image").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")
                 .requestMatchers("/api/users/{id}").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")
+                
+                .requestMatchers("/api/clients/interested-in/{formationId}").hasAnyRole("ADMIN", "GESTIONNAIRE")
 
                 .requestMatchers("/api/tasks/**").hasRole("GESTIONNAIRE")
                 .requestMatchers("/demandes/search-by-gestionnaire-username").hasRole("ADMIN")

@@ -42,32 +42,30 @@ keycloakId?: string; // from token.sub
     private sanitizer: DomSanitizer
 
   ) {}
-
 ngOnInit() {
   this.route.paramMap.subscribe(params => {
     const routeId = params.get('id');
 
     if (routeId) {
-      // Someone else's profile (e.g. /profile/101)
       const id = Number(routeId);
       if (!isNaN(id)) {
-        this.loadClient(id); // Assuming only clients are viewed this way
+        this.loadClient(id);
         this.clientId = id;
       }
     } else {
-      // Own profile
       const role = this.auth.role;
       if (role === 'CLIENT') {
         this.auth.getClientId().subscribe(id => {
           this.clientId = id;
           this.loadClient(id);
         });
-      } else {
-        this.loadUserInfoFromToken(); // For GESTIONNAIRE or ADMIN
       }
+      // ✅ Always load internal userId for image upload
+      this.loadUserInfoFromToken(); 
     }
   });
 }
+
 
 
 loadUserInfoFromToken() {

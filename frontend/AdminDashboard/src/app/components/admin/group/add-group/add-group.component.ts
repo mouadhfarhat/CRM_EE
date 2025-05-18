@@ -6,6 +6,7 @@ import { DragDropModule } from 'primeng/dragdrop';
 import { Client } from '../../../../domains/client';
 import { Formation } from '../../../../domains/formation';
 import { ListClientGroupComponent } from '../list-client-group/list-client-group.component';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 interface GroupTab {
   id: string;
@@ -30,13 +31,32 @@ export class AddGroupComponent implements OnInit {
   formations: Formation[] = [];
   selectedFormationId: number | undefined;
   eligibleClients: Client[] = [];
+imageCache: { [key: number]: SafeUrl } = {}; // cache for performance
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
     this.addNewGroup();
     this.loadFormationsByDeadline();
   }
+
+
+
+  getClientImage(client: any): SafeUrl {
+  // If already cached
+  if (this.imageCache[client.id]) return this.imageCache[client.id];
+
+  const imageUrl = client.imageUrl
+    ? `http://localhost:8080${client.imageUrl}?t=${new Date().getTime()}`
+    : `http://localhost:8080/images/users/default.png`;
+
+  this.http.get(imageUrl, { responseType: 'blob' }).subscribe(blob => {
+    const objectURL = URL.createObjectURL(blob);
+    this.imageCache[client.id] = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+  });
+
+  return `assets/loading.gif`; // temporary placeholder while loading
+}
 
   loadFormationsByDeadline(): void {
     this.http.get<Formation[]>('http://localhost:8080/api/groups/formations/deadline')

@@ -141,7 +141,12 @@
                       </p>
                     </div>
                     <div class="col-3 col-sm-4 text-center">
-                      <img src="../../dist/img/user1-128x128.jpg" alt="user-avatar" class="img-circle img-fluid" style="max-height: 50px;">
+<img [src]="getClientImage(client)"
+     alt="user-avatar"
+     class="rounded-circle shadow-sm"
+     style="width: 50px; height: 50px; object-fit: cover;">
+
+
                     </div>
                   </div>
                 </div>

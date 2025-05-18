@@ -102,6 +102,13 @@ public class ClientController {
         return clientRepository.findByFormationId(formationId);
     }
     
+    
+    @GetMapping("/interested-in/{formationId}")
+    public ResponseEntity<List<Client>> getClientsInterestedInFormation(@PathVariable Long formationId) {
+        List<Client> clients = clientRepository.findByFormationId(formationId);
+        return ResponseEntity.ok(clients);
+    }
+    
  // In ClientController
     @GetMapping("/by-group/{groupId}")
     public List<Client> getClientsByGroup(@PathVariable Long groupId) {
