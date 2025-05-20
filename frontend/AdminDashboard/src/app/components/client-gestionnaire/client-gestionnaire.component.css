@@ -1,101 +1,289 @@
+/* ===============================
+   Formation Dropdown
+   =============================== */
 .formation-dropdown {
+  position: absolute;
   top: 100%;
   left: 0;
-  z-index: 9999; /* Ensure it appears above everything */
+  z-index: 1000;
   max-height: 250px;
   overflow-y: auto;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
+  background-color: #fbfbfb;
+  border: 1px solid #1a1a1a;
+  color: rgb(0, 0, 0);
+  border-radius: 6px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
+.list-group-item{
+  color: rgb(255, 255, 255);
 
+}
+.formation-dropdown li {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
 
+.formation-dropdown li:hover {
+  background-color: #34495e;
+}
 
-/* Card Styling */
+/* ===============================
+   Client Card Styling
+   =============================== */
 .card.bg-light {
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  .card.bg-light:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Client Name */
-  .card .lead {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #2c3e50;
-  }
-  
-  /* Email and phone */
-  .card .text-sm {
-    font-size: 0.95rem;
-  }
-  
-  .card .fa-ul li {
-    margin-bottom: 0.4rem;
-  }
-  
-  /* Avatar */
-  .card .img-circle {
-    border: 3px solid #007bff;
-    padding: 2px;
-  }
-  
-  /* Select toggle styled */
-  .card-footer .form-check-input {
-    display: none;
-  }
-  
-  .card-footer .form-check-label {
-    background-color: #f1f1f1;
-    color: #333;
-    padding: 4px 10px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    border: 1px solid #ccc;
-    transition: all 0.3s ease;
-  }
-  
-  .card-footer .form-check-input:checked + .form-check-label {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-  }
-  
-  /* Button group spacing */
-  .card-footer .btn-group .btn {
-    border-radius: 50%;
-    width: 38px;
-    height: 38px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  /* Formation dropdown */
-  .formation-dropdown {
-    z-index: 1000;
-    max-height: 200px;
-    overflow-y: auto;
-    background-color: #2c3e50;
-    border: 1px solid #1a1a1a;
-    color: white;
-    border-radius: 6px;
-  }
-  
-  .formation-dropdown li {
-    color: white;
-    transition: background 0.3s ease;
-  }
-  
-  .formation-dropdown li:hover {
-    background-color: #34495e;
-    cursor: pointer;
-  }
-  
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card.bg-light:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card .lead {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.card .text-sm {
+  font-size: 0.95rem;
+}
+
+.card .fa-ul li {
+  margin-bottom: 0.4rem;
+}
+
+.card .img-circle {
+  border: 3px solid #007bff;
+  padding: 2px;
+}
+
+/* Select Toggle */
+.card-footer .form-check-input {
+  display: none;
+}
+
+.card-footer .form-check-label {
+  background-color: #f1f1f1;
+  color: #333;
+  padding: 4px 10px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease;
+}
+
+.card-footer .form-check-input:checked + .form-check-label {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Button group (circular buttons) */
+.card-footer .btn-group .btn {
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===============================
+   Email Modal
+   =============================== */
+.custom-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+}
+
+.custom-modal {
+  background-color: #ffffff;
+  border-radius: 12px;
+  width: 600px;
+  max-width: 90%;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+}
+
+.custom-modal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.custom-modal .modal-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.custom-modal .modal-header button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #333;
+  cursor: pointer;
+}
+
+.custom-modal .modal-body {
+  margin-bottom: 20px;
+}
+
+.custom-modal .form-group {
+  margin-bottom: 15px;
+}
+
+.custom-modal .form-group label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.custom-modal .form-control {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  background-color: #fff;
+  color: #222;
+}
+
+.custom-modal .form-control:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.custom-modal .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.custom-modal .btn {
+  padding: 8px 16px;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.custom-modal .btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.custom-modal .btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.custom-modal .btn-secondary {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.custom-modal .btn-secondary:hover {
+  background-color: #cfcfcf;
+}
+
+/* ===============================
+   SMS Modal
+   =============================== */
+.sms-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.sms-modal-content {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sms-modal-content h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  color: #2c3e50;
+}
+
+.sms-textarea {
+  width: 100%;
+  margin-top: 12px;
+  font-size: 1rem;
+  padding: 12px;
+  resize: vertical;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-height: 120px;
+}
+
+.sms-modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.sms-modal-actions .btn {
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sms-modal-actions .btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.sms-modal-actions .btn-success:hover {
+  background-color: #218838;
+}
+
+.sms-modal-actions .btn-secondary {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.sms-modal-actions .btn-secondary:hover {
+  background-color: #cfcfcf;
+}
+.highlight-search {
+  background-color: #fff3cd; /* Light yellow */
+  border-left: 4px solid #ffc107; /* Bootstrap warning color */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}

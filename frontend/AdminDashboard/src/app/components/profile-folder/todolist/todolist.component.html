@@ -7,7 +7,7 @@
       <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top-4">
         <div>
           <strong>Demande:</strong> {{ demande.title || 'Sans titre' }}<br>
-          <small><strong>Client:</strong> {{ demande.client?.username || 'Inconnu' }}</small>
+          <small><strong>Client:</strong> {{ demande.client!.username || 'Inconnu' }}</small>
         </div>
         <span *ngIf="demande.id === selectedDemandeId" class="badge bg-warning text-dark">Sélectionnée</span>
       </div>

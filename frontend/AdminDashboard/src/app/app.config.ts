@@ -33,9 +33,6 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimations(),
-    provideAnimationsAsync(),
-    importProvidersFrom(DragDropModule),
-    provideClientHydration(withEventReplay()),
     {
       provide: APP_INITIALIZER,
       deps: [KeycloakService],

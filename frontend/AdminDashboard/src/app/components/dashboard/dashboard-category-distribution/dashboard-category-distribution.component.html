@@ -1,0 +1,21 @@
+<div class="row gap-4">
+  <div class="chart-card">
+    <h3>Répartition par catégorie</h3>
+    <canvas #categoryChart></canvas>
+  </div>
+
+  <div class="chart-card">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h3 class="mb-0">
+        {{ showTopRevenueChart ? 'Formations les plus rentables' : 'Formations par formateur' }}
+      </h3>
+      <button (click)="toggleRevenueChart()" class="btn btn-sm btn-primary">
+        {{ showTopRevenueChart ? 'Voir par formateur' : 'Voir par revenus' }}
+      </button>
+    </div>
+
+    <!-- Canvas swaps dynamically -->
+    <canvas *ngIf="!showTopRevenueChart" #formationsChart></canvas>
+    <canvas *ngIf="showTopRevenueChart" #topRevenueChart></canvas>
+  </div>
+</div>

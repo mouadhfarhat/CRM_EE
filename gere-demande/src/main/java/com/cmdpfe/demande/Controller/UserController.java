@@ -35,19 +35,47 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable String id) {
+        // Check Client
         Client client = clientRepo.findByKeycloakId(id);
         if (client != null) {
             return ResponseEntity.ok(client);
         }
 
+        // Check Gestionnaire
         Optional<Gestionnaire> gestionnaireOpt = gestionnaireRepo.findByKeycloakId(id);
         if (gestionnaireOpt.isPresent()) {
             return ResponseEntity.ok(gestionnaireOpt.get());
         }
 
+        // Check Admin
         Admin admin = adminRepo.findByKeycloakId(id);
         if (admin != null) {
             return ResponseEntity.ok(admin);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+    
+    /**/
+    
+    @GetMapping("/internal/{id}")
+    public ResponseEntity<?> getUserByInternalId(@PathVariable Long id) {
+        // Check Client
+        Optional<Client> clientOpt = clientRepo.findById(id);
+        if (clientOpt.isPresent()) {
+            return ResponseEntity.ok(clientOpt.get());
+        }
+
+        // Check Gestionnaire
+        Optional<Gestionnaire> gestionnaireOpt = gestionnaireRepo.findById(id);
+        if (gestionnaireOpt.isPresent()) {
+            return ResponseEntity.ok(gestionnaireOpt.get());
+        }
+
+        // Check Admin
+        Optional<Admin> adminOpt = adminRepo.findById(id);
+        if (adminOpt.isPresent()) {
+            return ResponseEntity.ok(adminOpt.get());
         }
 
         return ResponseEntity.notFound().build();

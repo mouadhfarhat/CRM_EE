@@ -24,24 +24,30 @@
     
         <!-- Main content -->
         <section class="content">
-          <div class="container-fluid">
-            <app-dashboard></app-dashboard>
-            <!-- Main row -->
-  
-            <app-dashboard2></app-dashboard2>
-  
-            
-            <!-- /.row -->
-          </div><!--/. container-fluid -->
-        </section>
+        <div class="container-fluid">
+
+          <!-- 📦 Dashboard Summary Cards Component -->
+          <app-dashboard-cards></app-dashboard-cards>
+
+          <!-- 📊 Revenue & Demandes Charts Component -->
+          <app-dashboard-charts></app-dashboard-charts>
+
+          <!-- 📂 Category Distribution Component -->
+          <app-dashboard-category-distribution></app-dashboard-category-distribution>
+
+          <!-- 📁 Demandes by Category & Status Component -->
+          <app-dashboard-category-status></app-dashboard-category-status>
+
+          <!-- 👨‍💼 Gestionnaire Demandes Count Component -->
+          <app-dashboard-gestionnaire-count></app-dashboard-gestionnaire-count>
+
+        </div>
+      </section>
         <!-- /.content -->
       </div>
       <!-- /.content-wrapper -->
     
-      <!-- Control Sidebar -->
-      <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-      </aside>
+
       <!-- /.control-sidebar -->
   
     </div>

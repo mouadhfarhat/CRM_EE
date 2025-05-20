@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RoleService } from '../../services/role/role.service';
 import { KeycloakService } from '../../services/keycloak/keycloak.service'; // Import KeycloakService
@@ -7,6 +7,8 @@ import { HttpClient } from '@angular/common/http';
 import { Client } from '../../domains/client';
 import { DomSanitizer } from '@angular/platform-browser';
 
+declare var $: any;
+
 @Component({
   selector: 'app-sidebar',
   imports: [RouterLink],
@@ -14,7 +16,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrl: './sidebar.component.css',
   standalone: true
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, AfterViewInit {
   username: string = '';
   role: string = 'visitor';
   imageSrc: any = '';
@@ -66,8 +68,15 @@ loadProfileImage(imageUrl?: string) {
 }
 
 
+  ngAfterViewInit(): void {
+    // Re-initialize AdminLTE widgets like sidebar, dropdowns, etc.
+    $('[data-widget="treeview"]').Treeview?.('init'); // Safe call if Treeview is available
+    $('[data-widget="sidebar-search"]').SidebarSearch?.(); // For sidebar search plugin
+  }
+}
+
+
 
 
 
   
-}

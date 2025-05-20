@@ -23,6 +23,9 @@
     "@fullcalendar/core": "^6.1.17",
     "@fullcalendar/daygrid": "^6.1.17",
     "@fullcalendar/interaction": "^6.1.17",
+    "bootstrap": "^5.3.6",
+    "chart.js": "^4.4.9",
+    "jquery": "^3.7.1",
     "keycloak-js": "^26.1.4",
     "papaparse": "^5.5.2",
     "primeflex": "^4.0.0",
@@ -40,6 +43,7 @@
     "@angular/cli": "18.2.17",
     "@angular/compiler-cli": "18.2.13",
     "@types/jest": "^29.5.14",
+    "@types/jquery": "^3.5.32",
     "@types/papaparse": "^5.3.15",
     "critters": "^0.0.25",
     "typescript": "~5.5.4"

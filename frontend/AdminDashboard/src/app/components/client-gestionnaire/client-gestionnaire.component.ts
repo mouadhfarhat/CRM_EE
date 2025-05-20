@@ -10,6 +10,8 @@ import { RouterLink } from '@angular/router';
 import { ClientGroupService } from '../../services/cleint-group/client-group.service';
 import { ClientGroup } from '../../domains/clients-group.model';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { EmailPayload, EmailService } from '../../services/email/email.service';
+import { SmsService } from '../../services/sms/sms.service';
 
 @Component({
   selector: 'app-client-gestionnaire',
@@ -47,7 +49,9 @@ export class ClientGestionnaireComponent implements OnInit {
     private formationService: FormationService,
     private groupService: ClientGroupService,
     private sanitizer: DomSanitizer,
-    private http: HttpClient
+    private http: HttpClient,
+    private emailService: EmailService,
+    private smsService: SmsService
   ) {}
 
   ngOnInit(): void {
@@ -81,8 +85,6 @@ selectFormation(formation: Formation | null): void {
     }
   });
 }
-
-
 
   loadAllClients(): void {
     this.clientService.getAll().subscribe({
@@ -120,8 +122,6 @@ selectFormation(formation: Formation | null): void {
       );
     }
   }
-
-
 
   toggleGroupDropdown(): void {
     this.showGroupDropdown = !this.showGroupDropdown;
@@ -171,8 +171,6 @@ selectGroup(group: ClientGroup): void {
   console.log('Selected Group ID:', this.selectedGroupId);
 }
 
-
-
   getInterests(client: Client): string {
     return client.interested?.length ? client.interested.map(f => f.title).join(', ') : 'No interests listed';
   }
@@ -183,15 +181,6 @@ selectGroup(group: ClientGroup): void {
     this.selectedClients = this.filteredClients.filter(c => c.selected);
   }
 
-  sendBulkEmail(): void {
-    const emails = this.selectedClients.map(c => c.email).join(',');
-    window.location.href = `mailto:${emails}`;
-  }
-
-  sendBulkSMS(): void {
-    const phones = this.selectedClients.map(c => c.phoneNumber).join(',');
-    window.location.href = `sms:${phones}`;
-  }
 
 
     getClientImage(client: any): SafeUrl {
@@ -245,5 +234,112 @@ updatePagination(): void {
   this.totalPages = Math.ceil(this.filteredClients.length / this.pageSize);
   this.currentPage = 1; // reset to first page
 }
+
+
+
+
+get selectedEmails(): string {
+  return this.selectedClients.map(c => c.email).join(', ');
+}
+
+
+emailSubject: string = '';
+emailBody: string = '';
+isComposeModalVisible: boolean = false;
+
+sendBulkEmail(): void {
+  this.isComposeModalVisible = true;
+}
+
+sendEmailToClient(client: any): void {
+  this.selectedClients = [client];
+  this.sendBulkEmail();
+}
+
+closeModal(): void {
+  this.isComposeModalVisible = false;
+  this.emailSubject = '';
+  this.emailBody = '';
+}
+
+sendEmailToSelected(): void {
+  const recipients = this.selectedClients.map(c => c.email);
+
+  const payload: EmailPayload = {
+    recipients,
+    subject: this.emailSubject,
+    body: this.emailBody
+  };
+
+  this.emailService.sendEmail(payload).subscribe({
+next: (res) => {
+  console.log('Email sent response:', res.message); // Optional
+  alert(res.message); // Optional: show backend message
+  this.closeModal();
+},
+
+    error: (err) => {
+      console.error('Email send error', err);
+      alert('Failed to send email');
+    }
+  });
+}
+
+
+
+
+  sendBulkSMS(): void {
+    const numbers = this.selectedClients.map(c => c.phoneNumber);
+    const message = 'Hello! This is a message from our service.';
+
+    this.smsService.sendBulkSms(numbers, message).subscribe({
+      next: res => alert('SMS sent to selected clients!'),
+      error: err => alert('Error sending SMS: ' + err.message)
+    });
+  }
+
+sendSMS(phone: string): void {
+  let fullPhone = phone.startsWith('+') ? phone : `+216${phone}`;
+  fullPhone = fullPhone.replace(/\s+/g, ''); // Remove spaces
+
+  const message = 'Hello from Angular and Spring Boot!';
+  this.smsService.sendSms(fullPhone, message).subscribe({
+    next: () => alert(`SMS sent to ${fullPhone}`),
+    error: err => alert('Error: ' + err.message)
+  });
+}
+
+showSmsModal = false;
+selectedClient: any;
+customMessage = '';
+
+openSmsModal(client: any): void {
+  this.selectedClient = client;
+  this.customMessage = `Bonjour ${client.firstName},`; // You can customize
+  this.showSmsModal = true;
+}
+
+closeSmsModal(): void {
+  this.showSmsModal = false;
+  this.selectedClient = null;
+  this.customMessage = '';
+}
+
+sendCustomSms(): void {
+  if (!this.selectedClient) return;
+
+  let phone = this.selectedClient.phoneNumber;
+  let fullPhone = phone.startsWith('+') ? phone : `+216${phone}`;
+  fullPhone = fullPhone.replace(/\s+/g, '');
+
+  this.smsService.sendSms(fullPhone, this.customMessage).subscribe({
+    next: () => {
+      alert(`SMS envoyé à ${fullPhone}`);
+      this.closeSmsModal();
+    },
+    error: err => alert('Erreur: ' + err.message)
+  });
+}
+
 
 }

@@ -5,6 +5,7 @@ import com.cmdpfe.demande.Repository.*;
 import com.cmdpfe.demande.Service.KeycloakAdminService;
 import com.cmdpfe.demande.jwt.CustomJwt;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -171,14 +172,7 @@ public class UserSyncController {
     }
 
     private boolean updateLocalDatabase(Set<String> roles, String keycloakId, UserUpdateDto dto) {
-        if (roles.contains("ROLE_CLIENT")) {
-            Client c = clientRepository.findByKeycloakId(keycloakId);
-            if (c != null) {
-                updateUserFields(c, dto);
-                clientRepository.save(c);
-                return true;
-            }
-        } else if (roles.contains("ROLE_ADMIN")) {
+        if (roles.contains("ROLE_ADMIN")) {
             Admin a = adminRepository.findByKeycloakId(keycloakId);
             if (a != null) {
                 updateUserFields(a, dto);
@@ -191,6 +185,13 @@ public class UserSyncController {
                 Gestionnaire g = gOpt.get();
                 updateUserFields(g, dto);
                 gestionnaireRepository.save(g);
+                return true;
+            }
+        } else if (roles.contains("ROLE_CLIENT")) {
+            Client c = clientRepository.findByKeycloakId(keycloakId);
+            if (c != null) {
+                updateUserFields(c, dto);
+                clientRepository.save(c);
                 return true;
             }
         }
@@ -215,7 +216,8 @@ public class UserSyncController {
         Map<String, Object> payload = Map.of(
             "firstName", dto.getFirstname(),
             "lastName", dto.getLastname(),
-            "email", dto.getEmail()
+            "email", dto.getEmail(),
+            "attributes", Map.of("phone_number", List.of(dto.getPhoneNumber()))
         );
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);

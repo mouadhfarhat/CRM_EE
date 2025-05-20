@@ -73,38 +73,52 @@ loadUserInfoFromToken() {
   this.username = decoded?.['preferred_username'] || '';
   this.firstname = decoded?.['given_name'] || '';
   this.lastname = decoded?.['family_name'] || '';
-  this.phoneNumber = decoded?.['phone_number'] || '';
   this.role = this.auth.role;
-  this.keycloakId = decoded?.['sub']; // ✅ Store the Keycloak ID
+  this.keycloakId = decoded?.['sub'];
 
   if (this.keycloakId) {
+    // Fetch full user data (Client, Gestionnaire, or Admin) from backend
     this.http.get<any>(`http://localhost:8080/api/users/${this.keycloakId}`).subscribe(user => {
-      this.userId = user.id; // ✅ Internal app-specific ID
+      this.userId = user.id; // Internal ID (client.id, gestionnaire.id, or admin.id)
+      this.phoneNumber = user.phoneNumber || ''; // Get phoneNumber from backend
       this.loadProfileImage(user.imageUrl);
+      
+      // If user is a Client, also load demandes/formations count
+      if (this.role === 'CLIENT') {
+        this.clientId = user.id;
+        this.loadClientStats(user.id);
+      }
     });
   }
 }
 
-
-
-
-loadClient(clientId: number) {
-  if (this.client?.id === clientId) return; // Already loaded
-
-  this.http.get<Client>(`http://localhost:8080/api/clients/${clientId}`).subscribe(user => {
-    this.client = user;
-    this.username = user.username;
-    this.firstname = user.firstname;
-    this.lastname = user.lastname;
-    this.phoneNumber = user.phoneNumber;
-    this.loadProfileImage(user.imageUrl);
-  });
-
+// Helper method to load demandes/formations count
+loadClientStats(clientId: number) {
   this.http.get<{ count: number }>(`http://localhost:8080/api/users/me/${clientId}/demandes/count`)
     .subscribe(res => this.demandesCount = res.count);
 
   this.http.get<{ count: number }>(`http://localhost:8080/api/users/me/${clientId}/formations/count`)
     .subscribe(res => this.formationsCount = res.count);
+}
+
+
+
+
+loadClient(id: number) {
+  // Fetch user (could be Client, Gestionnaire, or Admin)
+  this.http.get<any>(`http://localhost:8080/api/users/internal/${id}`).subscribe(user => {
+    this.client = user; // Store full user object
+    this.username = user.username;
+    this.firstname = user.firstname;
+    this.lastname = user.lastname;
+    this.phoneNumber = user.phoneNumber || '';
+    this.loadProfileImage(user.imageUrl);
+
+    // Only load stats if user is a Client
+    if (user.role === 'CLIENT') {
+      this.loadClientStats(user.id);
+    }
+  });
 }
 
 

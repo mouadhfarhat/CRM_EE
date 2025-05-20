@@ -147,5 +147,10 @@ public interface DemandeRepository extends JpaRepository<Demande, Long> {
 		List<Demande> searchDemandesByGestionnaireUsername(@Param("username") String username);
 
 
+	long countByType(DemandeType type);
+
+	List<Demande> findByStatutAndType(DemandeStatut statut, DemandeType type);
+
+	
 }
 

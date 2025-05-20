@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -18,32 +18,44 @@ export class UpdateProfileComponent implements OnInit {
 
   constructor(
     private keycloakService: KeycloakService,
-    private userService: UserService
+    private userService: UserService,
+      private cdRef: ChangeDetectorRef
+
 
   ) {}
 
 async ngOnInit() {
-    try {
-      const profile = await this.keycloakService.loadUserProfile();
-      this.userProfile = {
-        username: profile.username,
-        email: profile.email,
-        firstName: profile.firstName,
-        lastName: profile.lastName,
-        phoneNumber:"" // Load from custom user storage later if needed
-      };
-    } catch (error) {
-      console.error('Failed to load profile', error);
-    }
+  try {
+    const profile = await this.keycloakService.loadUserProfile();
+    console.log("the profile aaa", profile);
+
+    // Assign a completely new object
+    this.userProfile = {
+      username: profile.username,
+      email: profile.email,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      phoneNumber: (profile.attributes?.['phone_number'] as string[] | undefined)?.[0] || ''
+    };
+
+    console.log("Phone number set to:", this.userProfile.phoneNumber);
+
+  } catch (error) {
+    console.error('Failed to load profile', error);
   }
+}
+
 
 
 
   onSubmit() {
+        console.log("2",this.userProfile.phoneNumber);
+
     const updateData = {
       firstname: this.userProfile.firstName,
       lastname: this.userProfile.lastName,
       email: this.userProfile.email,
+      
       phoneNumber: this.userProfile.phoneNumber
     };
 
@@ -56,4 +68,5 @@ async ngOnInit() {
   goToKeycloakAccountPage() {
     window.location.href = 'http://localhost:8090/realms/crm/account';
   }
+  
 }

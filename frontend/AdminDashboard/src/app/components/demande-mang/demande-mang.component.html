@@ -61,7 +61,7 @@
 
               <td>
                 <a [routerLink]="['/mail/read', demande.id]">{{ demande.title }}</a>
-                <small>Formation: {{ demande.formation?.title || 'N/A' }}</small>
+                <small>Formation: {{ demande.formation!.title || 'N/A' }}</small>
               </td>
 
               <!-- Gestionnaire & Shared With Column -->
