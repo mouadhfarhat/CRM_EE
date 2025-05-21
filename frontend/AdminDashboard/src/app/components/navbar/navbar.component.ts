@@ -8,9 +8,11 @@ import { RoleService } from '../../services/role/role.service';
 import { NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { KeycloakService } from '../../services/keycloak/keycloak.service';
+import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-navbar',
   imports: [
+    RouterModule,
     DialogModule,
     ButtonModule,
     InputTextModule,
@@ -25,6 +27,7 @@ import { KeycloakService } from '../../services/keycloak/keycloak.service';
 })
 export class NavbarComponent {
   role: string = 'visitor'; // 'visitor', 'client', 'gestionnaire', 'admin'
+item: any;
 
   constructor(private keycloakService: KeycloakService,private roleService: RoleService) {
     this.roleService.role$.subscribe((r) => (this.role = r));
@@ -46,9 +49,20 @@ export class NavbarComponent {
     this.keycloakService.logout();
 
   }
-  
-  
 
+    async handleAction(item: any): Promise<void> {
+    const loggedIn = await this.keycloakService.isLoggedIn();
+    if (!loggedIn) {
+      console.log('User not logged in, redirecting...');
+      this.keycloakService.login(); // Redirects to Keycloak login
+      return;
+    }
+
+    // 👉 Proceed with the action if logged in
+    console.log('User is logged in, proceed with:', item);
+  
+  
+  }
   // Method to toggle the sidebar (if needed)
   toggleSidebar() {
     document.body.classList.toggle('sidebar-collapse');

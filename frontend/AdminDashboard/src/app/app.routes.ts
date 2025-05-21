@@ -15,34 +15,93 @@ import { ClientGestionnaireComponent } from './components/client-gestionnaire/cl
 import { CalendrierComponent } from './components/calendrier/calendrier.component';
 import { GroupsComponent } from './components/admin/group/groups/groups.component';
 import { AddGroupComponent } from './components/admin/group/add-group/add-group.component';
+import { roleGuard } from './services/Roleguard/role.guard';
+
 export const routes: Routes = [
-         { path: 'login', component: LoginComponent },
-         { path: 'admin', component: AdminInterfaceComponent },
-         { path: 'formations', component: FormationMangComponent  },
-         { path: 'clients', component: ClientMangComponent  },
-         { path: 'demandes', component: DemandeMangComponent  },
-         { path: 'gestionnaires', component: GestionnaireMangComponent  },
-         { path: 'profile', component: ProfileComponent  },
-         { path: '', component: ClientInterfaceComponent  },
-         { path: 'mail',
-           children: [
-             { path: '', component: MailboxComponent },
-             { path: 'compose/:email', component: ComposeMailComponent },
-             { path: 'read/:id', component: ReadMailComponent },
-           ]
-         },
-         { path: 'composeMail', component: ComposeMailComponent  },
-         { path: 'readMail', component: ReadMailComponent  },
-         { path: 'calendrier', component: CalendrierComponent  },
-         { path: 'clientgest', component: ClientGestionnaireComponent  },
-         { path: 'gere', component: GereDemandeComponent  },
-         { path: 'groups', component: GroupsComponent  },
-         { path: 'addgroups', component: AddGroupComponent  },
-         { path: 'profile/:id', component: ProfileComponent }
+  { path: 'login', component: LoginComponent },
 
+  // Public & Client
+  {
+    path: '',
+    component: ClientInterfaceComponent,
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    canActivate: [roleGuard(['CLIENT', 'VISITOR'])]
+  },
+  {
+    path: 'composeMail',
+    component: ComposeMailComponent,
+    canActivate: [roleGuard(['CLIENT', 'VISITOR'])]
+  },
+  {
+    path: 'readMail',
+    component: ReadMailComponent,
+    canActivate: [roleGuard(['CLIENT', 'VISITOR'])]
+  },
+  {
+    path: 'mail',
+    children: [
+      { path: '', component: MailboxComponent, canActivate: [roleGuard(['CLIENT', 'VISITOR'])] },
+      { path: 'compose/:email', component: ComposeMailComponent, canActivate: [roleGuard(['CLIENT', 'VISITOR'])] },
+      { path: 'read/:id', component: ReadMailComponent, canActivate: [roleGuard(['CLIENT', 'VISITOR'])] },
+    ]
+  },
 
+  // Gestionnaire & Admin
+  {
+    path: 'formations',
+    component: FormationMangComponent,
+    canActivate: [roleGuard(['GESTIONNAIRE', 'ADMIN'])]
+  },
+  {
+    path: 'clients',
+    component: ClientMangComponent,
+    canActivate: [roleGuard(['GESTIONNAIRE', 'ADMIN'])]
+  },
+  {
+    path: 'demandes',
+    component: DemandeMangComponent,
+    canActivate: [roleGuard(['GESTIONNAIRE', 'ADMIN'])]
+  },
+  {
+    path: 'gestionnaires',
+    component: GestionnaireMangComponent,
+    canActivate: [roleGuard(['GESTIONNAIRE', 'ADMIN'])]
+  },
+  {
+    path: 'admin',
+    component: AdminInterfaceComponent,
+    canActivate: [roleGuard(['ADMIN', 'GESTIONNAIRE'])]
+  },
+  {
+    path: 'calendrier',
+    component: CalendrierComponent,
+    canActivate: [roleGuard(['GESTIONNAIRE', 'ADMIN'])]
+  },
+  {
+    path: 'clientgest',
+    component: ClientGestionnaireComponent,
+    canActivate: [roleGuard(['GESTIONNAIRE', 'ADMIN'])]
+  },
+  {
+    path: 'gere',
+    component: GereDemandeComponent,
+    canActivate: [roleGuard(['GESTIONNAIRE', 'ADMIN'])]
+  },
+  {
+    path: 'groups',
+    component: GroupsComponent,
+    canActivate: [roleGuard(['GESTIONNAIRE', 'ADMIN'])]
+  },
+  {
+    path: 'addgroups',
+    component: AddGroupComponent,
+    canActivate: [roleGuard(['GESTIONNAIRE', 'ADMIN'])]
+  },
 
-         
+  { path: 'profile/:id', component: ProfileComponent }, // optional: protect if needed
 
-
+  { path: '**', redirectTo: '' }
 ];

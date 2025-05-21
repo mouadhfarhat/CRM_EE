@@ -6,12 +6,13 @@ import { AuthService } from '../../services/auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { Client } from '../../domains/client';
 import { DomSanitizer } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 
 declare var $: any;
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink],
+  imports: [RouterLink,CommonModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
   standalone: true

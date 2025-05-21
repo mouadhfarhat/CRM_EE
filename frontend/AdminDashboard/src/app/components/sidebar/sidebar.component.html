@@ -1,29 +1,26 @@
-<aside class="main-sidebar sidebar-dark-primary hold-transition layout-fixed  layout-sidebar-fixed ">
+<aside class="main-sidebar sidebar-dark-primary hold-transition layout-fixed layout-sidebar-fixed">
   <!-- Brand Logo -->
   <a href="#" class="brand-link">
     <img src="../../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-    <span class="brand-text font-weight-light">AdminDashboard</span>
+    <span class="brand-text font-weight-light">AdminDashboardaaa</span>
   </a>
- 
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <!-- Sidebar user panel (optional) -->
-<div class="user-panel mt-3 pb-3 mb-3 d-flex">
-  <div class="image">
-    <img [src]="imageSrc || 'assets/default.png'"
-         class="img-circle elevation-2"
-         style="width: 45px; height: 45px; object-fit: cover; border-radius: 50%;"
-         alt="User Image">
-  </div>
-  <div class="info">
-    <a class="d-block" routerLink="/profile">{{ username }}</a>
-  </div>
-</div>
+    <!-- User Panel -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+        <img [src]="imageSrc || 'assets/default.png'"
+             class="img-circle elevation-2"
+             style="width: 45px; height: 45px; object-fit: cover; border-radius: 50%;"
+             alt="User Image">
+      </div>
+      <div class="info">
+        <a class="d-block" routerLink="/profile">{{ username }}</a>
+      </div>
+    </div>
 
-
-
-    <!-- SidebarSearch Form -->
+    <!-- Sidebar Search Form -->
     <div class="form-inline">
       <div class="input-group" data-widget="sidebar-search">
         <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
@@ -38,26 +35,20 @@
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-        <!-- Dashboard Item -->
-        <li class="nav-item">
-          <a routerLink="/" routerLinkActive="active" class="nav-link" >
-            <i class=" fas fa-tachometer-alt"></i>
-            <p>
-              Dashboard
-              <i class="right fas fa-angle-le ft"></i>
-            </p>
+
+        <!-- Dashboard: all except VISITOR -->
+        <li class="nav-item" *ngIf="role !== 'VISITOR'">
+          <a routerLink="/" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <p>Dashboard</p>
           </a>
         </li>
-        
-        <!-- Formations Item -->
-        <li class="nav-item">
+
+        <!-- Formations: ADMIN only -->
+        <li class="nav-item" *ngIf="role === 'ADMIN'">
           <a class="nav-link">
             <i class="nav-icon fas fa-th"></i>
-            <p>
-              Formations
-              <i class="fas fa-angle-left right"></i>
-              <span class="badge badge-info right">3</span>
-            </p>
+            <p>Formations<i class="fas fa-angle-left right"></i><span class="badge badge-info right">3</span></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
@@ -84,19 +75,14 @@
                 <p>Statistics</p>
               </a>
             </li>
-            <!-- Other client sub-items -->
           </ul>
         </li>
-        
-        <!-- Client Management -->
-        <li class="nav-item">
+
+        <!-- Client: ADMIN and GESTIONNAIRE -->
+        <li class="nav-item" *ngIf="role === 'ADMIN' || role === 'GESTIONNAIRE'">
           <a class="nav-link">
             <i class="nav-icon fas fa-copy"></i>
-            <p>
-              Client
-              <i class="fas fa-angle-left right"></i>
-              <span class="badge badge-info right">2</span>
-            </p>
+            <p>Client<i class="fas fa-angle-left right"></i><span class="badge badge-info right">2</span></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
@@ -111,19 +97,14 @@
                 <p>Statistics</p>
               </a>
             </li>
-            <!-- Other client sub-items -->
           </ul>
         </li>
-        
-        <!-- Demandes Management -->
-        <li class="nav-item">
+
+        <!-- Demandes: ADMIN and GESTIONNAIRE -->
+        <li class="nav-item" *ngIf="role === 'ADMIN' || role === 'GESTIONNAIRE'">
           <a class="nav-link">
             <i class="nav-icon fas fa-chart-pie"></i>
-            <p>
-              Deman
-              <i class="fas fa-angle-left right"></i>
-              <span class="badge badge-info right">2</span>
-            </p>
+            <p>Deman<i class="fas fa-angle-left right"></i><span class="badge badge-info right">2</span></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
@@ -138,19 +119,14 @@
                 <p>Statistics</p>
               </a>
             </li>
-            <!-- Other client sub-items -->
           </ul>
         </li>
-        
-        <!-- Gestionnaire Management -->
-        <li class="nav-item">
+
+        <!-- Gestionnaire: ADMIN and GESTIONNAIRE -->
+        <li class="nav-item" *ngIf="role === 'ADMIN' || role === 'GESTIONNAIRE'">
           <a class="nav-link">
             <i class="nav-icon fas fa-tree"></i>
-            <p>
-              Gestionnaire
-              <i class="fas fa-angle-left right"></i>
-              <span class="badge badge-info right">4</span>
-            </p>
+            <p>Gestionnaire<i class="fas fa-angle-left right"></i><span class="badge badge-info right">4</span></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
@@ -158,7 +134,7 @@
                 <i class="far fa-circle nav-icon"></i>
                 <p>gere demande</p>
               </a>
-
+            </li>
             <li class="nav-item">
               <a routerLink="/calendrier" routerLinkActive="active" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
@@ -177,29 +153,25 @@
                 <p>Statistics</p>
               </a>
             </li>
-            <!-- Other client sub-items -->
           </ul>
         </li>
-        
-        <!-- Statistics -->
-        <li class="nav-item">
+
+        <!-- Mailbox: ADMIN only -->
+        <li class="nav-item" *ngIf="role === 'GESTIONNAIRE'">
           <a routerLink="/mail" routerLinkActive="active" class="nav-link">
             <i class="nav-icon fas fa-edit"></i>
-            <p>
-              MailBox
-            </p>
+            <p>MailBox</p>
           </a>
         </li>
-        
-        <!-- Tables -->
-        <li class="nav-item">
+
+        <!-- Tables: ADMIN only -->
+        <li class="nav-item" *ngIf="role === 'ADMIN'">
           <a routerLink="/tables" routerLinkActive="active" class="nav-link">
             <i class="nav-icon fas fa-table"></i>
-            <p>
-              Tables
-            </p>
+            <p>Tables</p>
           </a>
         </li>
+
       </ul>
     </nav>
   </div>

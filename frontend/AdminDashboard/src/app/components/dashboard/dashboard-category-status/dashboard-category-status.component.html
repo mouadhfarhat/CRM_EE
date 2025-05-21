@@ -1,1 +1,18 @@
-<p>dashboard-category-status works!</p>
+  <div class="row">
+    <div class="chart-card">
+      <h3>Demandes par Catégorie et Statut</h3>
+
+      <label for="statusFilter">Filtrer par statut:</label>
+      <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="loadCategoryStatusChart()">
+        <option *ngFor="let status of statutList" [value]="status">{{ status }}</option>
+      </select>
+
+      <canvas #categoryStatusChart></canvas>
+    </div>
+
+
+    <div class="chart-card">
+      <h3>Demandes par Gestionnaire</h3>
+      <canvas #gestionnaireChart></canvas>
+    </div>
+  </div>

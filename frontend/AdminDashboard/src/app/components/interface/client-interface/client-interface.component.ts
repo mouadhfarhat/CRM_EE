@@ -218,6 +218,8 @@ export class ClientInterfaceComponent implements OnInit {
 
 
 isRegistrationClosed(registrationEndDate: string): boolean {
+  console.log('clientId:', this.clientId); // Check if it exists
+
   const today = new Date();
   const endDate = new Date(registrationEndDate);
   return endDate < today;

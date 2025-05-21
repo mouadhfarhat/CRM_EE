@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Silent SSO Check</title>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+  <script>
+    // This file is used by Keycloak to silently check the authentication status
+    // without redirecting the user to the login page
+    parent.postMessage(location.href, location.origin);
+  </script>
+</body>
+</html>
