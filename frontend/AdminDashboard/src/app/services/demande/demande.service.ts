@@ -18,6 +18,10 @@ export class DemandeService {
     return this.http.get<Demande[]>(`${this.apiUrl}/unassigned`);
   }
 
+
+    getMyRatings() {
+  return this.http.get<any[]>(`${this.apiUrl}/my-ratings`);
+}
   assignDemande(demandeId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/${demandeId}/choose`, {});
   }
@@ -120,4 +124,7 @@ export class DemandeService {
       { params }
     );
   }
+
+
+
 }

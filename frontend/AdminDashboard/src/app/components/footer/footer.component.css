@@ -1,0 +1,91 @@
+/* Esprit Footer Styles */
+.esprit-footer {
+  background: #2c3e50;
+  color: #ecf0f1;
+  padding: 40px 0 0;
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-col {
+  flex: 1;
+  min-width: 250px;
+  padding: 0 15px;
+  margin-bottom: 30px;
+}
+
+.footer-col h4 {
+  color: #f39c12;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.footer-col p, .footer-col li {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.footer-col a {
+  color: #bdc3c7;
+  transition: color 0.3s;
+}
+
+.footer-col a:hover {
+  color: #f39c12;
+  text-decoration: none;
+}
+
+.social-links a {
+  display: inline-block;
+  margin-right: 15px;
+  font-size: 20px;
+}
+
+.contact-info li {
+  position: relative;
+  padding-left: 30px;
+}
+
+.contact-info i {
+  position: absolute;
+  left: 0;
+  top: 5px;
+  color: #f39c12;
+}
+
+.copyright-bar {
+  background: #1a252f;
+  padding: 15px 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+.copyright-bar p {
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .footer-col {
+    flex: 100%;
+    text-align: center;
+  }
+  
+  .contact-info li {
+    padding-left: 0;
+    text-align: center;
+  }
+  
+  .contact-info i {
+    position: static;
+    display: block;
+    margin-bottom: 5px;
+  }
+}

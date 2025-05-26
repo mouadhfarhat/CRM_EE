@@ -24,4 +24,6 @@ export interface Formation {
   interestedClients?: Client[]; // Optional list of interested clients
   rating?:number;
   demandes?:Demande;
+  titleExpanded?:Boolean;
+  descExpanded?:Boolean;
 }

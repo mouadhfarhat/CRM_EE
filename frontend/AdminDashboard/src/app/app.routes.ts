@@ -28,7 +28,7 @@ export const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [roleGuard(['CLIENT', 'VISITOR'])]
+    canActivate: [roleGuard(['CLIENT', 'VISITOR','GESTIONNAIRE', 'ADMIN'])]
   },
   {
     path: 'composeMail',
@@ -43,9 +43,9 @@ export const routes: Routes = [
   {
     path: 'mail',
     children: [
-      { path: '', component: MailboxComponent, canActivate: [roleGuard(['CLIENT', 'VISITOR'])] },
-      { path: 'compose/:email', component: ComposeMailComponent, canActivate: [roleGuard(['CLIENT', 'VISITOR'])] },
-      { path: 'read/:id', component: ReadMailComponent, canActivate: [roleGuard(['CLIENT', 'VISITOR'])] },
+      { path: '', component: MailboxComponent, canActivate: [roleGuard(['CLIENT', 'VISITOR','GESTIONNAIRE', 'ADMIN'])] },
+      { path: 'compose/:email', component: ComposeMailComponent, canActivate: [roleGuard(['CLIENT', 'VISITOR','GESTIONNAIRE', 'ADMIN'])] },
+      { path: 'read/:id', component: ReadMailComponent, canActivate: [roleGuard(['CLIENT', 'VISITOR','GESTIONNAIRE', 'ADMIN'])] },
     ]
   },
 

@@ -6,72 +6,46 @@
         <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
-
+        
         <!-- Home -->
         <li class="nav-item d-none d-sm-inline-block">
           <a routerLink="/" class="nav-link">Home</a>
         </li>
-
+        
         <!-- Contact -> Admin Page: Only for GESTIONNAIRE or ADMIN -->
         <li class="nav-item d-none d-sm-inline-block" *ngIf="role === 'GESTIONNAIRE' || role === 'ADMIN'">
           <a routerLink="/admin" class="nav-link">Admin Page</a>
         </li>
-
-        <!-- Logout (Only for logged in users) -->
-        <li class="nav-item" *ngIf="role !== 'VISITOR'">
-          <a class="nav-link text-danger" (click)="onLogout()" style="cursor:pointer;">
-            <i class="fas fa-sign-out-alt"></i> Logout
-          </a>
-        </li>
-
-        <!-- Login (Only for visitors) -->
-        <li class="nav-item" *ngIf="role === 'VISITOR'">
-          <button class="btn btn-outline-info btn-sm" (click)="handleAction(item)">Login</button>
-        </li>
       </ul>
-
+      
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
-        <!-- CLIENT: Favorites & Notifications -->
+        <!-- CLIENT: Notifications only -->
         <ng-container *ngIf="role === 'CLIENT'">
-          <!-- Favorites -->
-          <li class="nav-item">
-            <p-button 
-              (onClick)="show()" 
-              icon="pi pi-heart" 
-              label="Favorites" 
-              styleClass="p-button-text text-danger">
-            </p-button>
-          </li>
-
-          <!-- Notifications -->
+          <!-- Notifications - Click to go to profile -->
           <li class="nav-item dropdown">
-            <a class="nav-link" data-toggle="dropdown" href="#">
+            <a class="nav-link" routerLink="/profile" title="Go to Profile">
               <i class="far fa-bell"></i>
-              <span class="badge badge-warning navbar-badge">15</span>
+              <span class="badge badge-warning navbar-badge"></span>
             </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-              <span class="dropdown-item dropdown-header">15 Notifications</span>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="fas fa-envelope mr-2"></i> 4 new messages
-                <span class="float-right text-muted text-sm">3 mins</span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="fas fa-users mr-2"></i> 8 friend requests
-                <span class="float-right text-muted text-sm">12 hours</span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="fas fa-file mr-2"></i> 3 new reports
-                <span class="float-right text-muted text-sm">2 days</span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-            </div>
           </li>
         </ng-container>
+        
+        <!-- Login (Only for visitors) -->
+        <li class="nav-item" *ngIf="role === 'VISITOR'">
+          <button class="btn btn-login" (click)="handleAction(item)">
+            <i class="fas fa-sign-in-alt"></i>
+            <span class="btn-text">Login</span>
+          </button>
+        </li>
+        
+        <!-- Logout (Only for logged in users) -->
+        <li class="nav-item" *ngIf="role !== 'VISITOR'">
+          <button class="btn btn-logout" (click)="onLogout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span class="btn-text">Logout</span>
+          </button>
+        </li>
       </ul>
     </nav>
   </div>

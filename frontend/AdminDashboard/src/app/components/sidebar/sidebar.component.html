@@ -1,14 +1,14 @@
 <aside class="main-sidebar sidebar-dark-primary hold-transition layout-fixed layout-sidebar-fixed">
   <!-- Brand Logo -->
   <a href="#" class="brand-link">
-    <img src="../../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-    <span class="brand-text font-weight-light">AdminDashboardaaa</span>
+    <img src="../../../assets/imgg/esprit_icon.jpeg" alt="Esprit" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <span class="brand-text font-weight-light">Esprit Formation</span>
   </a>
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <!-- User Panel -->
-    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+    <!-- User Panel - Only show for logged in users -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex" *ngIf="role !== 'VISITOR'">
       <div class="image">
         <img [src]="imageSrc || 'assets/default.png'"
              class="img-circle elevation-2"
@@ -17,6 +17,14 @@
       </div>
       <div class="info">
         <a class="d-block" routerLink="/profile">{{ username }}</a>
+      </div>
+    </div>
+
+    <!-- Alternative: Welcome message for visitors -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex" *ngIf="role === 'VISITOR'">
+      <div class="info w-100 text-center">
+        <span class="d-block text-light">Welcome, Visitor</span>
+        <small class="text-muted">Browse our formations</small>
       </div>
     </div>
 
@@ -104,7 +112,7 @@
         <li class="nav-item" *ngIf="role === 'ADMIN' || role === 'GESTIONNAIRE'">
           <a class="nav-link">
             <i class="nav-icon fas fa-chart-pie"></i>
-            <p>Deman<i class="fas fa-angle-left right"></i><span class="badge badge-info right">2</span></p>
+            <p>Demandes<i class="fas fa-angle-left right"></i><span class="badge badge-info right">2</span></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
@@ -156,7 +164,7 @@
           </ul>
         </li>
 
-        <!-- Mailbox: ADMIN only -->
+        <!-- Mailbox: GESTIONNAIRE only -->
         <li class="nav-item" *ngIf="role === 'GESTIONNAIRE'">
           <a routerLink="/mail" routerLinkActive="active" class="nav-link">
             <i class="nav-icon fas fa-edit"></i>

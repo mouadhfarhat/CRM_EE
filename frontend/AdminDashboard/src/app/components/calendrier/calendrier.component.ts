@@ -23,7 +23,6 @@ import { EventStatus, RecurrenceType, EventType } from '../../domains/enums';
 import { HttpClient } from '@angular/common/http';
 import { ClientGroup } from '../../domains/clients-group.model';
 import { CalendrierEvent } from '../../domains/CalendrierEvent .model';
-
 @Component({
   selector: 'app-calendrier',
   standalone: true,
@@ -76,7 +75,7 @@ export class CalendrierComponent implements OnInit, AfterViewInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformId: Object,
     private http: HttpClient,
     private formationService: FormationService,
-    private eventService: CalendrierEventService
+    private eventService: CalendrierEventService,
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }

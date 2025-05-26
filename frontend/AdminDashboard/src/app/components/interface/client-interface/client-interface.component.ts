@@ -47,6 +47,8 @@ export class ClientInterfaceComponent implements OnInit {
   interestedFormations: Set<number> = new Set();
   client: Client | null = null;
   clientId: number | null = null;
+  titleExpanded: false | undefined;
+  descExpanded: false | undefined;
 
 
   constructor(
@@ -63,6 +65,7 @@ export class ClientInterfaceComponent implements OnInit {
     this.loadClientId();
 
   }
+
 
   loadClientId(): void {
     this.authService.getClientId().subscribe({
@@ -225,5 +228,14 @@ isRegistrationClosed(registrationEndDate: string): boolean {
   return endDate < today;
 }
 
+
+
+toggleText(item: any, type: string) {
+    if (type === 'title') {
+      item.titleExpanded = !item.titleExpanded;
+    } else if (type === 'desc') {
+      item.descExpanded = !item.descExpanded;
+    }
+  }
 
 }

@@ -107,23 +107,23 @@
               <div class="card">
                 <div class="card-header p-2">
                   <ul class="nav nav-pills">
-                    <li class="nav-item"><a class="nav-link active" href="#myDemandes" data-toggle="tab">My demandes</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#historique" data-toggle="tab">Historique</a></li>
+                    <li  *ngIf="role === 'CLIENT'" class="nav-item"><a class="nav-link active" href="#myDemandes" data-toggle="tab">My demandes</a></li>
+                    <li  *ngIf="role === 'CLIENT'" class="nav-item"><a class="nav-link" href="#historique" data-toggle="tab">Historique</a></li>
                     <li class="nav-item"><a class="nav-link" href="#editProfile" data-toggle="tab">Edit profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="#notification" data-toggle="tab">Notifications</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#todolist" data-toggle="tab">Todolist</a></li>
+                    <li *ngIf="role === 'GESTIONNAIRE' || role === 'ADMIN'" class="nav-item"><a class="nav-link" href="#todolist" data-toggle="tab">Todolist</a></li>
 
                   </ul>
                 </div><!-- /.card-header -->
                 <div class="card-body">
                   <div class="tab-content">
 
-                    <div class="active tab-pane  " id="myDemandes">
+                    <div *ngIf="role === 'CLIENT'" class="active tab-pane  " id="myDemandes">
                       <!-- The myDemandes -->
                       <app-my-demandes></app-my-demandes>
                     </div>
                     <!-- /.tab-pane -->
-                    <div class="tab-pane" id="historique">
+                    <div *ngIf="role === 'CLIENT'" class="tab-pane" id="historique">
                       <app-historique></app-historique>
                       </div>
                       <!-- /.tab-pane -->  
@@ -133,7 +133,7 @@
                       <div class="tab-pane" id="notification">
                         <app-notification-historique></app-notification-historique>
                       </div>
-                      <div class="tab-pane" id="todolist">
+                      <div  *ngIf="role === 'GESTIONNAIRE' || role === 'ADMIN'" class="tab-pane" id="todolist">
                         <app-todolist></app-todolist>
                       </div>
                     <!-- /.tab-pane -->

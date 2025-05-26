@@ -3,6 +3,7 @@
   flex: 0 0 400px;
   max-width: 400px;
   transition: transform 0.3s ease;
+  min-height: 550px; /* Fixed minimum height for consistency */
 }
 
 .formation-card:hover {
@@ -17,6 +18,9 @@
   overflow: hidden;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
   padding: 1.5rem !important;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .surface-card:hover {
@@ -48,10 +52,21 @@
   font-size: 1.25rem;
   line-height: 1.4;
   transition: color 0.3s ease;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 56px; /* 2 lines * 1.4 line-height * 20px font-size */
 }
 
 .formation-card:hover h3 {
   color: #93c5fd !important;
+}
+
+.formation-card h3.expanded {
+  -webkit-line-clamp: unset;
+  max-height: none;
+  cursor: pointer;
 }
 
 .truncate-3-lines {
@@ -63,6 +78,26 @@
   font-size: 0.95rem;
   line-height: 1.6;
   margin: 0.75rem 0;
+  max-height: 72px; /* 3 lines * 1.6 line-height * 15px font-size */
+}
+
+.truncate-3-lines.expanded {
+  -webkit-line-clamp: unset;
+  max-height: none;
+  cursor: pointer;
+}
+
+/* View Toggle */
+.view-toggle {
+  color: #93c5fd;
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.view-toggle:hover {
+  color: #bfdbfe;
 }
 
 /* Metadata */
@@ -93,7 +128,6 @@
 
 /* Carousel Wrapper */
 .formation-carousel-wrapper {
-  margin: 0 -1.25rem;
   padding: 0 1.25rem 1.5rem;
   overflow-x: auto;
 }
@@ -121,26 +155,11 @@
   border-radius: 12px;
 }
 
-/* Section Header */
-.content .text-center h2 {
-  color: #f8fafc;
-  font-size: 2.25rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  margin-bottom: 0.75rem;
-}
-
-.content .text-center p {
-  color: #9ca3af;
-  font-size: 1.1rem;
-  font-weight: 400;
-}
-
 /* Like & Request Buttons */
 .formation-card .p-button[ptooltip="Marquer comme intéressé"],
 .formation-card .p-button[label="Faire une demande"] {
   border-radius: 9999px !important;
-  padding: 0.6rem 1.5rem !important;
+  padding: 0.6rem 1.2rem !important;
   font-weight: 600 !important;
   font-size: 0.95rem !important;
   display: flex !important;
@@ -151,6 +170,7 @@
   color: #f1f5f9 !important;
   border: none !important;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  flex-shrink: 0;
 }
 
 .formation-card .p-button:hover {
@@ -166,6 +186,7 @@
   font-weight: 500;
   color: #93c5fd !important;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .download-link:hover {
@@ -173,9 +194,27 @@
   color: #bfdbfe !important;
   transform: translateY(-1px);
 }
+
 .disabled-btn {
   background-color: #ccc !important;
   color: #666 !important;
   pointer-events: none;
   opacity: 0.6;
+}
+
+/* Ensure consistent card content layout */
+.card-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 200px; /* Minimum height to ensure consistency */
+}
+
+.card-actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
 }

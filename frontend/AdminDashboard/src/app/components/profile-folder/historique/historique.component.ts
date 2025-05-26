@@ -35,20 +35,36 @@ export class HistoriqueComponent implements OnInit {
 
   constructor(private demandeService: DemandeService) {}
 
-  ngOnInit(): void {
-    this.demandeService.getHistorique().subscribe({
-      next: data => {
-        console.log('historique payload:', data);
-        this.formations = data;
-        this.loading = false;
-      },
-      error: err => {
-        console.error('Error loading history', err);
-        this.error = err.message || 'Server error';
-        this.loading = false;
-      }
-    });
-  }
+ngOnInit(): void {
+  this.demandeService.getHistorique().subscribe({
+    next: formations => {
+      this.formations = formations;
+      // Fetch ratings after formations load
+      this.demandeService.getMyRatings().subscribe({
+        next: ratings => {
+          // Match ratings to formations
+          for (const r of ratings) {
+            const match = this.formations.find(f => f.id === r.formation.id);
+            if (match) {
+              match.rating = r.value;
+            }
+          }
+          this.loading = false;
+        },
+        error: err => {
+          console.error('Error loading ratings', err);
+          this.loading = false;
+        }
+      });
+    },
+    error: err => {
+      console.error('Error loading history', err);
+      this.error = err.message || 'Server error';
+      this.loading = false;
+    }
+  });
+}
+
   // Called whenever the user clicks a star
   onRatingChange(formation: Formation, value: number): void {
     if (!formation.id) return;
@@ -57,4 +73,7 @@ export class HistoriqueComponent implements OnInit {
       error: e => console.error('Rating failed', e)
     });
   }
+
+
+  
 }

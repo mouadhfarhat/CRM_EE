@@ -26,9 +26,19 @@
             </div>
 
             <!-- Info -->
-            <div class="flex flex-column gap-2">
-              <h3 class="text-xl font-bold text-white leading-snug">{{ item.title }}</h3>
-              <p class="text-sm text-gray-400 truncate-3-lines">{{ item.description }}</p>
+            <div class="flex flex-column gap-2 card-content">
+              <h3 class="text-xl font-bold text-white leading-snug" [ngClass]="{'expanded': item.titleExpanded}" (click)="toggleText(item, 'title')">
+                {{ item.title }}
+                <span *ngIf="item.title.length > 50" class="view-toggle" (click)="toggleText(item, 'title'); $event.stopPropagation()">
+                  {{ item.titleExpanded ? 'View Less' : 'View More' }}
+                </span>
+              </h3>
+              <p class="text-sm text-gray-400" [ngClass]="{'expanded': item.descExpanded}" (click)="toggleText(item, 'desc')">
+                {{ item.description }}
+                <span *ngIf="item.description.length > 150" class="view-toggle" (click)="toggleText(item, 'desc'); $event.stopPropagation()">
+                  {{ item.descExpanded ? 'View Less' : 'View More' }}
+                </span>
+              </p>
 
               <div class="text-xs text-gray-500 mt-2 space-y-1.5">
                 <div><i class="pi pi-calendar mr-1"></i>Du {{ item.dateDebut | date: 'mediumDate' }} au {{ item.dateFin | date: 'mediumDate' }}</div>
@@ -48,7 +58,7 @@
             </div>
 
             <!-- Actions -->
-            <div class="flex justify-between items-center mt-4 gap-3 flex-wrap">
+            <div class="card-actions flex justify-between items-center mt-4 flex-wrap">
               <p-button
                 size="small"
                 [icon]="isInterested(item.id!) ? 'pi pi-heart-fill' : 'pi pi-heart'"
@@ -57,39 +67,32 @@
                 pTooltip="Marquer comme intéressé"
                 (onClick)="toggleInterest(item.id!)">
               </p-button>
-<p-button
- class="demande-btn"
-  [ngClass]="{ 'disabled-btn': isRegistrationClosed(item.registrationEndDate) }"
-  size="small"
-  icon="pi pi-envelope"
-  label="Faire une demande"
-  [routerLink]="['/composeMail']"
-  [queryParams]="{ clientId: clientId, formationId: item.id }"
-  *ngIf="clientId"
-  [disabled]="isRegistrationClosed(item.registrationEndDate)"
-  [style.backgroundColor]="isRegistrationClosed(item.registrationEndDate) ? '#ccc' : ''"
-  [style.color]="isRegistrationClosed(item.registrationEndDate) ? '#666' : ''"
->
-</p-button>
-
-
-
+              <p-button
+                class="demande-btn"
+                [ngClass]="{ 'disabled-btn': isRegistrationClosed(item.registrationEndDate) }"
+                size="small"
+                icon="pi pi-envelope"
+                label="Faire une demande"
+                [routerLink]="['/composeMail']"
+                [queryParams]="{ clientId: clientId, formationId: item.id }"
+                *ngIf="clientId"
+                [disabled]="isRegistrationClosed(item.registrationEndDate)"
+                [style.backgroundColor]="isRegistrationClosed(item.registrationEndDate) ? '#ccc' : ''"
+                [style.color]="isRegistrationClosed(item.registrationEndDate) ? '#666' : ''">
+              </p-button>
               <a
-  *ngIf="item.fileName"
-  (click)="downloadFile(item.fileName)"
-  class="download-link cursor-pointer text-blue-500 hover:underline flex items-center gap-1"
->
-  <i class="pi pi-download"></i> PDF
-</a>
-
+                *ngIf="item.fileName"
+                (click)="downloadFile(item.fileName)"
+                class="download-link cursor-pointer text-blue-500 hover:underline flex items-center gap-1">
+                <i class="pi pi-download"></i> PDF
+              </a>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</section>
-
+</section>  
 
 
     </div>

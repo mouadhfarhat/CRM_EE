@@ -332,13 +332,14 @@ input[type="text"], input[type="number"], select {
 }
 
 .card-header {
-  background-color: #f8f9fa;
+  background-color: #334155;
   padding: 15px;
 }
 
 .card-title {
   margin: 0;
   font-size: 1.25rem;
+  
 }
 
 .card-body {
