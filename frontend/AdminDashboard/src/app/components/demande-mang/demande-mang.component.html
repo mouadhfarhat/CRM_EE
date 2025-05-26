@@ -26,12 +26,7 @@
     
     <select class="form-control mr-2 mb-2" [(ngModel)]="searchStatut" name="statut">
       <option value="">Tous Statuts</option>
-      <option *ngFor="let s of ['EN_ATTENTE', 'EN_COURS', 'TERMINEE']" [value]="s">{{ s }}</option>
-    </select>
-
-    <select class="form-control mr-2 mb-2" [(ngModel)]="searchType" name="type">
-      <option value="">Tous Types</option>
-      <option *ngFor="let t of ['FORMATION', 'INFORMATION', 'AUTRE']" [value]="t">{{ t }}</option>
+      <option *ngFor="let s of ['EN_ATTENTE', 'EN_COURS', 'REFUSE' , 'TERMINE']" [value]="s">{{ s }}</option>
     </select>
 
     <button type="submit" class="btn btn-primary mb-2">Rechercher</button>

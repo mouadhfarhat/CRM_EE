@@ -51,27 +51,25 @@ ngOnInit(): void {
 }
 
 
-switchView(view: 'formation' | 'group') {
-  this.viewMode = view;
-  this.searchKeyword = '';
-  this.selectedGroupId = null;
+  switchView(view: 'formation' | 'group') {
+    this.viewMode = view;
+    this.searchKeyword = '';
+    this.selectedGroupId = null;
 
-  if (view === 'group') {
-    if (this.selectedFormationId !== null) {
-      this.groupService.getByFormation(this.selectedFormationId).subscribe(data => {
-        this.groups = data;
-        this.filteredGroups = data;
-        this.filterList();
-      });
-    } else {
-      this.loadGroups(); // show all groups if no formation is selected
+    if (view === 'group') {
+      if (this.selectedFormationId !== null) {
+        this.groupService.getByFormation(this.selectedFormationId).subscribe(data => {
+          this.groups = data;
+          this.filteredGroups = data;
+          this.filterList();
+        });
+      } else {
+        this.loadGroups(); // show all groups if no formation is selected
+      }
     }
+
+    this.filterList();
   }
-
-  this.filterList();
-}
-
-
 
   loadFormations() {
     this.formationService.getFormations().subscribe(data => {
@@ -110,48 +108,47 @@ switchView(view: 'formation' | 'group') {
     }
   }
 
-selectFormation(formation: Formation) {
-  // Toggle selection
-  if (this.selectedFormationId === formation.id) {
-    // Deselect
-    this.selectedFormationId = null;
-    this.loadGroups(); // reload all groups
-    this.filteredClients = this.clients; // reset clients list
-  } else {
-    // Select
-    this.selectedFormationId = formation.id;
+  selectFormation(formation: Formation) {
+    // Toggle selection
+    if (this.selectedFormationId === formation.id) {
+      // Deselect
+      this.selectedFormationId = null;
+      this.loadGroups(); // reload all groups
+      this.filteredClients = this.clients; // reset clients list
+    } else {
+      // Select
+      this.selectedFormationId = formation.id;
 
-    
+      
 
-    // Load groups for this formation if viewMode is 'group'
-    if (this.viewMode === 'group') {
-      this.groupService.getByFormation(formation.id!).subscribe(data => {
-        this.groups = data;
-        this.filteredGroups = data;
-        this.filterList();
+      // Load groups for this formation if viewMode is 'group'
+      if (this.viewMode === 'group') {
+        this.groupService.getByFormation(formation.id!).subscribe(data => {
+          this.groups = data;
+          this.filteredGroups = data;
+          this.filterList();
+        });
+      }
+    }
+
+    console.log('Selected Formation ID:', this.selectedFormationId);
+  }
+
+  selectGroup(group: ClientGroup) {
+    if (this.selectedGroupId === group.id) {
+      // Deselect group
+      this.selectedGroupId = null;
+      this.filteredClients = this.clients;
+    } else {
+      // Select new group
+      this.selectedGroupId = group.id;
+      this.clientService.getByGroup(group.id).subscribe((data: Client[]) => {
+        this.filteredClients = data;
       });
     }
+
+    console.log('Selected Group ID:', this.selectedGroupId);
   }
-
-  console.log('Selected Formation ID:', this.selectedFormationId);
-}
-
-
-selectGroup(group: ClientGroup) {
-  if (this.selectedGroupId === group.id) {
-    // Deselect group
-    this.selectedGroupId = null;
-    this.filteredClients = this.clients;
-  } else {
-    // Select new group
-    this.selectedGroupId = group.id;
-    this.clientService.getByGroup(group.id).subscribe((data: Client[]) => {
-      this.filteredClients = data;
-    });
-  }
-
-  console.log('Selected Group ID:', this.selectedGroupId);
-}
 
 
 filterClients() {
@@ -208,18 +205,22 @@ addClientToGroup() {
   }
 
   const selectedGroup = this.groups.find(g => g.id === this.selectedGroupId);
-  const formationId = selectedGroup?.formation?.id;
+  let formationId = selectedGroup?.formation?.id;
+
+  // ✅ fallback to selectedFormationId if not found
+  if (!formationId && this.selectedFormationId !== null) {
+    formationId = this.selectedFormationId;
+  }
 
   if (!formationId) {
-    console.warn('No formationId found in selected group.');
+    console.warn('No formationId found.');
     return;
   }
 
-  // Fetch eligible clients using the group's formationId
   this.groupService.getEligibleClients(formationId).subscribe(clients => {
     this.eligibleClients = clients;
     this.filteredEligibleClients = clients;
-    this.openAddClientModal(); // open modal after data is ready
+    this.openAddClientModal();
   });
 }
 
