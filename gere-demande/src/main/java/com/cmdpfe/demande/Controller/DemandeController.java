@@ -297,7 +297,7 @@ public class DemandeController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('DELETE_DEMANDE')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('DELETE_DEMANDE') or hasRole('CLIENT')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteDemande(@PathVariable Long id) {
         demandeRepository.deleteById(id);
@@ -395,6 +395,25 @@ public class DemandeController {
         return ResponseEntity.ok(Map.of("message", "Average rating is now " + avg));
     }
     
+    
+
+    @GetMapping("/my-ratings")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<List<Rating>> getMyRatings() {
+        // Get current client from security context
+        CustomJwt jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
+        Client client = clientRepository.findByKeycloakId(jwt.getId());
+
+        if (client == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // Fetch only this client's ratings
+        List<Rating> myRatings = ratingRepository.findByClient_Id(client.getId());
+
+        return ResponseEntity.ok(myRatings);
+    }
+
     
     @PutMapping("/update-full/{id}")
     @PreAuthorize("hasRole('CLIENT')")

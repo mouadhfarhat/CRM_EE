@@ -25,13 +25,15 @@ public class SecurityConfig {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/clients/register", "/sync-user", "/api/usersk/me")
+                .ignoringRequestMatchers("/api/clients/register", "/sync-user", "/api/usersk/me", "/api/chatbot/chat")
             )
             .authorizeHttpRequests(authorize -> authorize
                 // Allow all CORS preflight requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                 // Public endpoints (no authentication)
+                
+                .requestMatchers("/api/chatbot/chat").permitAll()
                 .requestMatchers("/sync-user").permitAll()
                 .requestMatchers("/api/clients/register").permitAll()
                 .requestMatchers("/api/public/**").permitAll()
@@ -39,8 +41,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/categories", "/api/categories/search").permitAll()
 
                 // New endpoints for serving images and PDFs
-                .requestMatchers(HttpMethod.GET, "/formations/images/{fileName}").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")
-                .requestMatchers(HttpMethod.GET, "/formations/files/{fileName}").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")
+                .requestMatchers(HttpMethod.GET, "/formations/images/{fileName}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/formations/files/{fileName}").permitAll()
 
                 // Authenticated endpoints
                 .requestMatchers("/api/events/all", "/api/events/{id}").authenticated()
@@ -67,9 +69,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/tasks/**").hasRole("GESTIONNAIRE")
                 .requestMatchers("/demandes/search-by-gestionnaire-username").hasRole("ADMIN")
                 .requestMatchers("/demandes/search-by-client-username").hasRole("ADMIN")
+                .requestMatchers("/demandes/my-ratings").hasRole("CLIENT")
 
                 
-
+                
                 
 
                 .requestMatchers("/demandes/{id}/rate").hasRole("CLIENT")
@@ -114,7 +117,7 @@ public class SecurityConfig {
                     "/demandes/search",
                     "/demandes/search2"
                 ).hasRole("ADMIN")
-                .requestMatchers("/demandes/delete/{id}").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")
+                .requestMatchers("/demandes/delete/{id}").hasAnyRole("ADMIN","GESTIONNAIRE","CLIENT")
 
                 .requestMatchers("/demandes/update/{id}").hasAnyRole("ADMIN", "GESTIONNAIRE","CLIENT")
                 .requestMatchers("/api/clients/**").hasAnyRole("ADMIN", "GESTIONNAIRE", "CLIENT")

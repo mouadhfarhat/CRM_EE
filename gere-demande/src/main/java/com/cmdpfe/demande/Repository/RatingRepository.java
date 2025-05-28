@@ -10,4 +10,6 @@ import com.cmdpfe.demande.Entity.Rating;
 public interface RatingRepository extends JpaRepository<Rating,Long> {
   Optional<Rating> findByClient_IdAndFormation_Id(Long clientId, Long formationId);
   List<Rating> findByFormation_Id(Long formationId);
+  List<Rating> findByClient_Id(Long clientId);
+
 }
