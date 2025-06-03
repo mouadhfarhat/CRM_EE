@@ -1,5 +1,5 @@
 package com.cmdpfe.demande.config;
-
+/*
 import com.cmdpfe.demande.jwt.CustomJwtConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -174,4 +174,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-}
+}*/
